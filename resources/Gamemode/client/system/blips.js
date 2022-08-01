@@ -86,34 +86,3 @@ export class VGBlips {
     this.#ModifyBlip(ModifiedBlip);
   }
 }
-
-// VGBlips.addUnicBlips({
-//   id: 1,
-//   pos: {
-//     x: -1560.78,
-//     y: -1155.704,
-//     z: 3.911,
-//   },
-//   sprite: 404,
-//   color: 46,
-//   scale: 1,
-//   shortRange: true,
-//   name: "Beach",
-// });
-
-// setInterval(() => {
-//   VGBlips.modifyUnicBlip({
-//     id: 1,
-//     pos: {
-//       x: -1460.78,
-//       y: -1355.704,
-//       z: 3.911,
-//     },
-//     sprite: 400,
-//     color: 46,
-//     scale: 1,
-//     shortRange: true,
-//     name: "Beach",
-//   });
-//   console.log("~~~~~~~~~~~~~~~~~~~~Modify~~~~~~~~~~~~~~~~~~~~");
-// }, 30000);
