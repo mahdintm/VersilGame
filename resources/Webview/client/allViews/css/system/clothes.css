@@ -1,0 +1,178 @@
+.ClothesBoxClumns_1,
+.ClothesBoxClumns_2,
+.ClothesBoxClumns_3,
+.ClothesBoxClumns_6 {
+  display: grid;
+  align-items: center;
+  justify-content: space-between;
+  grid-template-columns: auto;
+}
+.ClothesBox {
+  height: 90%;
+  display: grid;
+  grid-template-rows: 90% 10%;
+  position: fixed;
+  opacity: 0;
+  top: 50px;
+  right: -500px;
+  width: 500px;
+  border-radius: 5px;
+  overflow: hidden;
+  background-color: var(--Clothes_Box_Background_Color);
+}
+.ClothesButtonBox {
+  text-align: center;
+  background-color: var(--Clothes_Item_Background_Color);
+  width: 100%;
+  border-radius: 5px;
+  z-index: 100;
+  display: grid;
+}
+.SubClothesBox {
+  width: 90%;
+  display: grid;
+  margin: auto;
+  padding-right: 8px;
+  align-items: center;
+  justify-content: space-between;
+  grid-template-columns: 47% 47%;
+}
+
+.SubClothesButtonBox {
+  background-color: var(--Clothes_Box_Background_Color);
+  border-radius: 5px;
+  height: 38px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 14px;
+  font-weight: 100;
+  cursor: pointer;
+  color: var(--Clothes_Item_Color);
+  transition: background-color 0.1s;
+}
+.SubClothesButtonBox:nth-child(2) {
+  background-color: var(--Special_Color);
+}
+
+.SubClothesButtonBox:hover {
+  background-color: var(--Clothes_Box_Background_Color_Hover);
+  transition: background-color 0.1s;
+}
+
+.SetClothesBox {
+  background-color: var(--Clothes_Box_Background_Color);
+
+  text-align: center;
+  transition: 0.5s;
+  overflow-y: scroll;
+}
+
+.ActiveBoxFromRight {
+  opacity: 1;
+  right: 30px;
+  transition: 0.5s;
+}
+
+.ClothesBoxItem {
+  width: 90%;
+  margin: 20px auto;
+  color: var(--Clothes_Item_Title_Color);
+  background-color: var(--Clothes_Item_Background_Color);
+  font-size: 16px;
+  font-weight: bold;
+  padding: 5px 10px;
+  border-radius: 5px;
+  transition: transform 0.3s;
+}
+
+.ClothesBoxClumns_2 {
+  grid-template-columns: auto auto;
+}
+.ClothesBoxClumns_3 {
+  grid-template-columns: auto auto auto;
+}
+
+.ClothesBoxClumns_6 {
+  grid-template-columns: auto auto auto auto auto auto;
+}
+
+.ClothesBox_BTN,
+.ClothesBox_RBTN {
+  background-color: var(--Clothes_Box_Background_Color);
+  border-radius: 5px;
+  text-align: center;
+  padding: 1px 20px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+.ClothesBox_RBTN {
+  padding: 4px 25px;
+  color: var(--Clothes_Item_Color);
+}
+
+.ClothesBox_BTN:hover,
+.ClothesBox_RBTN:hover {
+  background-color: var(--Clothes_Box_Background_Color_Hover);
+  transition: background-color 0.3s;
+}
+.ClothesBox_RBTNIsInvalid {
+  animation: shakeBTN 1.5s;
+}
+.ClothesBoxClumns_SexBTN {
+  grid-template-columns: 47% 47%;
+}
+
+.ClothesBoxClumns_2 .ClothesSexBTN {
+  background-color: var(--Clothes_Box_Background_Color);
+  border-radius: 5px;
+  height: 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 14px;
+  font-weight: 100;
+  cursor: pointer;
+  color: var(--Clothes_Item_Color);
+  transition: background-color 0.1s;
+}
+.ClothesBoxClumns_2 .ClothesSexBTN:hover {
+  background-color: var(--Clothes_Box_Background_Color_Hover);
+  transition: background-color 0.1s;
+}
+.ClothesBoxClumns_2 .ClothesSexBTNActive {
+  background-color: var(--Special_Color);
+}
+.ClothesBoxClumns_2 .ClothesSexBTNActive:hover {
+  background-color: var(--Special_Color);
+}
+
+.ClothesIndexAndLengh span:nth-child(2) {
+  font-weight: bold;
+}
+
+.ClothesItemValue {
+  text-align: center;
+  width: auto;
+  outline: none;
+  border: none;
+  background-color: var(--Clothes_Item_Background_Color);
+  color: var(--Clothes_Item_Color);
+  caret-color: var(--Clothes_Item_Color);
+  border-radius: 5px;
+  text-align: center;
+  padding: 5px 5px;
+  transition: background-color 0.3s;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+.ClothesItemValueIsInvalid {
+  caret-color: var(--Clothes_Item_Color);
+  animation: shake 1.5s forwards;
+  transition: 0.3s;
+}
+.ActiveClothesItemBox {
+  transform: scale(103%);
+  transition: transform 0.3s;
+}

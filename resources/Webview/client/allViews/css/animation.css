@@ -1,0 +1,73 @@
+@keyframes shake {
+  0% {
+    background-color: var(--Error_Color);
+    transform: translate(3px, 0);
+  }
+  5% {
+    transform: translate(-3px, 0);
+  }
+  10% {
+    transform: translate(1px, 0);
+  }
+  15% {
+    transform: translate(-1px, 0);
+  }
+  20% {
+    transform: translate(0px, 0);
+  }
+  80% {
+    background-color: var(--Error_Color);
+    color: var(--Clothes_Item_Color);
+  }
+  100% {
+    background-color: var(--Clothes_Item_Background_Color);
+    color: var(--Error_Color);
+  }
+}
+@keyframes shakeBTN {
+  0% {
+    background-color: var(--Error_Color);
+    transform: translate(3px, 0);
+  }
+  5% {
+    transform: translate(-3px, 0);
+  }
+  10% {
+    transform: translate(1px, 0);
+  }
+  15% {
+    transform: translate(-1px, 0);
+  }
+  20% {
+    transform: translate(0px, 0);
+  }
+  80% {
+    background-color: var(--Error_Color);
+  }
+  100% {
+    background-color: var(--Clothes_Item_Background_Color);
+  }
+}
+@keyframes AlertFuelInSpeedOmeter {
+  0% {
+    background: linear-gradient(
+      180.69deg,
+      var(--Special_Color) 91.89%,
+      var(--Special_Color) 6.08%
+    );
+  }
+  50% {
+    background: linear-gradient(
+      180.69deg,
+      var(--Error_Color) 91.89%,
+      var(--Error_Color) 6.08%
+    );
+  }
+  100% {
+    background: linear-gradient(
+      180.69deg,
+      var(--Special_Color) 91.89%,
+      var(--Special_Color) 6.08%
+    );
+  }
+}

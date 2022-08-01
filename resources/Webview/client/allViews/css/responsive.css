@@ -1,0 +1,69 @@
+@media screen and (max-width: 1300px) {
+  .InventoryBox {
+    grid-template-columns: 350px 220px 350px !important;
+    height: 550px !important;
+  }
+  .SubInventoryBox:nth-child(1),
+  .SubInventoryBox:nth-child(3) {
+    grid-template-rows: 40px 500px !important;
+  }
+  .InventoryBoxTitleItems {
+    font-size: 12px !important;
+  }
+  .InventoryBoxItemsBox {
+    height: 500px !important;
+  }
+  .InventoryBTN:nth-child(1) {
+    margin-top: 40px !important;
+  }
+  .InventoryBTN {
+    font-size: 0.8rem !important;
+    height: 30px !important;
+    margin-bottom: 15px !important;
+  }
+  .InventoryVersilIcon {
+    height: 85px !important;
+  }
+  .SubInventoryBox:nth-child(2) {
+    height: 340px !important;
+  }
+  .subInventoryBoxItemsBox {
+    grid-template-columns: 70px 70px 70px 70px !important;
+  }
+  .InventoryBoxSubItemBoxIconItem {
+    height: 75px !important;
+    margin-top: -10px !important;
+    margin-bottom: -5px !important;
+  }
+  .InventoryBoxSubItemBoxItemName {
+    font-size: 11px !important;
+  }
+  .InventoryBoxSubItemBoxTitles {
+    font-size: 9px !important;
+  }
+}
+@media screen and (max-width: 1024px) {
+  .ChatBox {
+    width: 40% !important;
+    font-size: 20px !important;
+    margin-left: 30px !important;
+    margin-top: 15px !important;
+  }
+}
+@media screen and (max-width: 970px) {
+  .InventoryBox {
+    grid-template-columns: 280px 180px 280px !important;
+  }
+
+  .subInventoryBoxItemsBox {
+    grid-template-columns: 75px 75px 75px !important;
+  }
+}
+@media screen and (max-width: 800px) {
+  .ChatBox {
+    width: 50% !important;
+    font-size: 18px !important;
+    margin-left: 10px !important;
+    margin-top: 5px !important;
+  }
+}

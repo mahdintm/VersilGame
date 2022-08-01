@@ -1,0 +1,126 @@
+.InventoryBox {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  display: grid;
+  height: 700px;
+  grid-template-columns: 450px 320px 450px;
+  text-align: center;
+  margin: auto;
+  max-width: 95%;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.InventoryBoxActive {
+  opacity: 0.9;
+  transition: opacity 0.3s;
+}
+.SubInventoryBox {
+  background-color: var(--Clothes_Box_Background_Color);
+  border-radius: 5px;
+}
+.SubInventoryBox:nth-child(1),
+.SubInventoryBox:nth-child(3) {
+  display: grid;
+  grid-template-rows: 50px 650px;
+}
+.SubInventoryBox:nth-child(2) {
+  margin: 0px 20px;
+  height: 430px;
+}
+.InventoryItemBox {
+  border-radius: 5px;
+  background-color: #535353;
+}
+.InventoryBTN {
+  margin: 0px auto 20px;
+  display: grid;
+  justify-content: center;
+  align-items: center;
+  height: 35px;
+  cursor: pointer;
+  border-radius: 0.125rem;
+  font-size: 1.1rem;
+  width: 90%;
+  background-color: var(--Clothes_Item_Background_Color);
+  color: var(--Clothes_Item_Color);
+  text-align: center;
+  box-shadow: 0 2px 5px 0 rgb(0 0 0 / 16%), 0 2px 10px 0 rgb(0 0 0 / 12%);
+}
+.InventoryBTN:nth-child(1) {
+  margin-top: 50px;
+}
+.InventoryVersilIcon {
+  overflow: hidden;
+  text-align: center;
+  height: 120px;
+}
+.InventoryVersilIcon img {
+  height: 100%;
+}
+
+.InventoryBoxTitleItems {
+  color: var(--Clothes_Item_Color);
+  display: grid;
+  justify-content: space-between;
+  grid-template-columns: auto auto;
+  align-items: center;
+}
+.InventoryBoxTitleItems span {
+  padding: 10px;
+}
+
+.InventoryBoxItemsBox {
+  height: 640px;
+  overflow-y: scroll;
+  direction: rtl;
+  margin-left: 10px;
+  padding: 0px 10px;
+}
+
+.subInventoryBoxItemsBox {
+  direction: ltr;
+  display: grid;
+  grid-template-columns: 95px 95px 95px 95px;
+  gap: 10px;
+}
+.InventoryBoxSubItemBox {
+  background-color: var(--Inventory_Item_Box_Background_Color);
+  border-radius: 5px;
+}
+
+.InventoryBoxSubItemBoxTitles {
+  color: var(--Clothes_Item_Color);
+  display: grid;
+  justify-content: space-between;
+  grid-template-columns: auto auto;
+  align-items: center;
+  width: 90%;
+  margin: 5px auto 0px;
+  z-index: 10;
+  font-size: 11px;
+}
+.InventoryBoxSubItemBoxIconItem {
+  text-align: center;
+  height: 100px;
+  overflow: hidden;
+  width: 100%;
+  margin: auto;
+  z-index: 1;
+  margin-top: -15px;
+  margin-bottom: -10px;
+}
+.InventoryBoxSubItemBoxIconItem img {
+  width: 100%;
+}
+.InventoryBoxSubItemBoxProgressBar {
+  width: 90%;
+  margin: auto;
+}
+
+.InventoryBoxSubItemBoxItemName {
+  color: var(--Clothes_Item_Color);
+  text-align: center;
+  margin-top: 10px;
+}

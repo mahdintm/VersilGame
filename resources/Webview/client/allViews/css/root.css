@@ -1,0 +1,14 @@
+:root {
+  --font-family: "IRANSans";
+  --scrollbar_background: #888888;
+  --scrollbar_background_hover: #555555;
+  --Special_Color: #f66b0e;
+  --SpeedOmeter_TextGray_Color: #808080;
+  --Error_Color: #ff0000;
+  --Clothes_Box_Background_Color: #252525;
+  --Clothes_Box_Background_Color_Hover: #161616;
+  --Clothes_Item_Background_Color: #363636;
+  --Clothes_Item_Title_Color: #939393;
+  --Clothes_Item_Color: #e4e4e4;
+  --Inventory_Item_Box_Background_Color: #525252;
+}

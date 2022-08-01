@@ -1,0 +1,303 @@
+@font-face {
+  font-family: "Gilroy";
+  src: url("../../../plugins/font/Gilroy-ExtraBold.otf") format("opentype");
+}
+
+@font-face {
+  font-family: "Acrom";
+  src: url("../../../plugins/font/Acrom-Bold.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "TT Norms";
+  src: url("../../../plugins/font/TTNorms-Bold.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Proxima Nova";
+  src: url("../../../plugins/font/ProximaNova-Regular.otf") format("opentype");
+}
+
+@font-face {
+  font-family: "pdown";
+  src: url("../../../plugins/font/pdown.ttf");
+}
+
+.car-hud {
+  position: fixed;
+  right: 3vh;
+  bottom: 10vh;
+}
+
+.VehicleInfoStrela {
+  transform-origin: 70% 22%;
+  transform: translate(-22px, 45px);
+}
+
+/* speed motter*/
+.speed-motter {
+  position: relative;
+  width: 259.21px;
+  height: 218.15px;
+}
+
+.speed-motter-rectangle {
+  z-index: 3;
+  position: absolute;
+}
+
+.speed-motter-rectangle-2 {
+  z-index: 3;
+  position: absolute;
+  right: -1px;
+  bottom: -1px;
+}
+
+.speed-motter-elipse {
+  z-index: 2;
+  position: absolute;
+  left: 4px;
+  top: 1px;
+}
+
+.speed-motter-elipse-2 {
+  z-index: 2;
+  position: absolute;
+  left: -41px;
+  top: -44px;
+}
+
+.speed-motter-elipse-shadow {
+  z-index: 1;
+  position: absolute;
+  left: 1px;
+  top: -5px;
+}
+
+.speed-motter-elipse-shadow-2 {
+  z-index: 1;
+  position: absolute;
+  right: 0px;
+  bottom: 8px;
+  filter: blur(6px);
+}
+
+/* speed motter text */
+.speed-motter-text {
+  font-family: TT Norms;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 12px;
+  position: absolute;
+  left: 25px;
+  bottom: 15px;
+}
+
+.speed-motter-text-1 {
+  position: absolute;
+  color: var(--SpeedOmeter_TextGray_Color);
+  text-shadow: 0px 0px 2px rgba(255, 255, 255, 0.1);
+  left: 25px;
+  bottom: 1px;
+}
+
+.speed-motter-text-2 {
+  position: absolute;
+  color: var(--SpeedOmeter_TextGray_Color);
+  text-shadow: 0px 0px 2px rgba(255, 255, 255, 0.1);
+  left: 5px;
+  bottom: 40px;
+}
+
+.speed-motter-text-3 {
+  position: absolute;
+  color: rgba(255, 255, 255, 1);
+  left: 0px;
+  bottom: 88px;
+}
+
+.speed-motter-text-4 {
+  position: absolute;
+  color: rgba(255, 255, 255, 0.65);
+  left: 20px;
+  bottom: 131px;
+}
+
+.speed-motter-text-5 {
+  position: absolute;
+  color: rgba(255, 255, 255, 0.65);
+  left: 55px;
+  bottom: 161px;
+}
+
+.speed-motter-text-6 {
+  position: absolute;
+  color: rgba(255, 255, 255, 0.65);
+  left: 103px;
+  bottom: 170px;
+}
+
+.speed-motter-text-7 {
+  position: absolute;
+  color: rgba(255, 255, 255, 0.65);
+  left: 150px;
+  bottom: 161px;
+}
+
+.speed-motter-text-8 {
+  position: absolute;
+  color: rgba(255, 255, 255, 0.65);
+  left: 188px;
+  bottom: 131px;
+}
+
+.speed-motter-text-9 {
+  position: absolute;
+  color: rgba(255, 255, 255, 1);
+  left: 210px;
+  bottom: 86px;
+}
+
+.speed-motter-text-10 {
+  position: absolute;
+  color: rgba(255, 255, 255, 1);
+  left: 208px;
+  bottom: 33px;
+}
+
+.speed-motter-text-11 {
+  position: absolute;
+  color: rgba(255, 255, 255, 1);
+  left: 180px;
+  bottom: -10px;
+}
+
+/* speed motter kmh */
+.kmh-number {
+  display: flex;
+  justify-content: center;
+  position: absolute;
+  width: 259.21px;
+  font-family: Gilroy;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 85px;
+  line-height: 103px;
+  background: -webkit-linear-gradient(
+    270deg,
+    #ffffff 22.73%,
+    rgba(255, 255, 255, 0) 78.51%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  top: 60px;
+  z-index: 2;
+}
+
+.kmh {
+  display: flex;
+  justify-content: center;
+  position: absolute;
+  font-family: Acrom;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 25px;
+  line-height: 30px;
+  color: #ffffff;
+  top: 125px;
+  width: 259.21px;
+  z-index: 3;
+}
+
+.strela {
+  position: absolute;
+  left: 54px;
+  bottom: 20px;
+  z-index: 1;
+  transform: rotate(0deg);
+}
+
+/* car icons */
+.car-icons {
+  display: flex;
+  flex-wrap: wrap;
+  flex-basis: 25%;
+  width: 81px;
+  bottom: 6px;
+  right: 87px;
+  position: absolute;
+}
+
+.car-icons svg {
+  padding: 3px;
+}
+
+.car-icons-icon {
+  position: relative;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+}
+
+.car-icons-blur {
+  position: absolute;
+  width: 15px;
+  height: 15px;
+  filter: blur(15px);
+  background: #ffffff;
+  display: none;
+}
+
+/* fuel bar */
+.fuel-bars {
+  position: absolute;
+  left: 80px;
+  bottom: 5px;
+}
+
+.fuel-bar-blur {
+  background: #ffffff;
+  filter: blur(15px);
+  width: 90px;
+  height: 13px;
+  position: absolute;
+  opacity: 0.2;
+}
+
+.fuel-bar {
+  position: absolute;
+  left: 15px;
+  top: 5px;
+  background: rgb(255 255 255 / 10%);
+  width: 70px;
+  height: 5px;
+  border-radius: 50vh;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.fuel-bar-inside {
+  position: relative;
+  background: linear-gradient(
+    180.69deg,
+    var(--Special_Color) 91.89%,
+    var(--Special_Color) 6.08%
+  );
+  height: 100%;
+  width: 0px;
+  border-radius: 50vh;
+  transition: width 1s;
+  z-index: 10;
+}
+
+.fuel-bar-icon {
+  position: absolute;
+}
+
+#beltColor path {
+  fill: white;
+}
+
+#engineColor path {
+  fill: white;
+}
