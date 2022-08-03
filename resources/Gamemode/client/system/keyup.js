@@ -7,6 +7,10 @@ alt.on("keyup", (key) => {
       //2
       alt.emit("Local:Vehicle:Engine");
       break;
+    case 0x01:
+      // Left Click Mouse pressed
+      alt.emit("Local:eyeTracker:LeftClickMousePressed");
+      break;
     //WebView
     case 0x54:
     case 0xc0:
