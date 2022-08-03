@@ -1,4 +1,4 @@
-export const staticBlipsPos = {
+export const staticBlips = {
   ClothesShop: {
     name: "Clothes Shop",
     sprite: 73,
@@ -21,7 +21,31 @@ export const staticBlipsPos = {
       { x: -1.701, y: 6517.714, z: 31.47 },
     ],
   },
-  TestBlips: {
+  PoliceDepartments: {
+    name: "Police Departments",
+    sprite: 526,
+    color: 38,
+    scale: 1,
+    shortRange: true,
+    pos: [{ x: 432.514, y: -982.259, z: 30.695 }],
+  },
+  MedicalDepartments: {
+    name: "Medical Departments",
+    sprite: 61,
+    color: 75,
+    scale: 1,
+    shortRange: true,
+    pos: [{ x: 277.622, y: -584.334, z: 43.13 }],
+  },
+  Shops: {
+    name: "Shops",
+    sprite: 52,
+    color: 25,
+    scale: 1,
+    shortRange: true,
+    pos: [{ x: 29.196, y: -1350.989, z: 29.33 }],
+  },
+  GasStations: {
     name: "Gas Stations",
     sprite: 361,
     color: 49,
