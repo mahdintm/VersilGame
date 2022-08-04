@@ -3,7 +3,13 @@
 import * as alt from "alt-client";
 import * as native from "natives";
 import { eyeTrackerObjects } from "../utils/eyeTrackerObjects";
-function SelectActionObject(actionName) {}
+function SelectActionObject(actionName) {
+  switch (actionName) {
+    case "OpenClothesUiBox":
+      alt.emitServer("SERVER:ClothesUiBoxStatus", true);
+      break;
+  }
+}
 export function SendObjectTitlesToManageEyeTracker(ObjectTitles) {
   switch (ObjectTitles.action) {
     case "OpenClothesUiBox":
