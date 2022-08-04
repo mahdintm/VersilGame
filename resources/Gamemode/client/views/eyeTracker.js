@@ -5,6 +5,7 @@ import * as native from "natives";
 import { view, PlayerController, View } from "./viewCreator";
 import { eyeTrackerObjects } from "../utils/eyeTrackerObjects";
 import { ChangeValueFromVariable } from "../system/everyTick";
+import { SendObjectTitlesToManageEyeTracker } from "../system/manageEyeTrackerFounded";
 
 let eyeTrackerFindStatus = false,
   eyeTrackerStatus = false,
@@ -147,11 +148,11 @@ function GetDirectionFromRotation(rotation) {
 export function DisableLeftClickControlAction() {
   native.disableControlAction(0, 24, true); // For Disable Left Click Mouse
 }
-function RunActionEyeTargetObject(ObjectTitle) {
-  console.log(ObjectTitle, "Ejra kon");
-  // Ta inja anjam shode
+function RunActionEyeTargetObject(ObjectTitles) {
+  LeftClickMousePressed(false, true);
+  SendObjectTitlesToManageEyeTracker(ObjectTitles);
 }
-function LeftClickMousePressed(Status) {
+function LeftClickMousePressed(Status, isForceClosed = false) {
   if (Status) {
     if (eyeTrackerMenuStatus) return;
     if (!eyeTrackerStatus) return;
@@ -165,11 +166,11 @@ function LeftClickMousePressed(Status) {
       RunActionEyeTargetObject(ObjectFoundedDetails.titles[0]);
     }
   } else {
-    if (!eyeTrackerMenuStatus) return;
+    if (!eyeTrackerMenuStatus && !isForceClosed) return;
 
     PlayerController(false);
     eyeTrackerMenuStatus = false;
-    if (!eyeTrackerStatus) eyeTrackerManager(false);
+    if (!eyeTrackerStatus || isForceClosed) eyeTrackerManager(false);
     view.emit("ClientWEB:eyeTracker:MenuStatus", false);
   }
 }
