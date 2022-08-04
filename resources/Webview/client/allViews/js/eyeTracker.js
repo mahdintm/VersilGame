@@ -6,9 +6,12 @@ function ButtonCloseEyeTrackerMenuPressed() {
     return alt.emit("CLIENT:eyeTracker:ButtonCloseMenuPressed");
   return console.log("Clicked");
 }
-function ObjectClickedFromPlayer(ObjectTitle) {
+function ObjectClickedFromPlayer(ObjectTitle, ObjectAction) {
   if ("alt" in window)
-    return alt.emit("CLIENT:eyeTracker:ObjectSelectedFromPlayer", ObjectTitle);
+    return alt.emit("CLIENT:eyeTracker:ObjectSelectedFromPlayer", {
+      title: ObjectTitle,
+      action: ObjectAction,
+    });
   return console.log(`Object ${ObjectTitle} click shod`);
 }
 if ("alt" in window) {
@@ -27,7 +30,7 @@ if ("alt" in window) {
       eyeTrackerObjectBox.innerHTML = "";
 
       Object.values(Objects.titles).forEach((title) => {
-        eyeTrackerObjectBox.innerHTML += `<div onclick="ObjectClickedFromPlayer('${title}')">${title}</div>`;
+        eyeTrackerObjectBox.innerHTML += `<div onclick="ObjectClickedFromPlayer('${title.title}', '${title.action}')">${title.title}</div>`;
       });
     } else {
       eyeTrackerMenu.classList.remove("eyeTrackerMenuBoxActive");
