@@ -428,7 +428,6 @@ setTimeout(async () => {
     let VehicleData_ = await sql(`SELECT * FROM Vehicles`)
     for (let i = 0; i < VehicleData_.length; i++) {
         if (VehicleData_[i] == "") return
-        VehicleData_[i]['InServer'] = "rpg";
         if (VehicleData_[i].type == "static") await VehicleClass.load.static(VehicleData_[i]);
         if (VehicleData_[i].type == "faction") await VehicleClass.load.faction(VehicleData_[i]);
         if (i == VehicleData_.length - 1) {
