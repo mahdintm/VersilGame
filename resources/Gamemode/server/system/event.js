@@ -5,6 +5,7 @@ import { character } from "../utils/character";
 import { PlayerData, playerIdGame } from "./account";
 import { send_email } from "./email";
 import { sms } from "./sms";
+import { StaffPoint } from "./staff";
 
 alt.on("playerConnect", async (player) => {
     player.spawn(-66.84395599365234, -802.20615234375, 44.2255859375);
@@ -65,6 +66,7 @@ await alt.on("playerDisconnect", async (player, reason) => {
         sqlid: await PlayerData.get(player, "pId"),
         username: await PlayerData.get(player, "pName"),
     });
+    StaffPoint.sarOFF(player)
     PlayerData.delete(player);
     playerIdGame.delete(player);
 });
