@@ -8,27 +8,18 @@ var staticcar = [],
     staticcycle = [],
     staticmotor = [],
     staticflying = [],
-    vehicles = { rp: {}, rpg: {} },
-    Ids = { rp: 0, rpg: 0 },
-    platestaticveh = { rp: 0, rpg: 0 },
+    vehicles = {},
+    Ids = 0,
+    platestaticveh = 0,
     platefactionveh = {
-        rp: {
-            i: 0,
-            1: { prefix: "PD", i: 0 },
-            2: { prefix: "FBI", i: 0 },
-            3: { prefix: "Sherif", i: 0 },
-            4: { prefix: "Medic", i: 0 },
-        },
-        rpg: {
-            i: 0,
-            1: { prefix: "PD", i: 0 },
-            2: { prefix: "FBI", i: 0 },
-            3: { prefix: "Sherif", i: 0 },
-            4: { prefix: "Medic", i: 0 },
-        }
+        i: 0,
+        1: { prefix: "PD", i: 0 },
+        2: { prefix: "FBI", i: 0 },
+        3: { prefix: "Sherif", i: 0 },
+        4: { prefix: "Medic", i: 0 },
     },
     VehicleEngineON = [],
-    GameID = { rp: {}, rpg: {} }
+    GameID = {}
 
 //GetStaticVehicleList
 vehicleObject.filter(function (v, i) {
@@ -65,14 +56,14 @@ export class VehicleClass {
         return vehicleObject.filter((v, i) => v.name == VehicleModel)[0]
     };
     static gameid = {
-        GetVehicleFromID(from, id) {
-            return GameID[from, id]
+        GetVehicleFromID(id) {
+            return GameID[id]
         },
-        newid(from, vehicle) {
+        newid(vehicle) {
             const allvehs = alt.Vehicle.all
             for (let i = 0; i < allvehs.length; i++) {
-                if (GameID[from][i] == undefined) continue;
-                return GameID[from][i] = vehicle
+                if (GameID[i] == undefined) continue;
+                return GameID[i] = vehicle
             }
         }
     };
@@ -107,10 +98,8 @@ export class VehicleClass {
         get: async (vehicle, data) => {
             const allvehs = await alt.Vehicle.all;
             for (let i = 0; i < allvehs.length; i++) {
-                if (await vehicles["rp"][vehicle.id] != undefined) {
-                    return await vehicles["rp"][vehicle.id][data]
-                } else if (await vehicles["rpg"][vehicle.id] != undefined) {
-                    return await vehicles["rpg"][vehicle.id][data]
+                if (await vehicles[vehicle.id] != undefined) {
+                    return await vehicles[vehicle.id][data]
                 } else {
                     return await vehicle.destroy()
                 }
@@ -126,12 +115,9 @@ export class VehicleClass {
         set: async (vehicle, data, value) => {
             const allvehs = await alt.Vehicle.all;
             for (let i = 0; i < allvehs.length; i++) {
-                if (await vehicles["rp"][vehicle.id] != undefined) {
-                    vehicles["rp"][vehicle.id][data] = value
-                    return await vehicles["rp"][vehicle.id][data]
-                } else if (await vehicles["rpg"][vehicle.id] != undefined) {
-                    vehicles["rpg"][vehicle.id][data] = value
-                    return await vehicles["rpg"][vehicle.id][data]
+                if (await vehicles[vehicle.id] != undefined) {
+                    vehicles[vehicle.id][data] = value
+                    return await vehicles[vehicle.id][data]
                 } else {
                     return await vehicle.destroy()
                 }
@@ -141,23 +127,21 @@ export class VehicleClass {
     static plate = {
         /**
          * for get new palte Staic Vehicle
-         * @param {string} from rp || rpg
          * @returns {string} PlateNumber
          */
-        async static(from) {
-            platestaticveh[from]++;
-            return `STV ${platestaticveh[from]}`;
+        async static() {
+            platestaticveh++;
+            return `STV ${platestaticveh}`;
         },
         /**
          * for get new palte Faction Vehicle
-         * @param {string} from rp || rpg
          * @param {number} factionid factionID
          * @returns {string} PlateNumber
          */
-        async faction(from, factionid) {
-            platefactionveh[from].i++;
-            platefactionveh[from][factionid].i++;
-            let plate = `${platefactionveh[from][factionid].prefix} ${platefactionveh[from][factionid].i}`;
+        async faction(factionid) {
+            platefactionveh.i++;
+            platefactionveh[factionid].i++;
+            let plate = `${platefactionveh[factionid].prefix} ${platefactionveh[factionid].i}`;
             return plate;
         }
     };
@@ -168,13 +152,11 @@ export class VehicleClass {
          * @param {string} StaticType driving | sailing | riding | motor | flying
          */
         async static(player, StaticType) {
-            let PlayerInServer = await player.getSyncedMeta('inServer')
             let VehicleModel = await VehicleClass.GetRandomModel(StaticType)
             const NewVehicle = await new alt.Vehicle(VehicleModel, player.pos.x, player.pos.y, player.pos.z, player.rot.x, player.rot.y, player.rot.z);
-            PlayerInServer == "rpg" ? NewVehicle.dimension = 1 : NewVehicle.dimension = 2;
-            let newsql = await sql(PlayerInServer, `INSERT INTO Vehicles (model,pos,type,statictype) VALUES ("random",'${JSON.stringify({ x: player.pos.x, y: player.pos.y, z: player.pos.z, rx: player.rot.x, ry: player.rot.y, rz: player.rot.z })}',"static","${sttype}")`)
+            let newsql = await sql(`INSERT INTO Vehicles (model,pos,type,statictype) VALUES ("random",'${JSON.stringify({ x: player.pos.x, y: player.pos.y, z: player.pos.z, rx: player.rot.x, ry: player.rot.y, rz: player.rot.z })}',"static","${sttype}")`)
             let vehdet = await VehicleClass.GetVehicleDetail(VehicleModel)
-            vehicles[PlayerInServer][NewVehicle.id] = {
+            vehicles[NewVehicle.id] = {
                 model: VehicleModel,
                 type: "static",
                 pos: {
@@ -185,8 +167,8 @@ export class VehicleClass {
                     ry: player.rot.y,
                     rz: player.rot.z,
                 },
-                plate: NewVehicle.numberPlateText = VehicleClass.plate.static(PlayerInServer),
-                gameid: await VehicleClass.id(PlayerInServer, NewVehicle.id),
+                plate: NewVehicle.numberPlateText = VehicleClass.plate.static(),
+                gameid: await VehicleClass.id(NewVehicle.id),
                 maxspeed: vehdet.MaxSpeed,
                 maxfuel: vehdet.MaxFuel,
                 fuel: vehdet.MaxFuel,
@@ -210,13 +192,11 @@ export class VehicleClass {
             }
         },
         async faction(player, FactionNumber, Model) {
-            let PlayerInServer = await player.getSyncedMeta('inServer')
             let VehicleModel = Model;
             const NewVehicle = await new alt.Vehicle(VehicleModel, player.pos.x, player.pos.y, player.pos.z, player.rot.x, player.rot.y, player.rot.z);
-            PlayerInServer == "rpg" ? NewVehicle.dimension = 1 : NewVehicle.dimension = 2;
-            let newsql = await sql(PlayerInServer, `INSERT INTO Vehicles (model,pos,type,statictype) VALUES (${VehicleModel},'${JSON.stringify({ x: player.pos.x, y: player.pos.y, z: player.pos.z, rx: player.rot.x, ry: player.rot.y, rz: player.rot.z })}',"faction","${sttype}")`)
+            let newsql = await sql(`INSERT INTO Vehicles (model,pos,type,statictype) VALUES (${VehicleModel},'${JSON.stringify({ x: player.pos.x, y: player.pos.y, z: player.pos.z, rx: player.rot.x, ry: player.rot.y, rz: player.rot.z })}',"faction","${sttype}")`)
             let vehdet = await VehicleClass.GetVehicleDetail(VehicleModel)
-            vehicles[PlayerInServer][NewVehicle.id] = {
+            vehicles[NewVehicle.id] = {
                 model: VehicleModel,
                 type: "faction",
                 pos: {
@@ -227,8 +207,8 @@ export class VehicleClass {
                     ry: player.rot.y,
                     rz: player.rot.z,
                 },
-                plate: NewVehicle.numberPlateText = VehicleClass.faction(PlayerInServer, FactionNumber),
-                gameid: await VehicleClass.id(PlayerInServer, NewVehicle.id),
+                plate: NewVehicle.numberPlateText = VehicleClass.faction(FactionNumber),
+                gameid: await VehicleClass.id(NewVehicle.id),
                 maxspeed: vehdet.MaxSpeed,
                 maxfuel: vehdet.MaxFuel,
                 fuel: vehdet.MaxFuel,
@@ -252,15 +232,13 @@ export class VehicleClass {
             }
         },
         async admin(player, Model) {
-            let PlayerInServer = await player.getSyncedMeta('inServer')
             let VehicleModel = Model;
             const NewVehicle = await new alt.Vehicle(VehicleModel, player.pos.x, player.pos.y, player.pos.z, player.rot.x, player.rot.y, player.rot.z);
-            PlayerInServer == "rpg" ? NewVehicle.dimension = 1 : NewVehicle.dimension = 2;
-            let newsql = await sql(PlayerInServer, `INSERT INTO Vehicles (model,pos,type,statictype) VALUES (${VehicleModel},'${JSON.stringify({ x: player.pos.x, y: player.pos.y, z: player.pos.z, rx: player.rot.x, ry: player.rot.y, rz: player.rot.z })}',"faction","${sttype}")`)
+            let newsql = await sql(`INSERT INTO Vehicles (model,pos,type,statictype) VALUES (${VehicleModel},'${JSON.stringify({ x: player.pos.x, y: player.pos.y, z: player.pos.z, rx: player.rot.x, ry: player.rot.y, rz: player.rot.z })}',"faction","${sttype}")`)
             let vehdet = await VehicleClass.GetVehicleDetail(VehicleModel)
-            let Plate = await PlayerData.get(PlayerInServer, player, "pAdmin") == 10 ? NewVehicle.numberPlateText = "Owner" : NewVehicle.numberPlateText = "Admin Veh"
+            let Plate = await PlayerData.get(player, "pAdmin") == 10 ? NewVehicle.numberPlateText = "Owner" : NewVehicle.numberPlateText = "Admin Veh"
 
-            vehicles[PlayerInServer][NewVehicle.id] = {
+            vehicles[NewVehicle.id] = {
                 model: VehicleModel,
                 type: "faction",
                 pos: {
@@ -272,7 +250,7 @@ export class VehicleClass {
                     rz: player.rot.z,
                 },
                 plate: Plate,
-                gameid: await VehicleClass.id(PlayerInServer, NewVehicle.id),
+                gameid: await VehicleClass.id(NewVehicle.id),
                 maxspeed: vehdet.MaxSpeed,
                 maxfuel: vehdet.MaxFuel,
                 fuel: vehdet.MaxFuel,
@@ -305,15 +283,14 @@ export class VehicleClass {
             let VehicleModel = await VehicleClass.GetRandomModel(data.statictype)
             let position = JSON.parse(data.pos)
             const NewVehicle = await new alt.Vehicle(VehicleModel, position.x, position.y, position.z, position.rx, position.ry, position.rz);
-            data.InServer == "rpg" ? NewVehicle.dimension = 1 : NewVehicle.dimension = 2;
             let vehdet = await VehicleClass.GetVehicleDetail(VehicleModel)
             NewVehicle.manualEngineControl = true
-            vehicles[data.InServer][NewVehicle.id] = {
+            vehicles[NewVehicle.id] = {
                 model: VehicleModel,
                 type: "static",
                 pos: position,
-                plate: NewVehicle.numberPlateText = VehicleClass.plate.static(data.InServer),
-                gameid: await VehicleClass.gameid.newid(data.InServer, NewVehicle),
+                plate: NewVehicle.numberPlateText = VehicleClass.plate.static(),
+                gameid: await VehicleClass.gameid.newid(NewVehicle),
                 maxspeed: vehdet.MaxSpeed,
                 maxfuel: vehdet.MaxFuel,
                 fuel: vehdet.MaxFuel,
@@ -344,13 +321,12 @@ export class VehicleClass {
             let VehicleModel = data.model
             let position = JSON.parse(data.pos)
             const NewVehicle = await new alt.Vehicle(VehicleModel, position.x, position.y, position.z, position.rx, position.ry, position.rz);
-            data.InServer == "rpg" ? NewVehicle.dimension = 1 : NewVehicle.dimension = 2;
             let vehdet = await VehicleClass.GetVehicleDetail(VehicleModel)
-            vehicles[data.InServer][NewVehicle.id] = {
+            vehicles[NewVehicle.id] = {
                 model: VehicleModel,
                 type: "faction",
                 pos: position,
-                plate: NewVehicle.numberPlateText = await VehicleClass.plate.faction(data.InServer, data.factionid),
+                plate: NewVehicle.numberPlateText = await VehicleClass.plate.faction(data.factionid),
                 // gameid: await VehicleClass.id("rpg", NewVehicle.id),
                 maxspeed: vehdet.MaxSpeed,
                 maxfuel: vehdet.MaxFuel,
@@ -376,23 +352,23 @@ export class VehicleClass {
         }
     };
     static respawn = {
-        async avehicle(from, vehicle, force = false, repair = false) {
+        async avehicle(vehicle, force = false, repair = false) {
             if (await vehicle.driver == null && force == false) return
             if (repair == true) await vehicle.repair()
-            vehicle.pos = await vehicles[from][vehicle.id]["pos"]
-            vehicle.rot = { x: vehicles[from][vehicle.id]["pos"].rx, y: vehicles[from][vehicle.id]["pos"].ry, z: vehicles[from][vehicle.id]["pos"].rz }
+            vehicle.pos = await vehicles[vehicle.id]["pos"]
+            vehicle.rot = { x: vehicles[vehicle.id]["pos"].rx, y: vehicles[vehicle.id]["pos"].ry, z: vehicles[vehicle.id]["pos"].rz }
         },
-        async allserver(from, type = "static", force = false, repair = false) {
+        async allserver(type = "static", force = false, repair = false) {
             const allvehs = await alt.Vehicle.all;
             for (let i = 0; i < allvehs.length; i++) {
-                if (await vehicles["rp"][allvehs[i].id] == undefined && await vehicles["rpg"][allvehs[i].id] == undefined) {
+                if (await vehicles[allvehs[i].id] == undefined) {
                     await allvehs[i].destroy()
                     continue
                 }
-                if (await vehicles[from][allvehs[i].id] == undefined) continue
+                if (await vehicles[allvehs[i].id] == undefined) continue
                 if (await allvehs[i].driver != null && force == false) continue
-                if (await vehicles[from][allvehs[i].id]['type'] == type) {
-                    await this.avehicle(from, allvehs[i], force, repair)
+                if (await vehicles[allvehs[i].id]['type'] == type) {
+                    await this.avehicle(allvehs[i], force, repair)
                 }
             }
         }
@@ -449,31 +425,17 @@ export class VehicleClass {
 
 
 setTimeout(async () => {
-    let rpgData = await sql("rpg", `SELECT * FROM Vehicles`)
-    let rpData = await sql("rp", `SELECT * FROM Vehicles`)
-    for (let i = 0; i < rpgData.length; i++) {
-        if (rpgData[i] == "") return
-        rpgData[i]['InServer'] = "rpg";
-        if (rpgData[i].type == "static") await VehicleClass.load.static(rpgData[i]);
-        if (rpgData[i].type == "faction") await VehicleClass.load.faction(rpgData[i]);
-        if (i == rpgData.length - 1) {
-            console.log(`${"\x1b[94m"}RPG: ${"\x1b[31m"}${platestaticveh.rpg} ${"\x1b[32m"} Static vehicle has been Loaded.${"\x1b[37m"}`)
-            console.log(`${"\x1b[94m"}RPG: ${"\x1b[31m"}${platefactionveh.rpg.i} ${"\x1b[32m"} Faction vehicle has been Loaded.${"\x1b[37m"}`)
-            await VehicleClass.respawn.allserver("rpg", 'static', true, true)
-            await VehicleClass.respawn.allserver("rpg", 'faction', true, true)
-        }
-    }
-
-    for (let i = 0; i < rpData.length; i++) {
-        if (rpData[i] == "") return
-        rpData[i]['InServer'] = "rp";
-        if (rpData[i].type == "static") await VehicleClass.load.static(rpData[i]);
-        if (rpData[i].type == "faction") await VehicleClass.load.faction(rpData[i]);
-        if (i == rpData.length - 1) {
-            console.log(`${"\x1b[94m"}RP: ${"\x1b[31m"}${platestaticveh.rp}${"\x1b[32m"} Static vehicle has been Loaded.${"\x1b[37m"}`)
-            console.log(`${"\x1b[94m"}RP: ${"\x1b[31m"}${platefactionveh.rp.i}${"\x1b[32m"} Faction vehicle has been Loaded.${"\x1b[37m"}`)
-            await VehicleClass.respawn.allserver("rp", 'static', true, true)
-            await VehicleClass.respawn.allserver("rp", 'faction', true, true)
+    let VehicleData_ = await sql(`SELECT * FROM Vehicles`)
+    for (let i = 0; i < VehicleData_.length; i++) {
+        if (VehicleData_[i] == "") return
+        VehicleData_[i]['InServer'] = "rpg";
+        if (VehicleData_[i].type == "static") await VehicleClass.load.static(VehicleData_[i]);
+        if (VehicleData_[i].type == "faction") await VehicleClass.load.faction(VehicleData_[i]);
+        if (i == VehicleData_.length - 1) {
+            console.log(`${"\x1b[31m"}${platestaticveh} ${"\x1b[32m"} Static vehicle has been Loaded.${"\x1b[37m"}`)
+            console.log(`${"\x1b[31m"}${platefactionveh.i} ${"\x1b[32m"} Faction vehicle has been Loaded.${"\x1b[37m"}`)
+            await VehicleClass.respawn.allserver('static', true, true)
+            await VehicleClass.respawn.allserver('faction', true, true)
         }
     }
 }, 10000);
