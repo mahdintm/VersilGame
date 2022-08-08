@@ -22,6 +22,8 @@ let ControllerStatus = false;
 export function PlayerController(status = true) {
   if (status && !ControllerStatus) {
     alt.toggleGameControls(false);
+
+    alt.setCursorPos(new alt.Vector2(0.5, 0.5), true);
     alt.showCursor(true);
     view.focus();
     ControllerStatus = true;

@@ -20,7 +20,18 @@
     <div class="InventoryBox" id="InventoryBox"></div>
     <div class="vehicleInfoBox" id="vehicleInfoBox"></div>
 
-    <div class="eyeTrackerBox" id="eyeTrackerBox"><i class="fa-regular fa-eye"></i></div>
+    <div class="eyeTrackerBox" id="eyeTrackerBox">
+      <i class="fa-regular fa-eye"></i>
+      <div class="eyeTrackerMenuBox" id="eyeTrackerMenuBox">
+        <div
+          class="eyeTracker_button_close"
+          id="eyeTracker_button_close"
+          onclick="ButtonCloseEyeTrackerMenuPressed()"
+        ></div>
+        <div class="eyeTrackerObjectBox" id="eyeTrackerObjectBox">
+        </div>
+      </div>
+    </div>
 
     <script src="./js/importHTML.js"></script>
     <script src="./js/clothes.js"></script>

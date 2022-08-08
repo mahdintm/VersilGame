@@ -6,3 +6,6 @@ import "./vehicle";
 import "./blips";
 import "./mapclick";
 import "./manageStaticBlips";
+import "./peds";
+import "./manageStaticNPCs";
+import "./manageEyeTrackerFounded";

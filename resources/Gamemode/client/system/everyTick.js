@@ -5,11 +5,13 @@ import {
   eyeTracker,
   GetObject,
   InternalEyeTrackerChecker,
+  DisableLeftClickControlAction,
 } from "../views/eyeTracker";
 
 let eyeTragerInterval = false,
   VehicleSpeedOmeterInterval = false,
-  eyeTragerInternalInterval = undefined;
+  eyeTragerInternalInterval = undefined,
+  disableLeftClickControlAction = false;
 
 export function ChangeValueFromVariable(Variable, Value) {
   switch (Variable) {
@@ -22,8 +24,11 @@ export function ChangeValueFromVariable(Variable, Value) {
     case "VehicleSpeedOmeterInterval":
       VehicleSpeedOmeterInterval = Value;
       break;
+
+    case "disableLeftClickControlAction":
+      disableLeftClickControlAction = Value;
+      break;
   }
-  return;
 }
 
 alt.everyTick(() => {
@@ -34,4 +39,8 @@ alt.everyTick(() => {
 
   if (eyeTragerInternalInterval != undefined)
     InternalEyeTrackerChecker(eyeTragerInternalInterval);
+
+  if (disableLeftClickControlAction) {
+    DisableLeftClickControlAction();
+  }
 });

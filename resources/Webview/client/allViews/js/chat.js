@@ -4,6 +4,7 @@ var memory = [];
 var TimeStampStatus = false;
 var ChatItemBox = document.getElementById("ChatItemBox");
 var i_chat = 0;
+var isChatOpened = false;
 const ChatLimit = 50;
 
 function colorify(text) {
@@ -153,6 +154,7 @@ function OpenChat() {
   inputChat.focus();
   ChatItemBox.classList.add("ChatItemActive");
   document.getElementById("UpperChatBox").classList.add("ChatItemActive");
+  isChatOpened = true;
 }
 
 function CloseChat() {
@@ -161,6 +163,7 @@ function CloseChat() {
   ChatItemBox.classList.remove("ChatItemActive");
   document.getElementById("UpperChatBox").classList.remove("ChatItemActive");
   if ("alt" in window) alt.emit("CLIENT:CloseChat");
+  isChatOpened = false;
 }
 
 if ("alt" in window) {

@@ -38,8 +38,6 @@ alt.onClient("SERVER:ChangeClothes", async (player, ID, Value) => {
   return;
 });
 
-
-
 alt.onClient("SERVER:ChangeSex", (player, Sex) => {
   if (Sex == "male") {
     player.model = Object.values(character.skin)[0];
@@ -61,4 +59,14 @@ alt.onClient("SERVER:ChangeSex", (player, Sex) => {
     clothes.GetClothesUtils()
   );
   return;
+});
+alt.onClient("SERVER:ClothesUiBoxStatus", (player, Status) => {
+  if (Status) {
+    alt.emitClient(
+      player,
+      "CLIENT:Clothes",
+      player.getMeta("Gender"),
+      clothes.GetClothesUtils()
+    );
+  }
 });

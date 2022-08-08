@@ -5,8 +5,12 @@ import * as native from "natives";
 import { view, PlayerController, View } from "./viewCreator";
 import { eyeTrackerObjects } from "../utils/eyeTrackerObjects";
 import { ChangeValueFromVariable } from "../system/everyTick";
+import { SendObjectTitlesToManageEyeTracker } from "../system/manageEyeTrackerFounded";
 
-let eyeTrackerFindStatus = false;
+let eyeTrackerFindStatus = false,
+  eyeTrackerStatus = false,
+  eyeTrackerMenuStatus = false,
+  ObjectFoundedDetails = { name: null, titles: null };
 
 export function distance2d(vector1, vector2, distance) {
   let dist = Math.sqrt(
@@ -18,20 +22,24 @@ export function distance2d(vector1, vector2, distance) {
     return false;
   }
 }
-function SendStatuseyeTrackerToWebView(Status, ObjectName = null) {
+function SendStatuseyeTrackerToWebView(
+  Status,
+  ObjectName = null,
+  ObjectTitles = null
+) {
   if (Status) {
     if (!eyeTrackerFindStatus) {
       view.emit("ClientWEB:eyeTracker:Status", true, "#00ff00");
-      console.log(ObjectName);
       eyeTrackerFindStatus = true;
     }
   } else {
     if (eyeTrackerFindStatus) {
       view.emit("ClientWEB:eyeTracker:Status", true);
-      console.log(ObjectName);
       eyeTrackerFindStatus = false;
     }
   }
+  ObjectFoundedDetails.name = ObjectName;
+  ObjectFoundedDetails.titles = ObjectTitles;
 }
 export function eyeTracker() {
   let [_, _hit, _endCoords, _surfaceNormal, _materialHash, _entityHit] =
@@ -43,7 +51,11 @@ export function eyeTracker() {
     Object.values(eyeTrackerObjects[i].HashIDs).forEach(
       (eyeTrackerObjectHashID) => {
         if (CheckObjectWithHashID(eyeTrackerObjectHashID)) {
-          SendStatuseyeTrackerToWebView(true, eyeTrackerObjects[i].name);
+          SendStatuseyeTrackerToWebView(
+            true,
+            eyeTrackerObjects[i].name,
+            eyeTrackerObjects[i].titles
+          );
           ChangeValueFromVariable("eyeTragerInterval", false);
           ChangeValueFromVariable(
             "eyeTragerInternalInterval",
@@ -111,9 +123,9 @@ function getRaycast() {
     start.z + fvector.z * 2000
   );
   let raycast = native.startExpensiveSynchronousShapeTestLosProbe(
-    native.getGameplayCamCoord().x,
-    native.getGameplayCamCoord().y,
-    native.getGameplayCamCoord().z,
+    start.x,
+    start.y,
+    start.z,
     frontOf.x,
     frontOf.y,
     frontOf.z,
@@ -133,14 +145,62 @@ function GetDirectionFromRotation(rotation) {
   return new alt.Vector3(-Math.sin(z) * num, Math.cos(z) * num, Math.sin(x));
 }
 
-alt.on("Local:eyeTracker", (Status) => {
+export function DisableLeftClickControlAction() {
+  native.disableControlAction(0, 24, true); // For Disable Left Click Mouse
+}
+function RunActionEyeTargetObject(ObjectTitles) {
+  LeftClickMousePressed(false, true);
+  SendObjectTitlesToManageEyeTracker(ObjectTitles);
+}
+function LeftClickMousePressed(Status, isForceClosed = false) {
+  if (Status) {
+    if (eyeTrackerMenuStatus) return;
+    if (!eyeTrackerStatus) return;
+    if (!eyeTrackerFindStatus) return;
+
+    if (Object.values(ObjectFoundedDetails.titles).length > 1) {
+      PlayerController(true);
+      view.emit("ClientWEB:eyeTracker:MenuStatus", true, ObjectFoundedDetails);
+      eyeTrackerMenuStatus = true;
+    } else {
+      RunActionEyeTargetObject(ObjectFoundedDetails.titles[0]);
+    }
+  } else {
+    if (!eyeTrackerMenuStatus && !isForceClosed) return;
+
+    PlayerController(false);
+    eyeTrackerMenuStatus = false;
+    if (!eyeTrackerStatus || isForceClosed) eyeTrackerManager(false);
+    view.emit("ClientWEB:eyeTracker:MenuStatus", false);
+  }
+}
+alt.on("Local:eyeTracker:LeftClickMousePressed", () => {
+  LeftClickMousePressed(true);
+});
+view.on("CLIENT:eyeTracker:ButtonCloseMenuPressed", () => {
+  LeftClickMousePressed(false);
+});
+view.on("CLIENT:eyeTracker:ObjectSelectedFromPlayer", (ObjectTitle) => {
+  RunActionEyeTargetObject(ObjectTitle);
+});
+
+function eyeTrackerManager(Status) {
   if (Status) {
     view.emit("ClientWEB:eyeTracker:Status", true);
     ChangeValueFromVariable("eyeTragerInterval", true);
+    ChangeValueFromVariable("disableLeftClickControlAction", true);
+    eyeTrackerStatus = true;
   } else {
-    view.emit("ClientWEB:eyeTracker:Status", false);
+    if (!eyeTrackerMenuStatus) {
+      view.emit("ClientWEB:eyeTracker:Status", false);
+      LeftClickMousePressed(false);
+    }
+    ChangeValueFromVariable("disableLeftClickControlAction", false);
     ChangeValueFromVariable("eyeTragerInterval", false);
     ChangeValueFromVariable("eyeTragerInternalInterval", undefined);
     eyeTrackerFindStatus = false;
+    eyeTrackerStatus = false;
   }
-});
+}
+
+alt.on("Local:eyeTracker", eyeTrackerManager);

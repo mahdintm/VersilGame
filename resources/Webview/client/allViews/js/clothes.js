@@ -152,6 +152,7 @@ function ScrollTo(ScrollValue) {
 let SelectedStatus = -1;
 
 function KeyRowPressed(Down) {
+  if (isChatOpened) return;
   const ClothesBoxItem = document.getElementsByClassName("ClothesBoxItem");
   for (let i = 0; i < ClothesBoxItem.length; i++) {
     ClothesBoxItem[i].classList.remove("ActiveClothesItemBox");
