@@ -61,7 +61,7 @@ alt.onClient("Chat:Loaded", (player) => {
     "Connected To Server!"
   );
 });
-alt.onClient("chat:message", (player, msg) => {
+alt.onClient("chat:message", async (player, msg) => {
   if (msg[0] === "/") {
     msg = msg.trim().slice(1);
     if (msg.length > 0) {
@@ -73,7 +73,7 @@ alt.onClient("chat:message", (player, msg) => {
     // if (checkmute(player)) {
     msg = msg.trim();
     if (!msg.length) return;
-    let PlayerName = PlayerData.get("main", player, "rUsername");
+    let PlayerName = await PlayerData.get(player, "pName");
     let msgfilltered = findbadword(msg)
       .replace(/</g, "&lt;")
       .replace(/'/g, "&#39")
