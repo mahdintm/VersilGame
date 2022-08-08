@@ -6,15 +6,11 @@ import { DiscordHook } from "../utils/discord-hook";
 import { sendchat } from "./chat";
 
 var playersdata = {}
-var Idx = {
-    rp: {},
-    rpg: {}
-}
+var Idx = {}
 export class PlayerData {
     static async register(player, obj, Discordid = player.getSyncedMeta('Discordid')) {
         try {
-            let dataMain = await sql('main', `INSERT INTO Account(rUsername, rPassword, rPhonenumber, rEmail, rDiscord, rSex, rFirstName, rLastName, rNotificationEmail, rNotificationPhone, rBrithday, rLastLogin, rCreateAt) VALUES("${(obj.main.Username).toLowerCase()}", "${await hashing.sjcl.ConvertToHash(obj.main.Password)}", "${obj.main.Phone}", "${obj.main.Email}", "${Discordid}", "${obj.main.RealSex}", "${obj.main.RealFirstName.charAt(0).toUpperCase() + obj.main.RealFirstName.slice(1)}", "${obj.main.RealLastName.charAt(0).toUpperCase() + obj.main.RealLastName.slice(1)}", "${obj.main.SendNotificationToEmail ? 1 : 0}", "${obj.main.SendNotificationToPhone ? 1 : 0}", "${obj.main.RealDateOfBirth}", "0", "${Date.now()}")`)
-            await sql('rp', `UPDATE Account SET pFirstname="${obj.rp.FirstName}",pLirstname="${obj.rp.LastName}", pBirthDay="${obj.rp.DateOfBirth}" WHERE pId="${dataMain.insertId}"`)
+            let dataMain = await sql(`INSERT INTO Account(pName, pPassword, pPhonenumber, pEmail, pDiscord, pSex, pFirstName, pLastName, pNotificationEmail, pNotificationPhone, pBrithday, pLastLogin, pCreateAt) VALUES("${(obj.main.Username).toLowerCase()}", "${await hashing.sjcl.ConvertToHash(obj.main.Password)}", "${obj.main.Phone}", "${obj.main.Email}", "${Discordid}", "${obj.main.RealSex}", "${obj.main.RealFirstName.charAt(0).toUpperCase() + obj.main.RealFirstName.slice(1)}", "${obj.main.RealLastName.charAt(0).toUpperCase() + obj.main.RealLastName.slice(1)}", "${obj.main.SendNotificationToEmail ? 1 : 0}", "${obj.main.SendNotificationToPhone ? 1 : 0}", "${obj.main.RealDateOfBirth}", "0", "${Date.now()}")`)
             await PlayerData.login(player, { username: obj.main.Username, password: obj.main.Password })
             await DiscordHook.newhook.register({
                 firstname: obj.main.RealFirstName.charAt(0).toUpperCase() + obj.main.RealFirstName.slice(1),
@@ -26,7 +22,7 @@ export class PlayerData {
                 ip: (player.ip).substr(7, 24),
                 license: player.socialID
             });
-            await sql('log', `INSERT INTO register_log(rId, loginas, ip, timestamp, hwid, discordid, license) VALUES ("${dataMain.insertId}","Server","${(player.ip).substr(7, 24)}","${Date.now()}","${player.hwidHash}","${player.getSyncedMeta('Discordid')}","${player.socialID}")`);
+            // await sql('log', `INSERT INTO register_log(rId, loginas, ip, timestamp, hwid, discordid, license) VALUES ("${dataMain.insertId}","Server","${(player.ip).substr(7, 24)}","${Date.now()}","${player.hwidHash}","${player.getSyncedMeta('Discordid')}","${player.socialID}")`);
         } catch (error) {
             await logger.addlog.server({
                 locatin: "Server->System->Account->Class Playerdata->register()",
@@ -42,28 +38,24 @@ export class PlayerData {
      */
     static async login(player, obj) {
         try {
-            let dataMain = await sql('main', `select * FROM Account WHERE rUsername = "${(obj.username).toLowerCase()}"`);
-            if (await hashing.sjcl.verify(obj.password, dataMain.rPassword) != true)
+            let DaTa = await sql(`select * FROM Account WHERE pName = "${(obj.username).toLowerCase()}"`);
+            if (await hashing.sjcl.verify(obj.password, DaTa.pPassword) != true)
                 return alt.emitClient(player, 'CallBack_Login_Account_To_Server', false);
-            // if (dataMain.rOnline == 1)
-            //     return console.log("online");
+            // if (DaTa.pOnline == 1)
+            // return console.log("online");
             //settingup Data
             let time = Date.now();
-            let dataRP = await sql('rp', `select * FROM Account WHERE pId = "${dataMain.rId}"`);
-            let dataRPG = await sql('rpg', `select * FROM Account WHERE pId = "${dataMain.rId}"`);
-            await sql('main', `update Account set rOnline="${1}",rLastLogin="${time}" WHERE rId="${dataMain.rId}"`)
-            playersdata[player.id] = { main: dataMain, rp: dataRP, rpg: dataRPG };
-            playersdata[player.id]['main']['rUsername'] = obj.username;
-            playersdata[player.id]['rpg']['pName'] = obj.username;
-            alt.emitClient(player, 'CallBack_Login_Account_To_Server', true); //callback to client for hide login webview 
-            playersdata[player.id]['rpg']['gameID'] = playerIdGame.set("rpg", player);
+            await sql(`update Account set pOnline="${1}",pLastLogin="${time}" WHERE pId="${DaTa.pId}"`)
+            alt.emitClient(player, 'CallBack_Login_Account_To_Server', true);
+            playersdata[player.id] = DaTa;
+            playersdata[player.id]['pName'] = obj.username;
+            playersdata[player.id]['gameID'] = await playerIdGame.set(player);
             await player.spawn(-66.84395599365234, -802.20615234375, 44.2255859375);
-            // player.model = 'mp_f_freemode_01';
-            player.dimension = 1;
+            player.dimension = 0;
             player.setSyncedMeta("hasLogin", true);
             //log system
-            await sql('log', `INSERT INTO login_log(rId, loginas, ip, timestamp, hwid, discordid, license) VALUES ("${dataMain.rId}","Server","${(player.ip).substr(7, 24)}","${time}","${player.hwidHash}","${player.getSyncedMeta('Discordid')}","${player.socialID}")`);
-            DiscordHook.newhook.login({ username: obj.username, sqlid: dataMain.rId, hwid: player.hwidHash, discordid: player.getSyncedMeta('Discordid'), ip: (player.ip).substr(7, 24), license: player.socialID });
+            // await sql(`INSERT INTO login_log(rId, loginas, ip, timestamp, hwid, discordid, license) VALUES ("${DaTa.rId}","Server","${(player.ip).substr(7, 24)}","${time}","${player.hwidHash}","${player.getSyncedMeta('Discordid')}","${player.socialID}")`);
+            DiscordHook.newhook.login({ username: obj.username, sqlid: DaTa.pId, hwid: player.hwidHash, discordid: player.getSyncedMeta('Discordid'), ip: (player.ip).substr(7, 24), license: player.socialID });
             return alt.log(`~lc~ Player ${obj.username} With IP ${(player.ip).substr(7, 24)} at ${time} Logined.`);
 
         } catch (error) {
@@ -75,20 +67,12 @@ export class PlayerData {
     };
     /**
      * for get player data
-     * @param {string} from in game ?
      * @param {Object} player altv player object
      * @param {String} DataName data name
      */
-    static async get(from, player, DataName) {
+    static async get(player, DataName) {
         try {
-            switch (from) {
-                case "main":
-                    return playersdata[player.id]['main'][DataName];
-                case "rp":
-                    return playersdata[player.id]['rp'][DataName];
-                case "rpg":
-                    return playersdata[player.id]['rpg'][DataName];
-            }
+            return await playersdata[player.id][DataName]
         } catch (error) {
             await logger.addlog.server({
                 locatin: "Server->System->Account->Class Playerdata->get()",
@@ -104,22 +88,10 @@ export class PlayerData {
      * @param {boolean} sync_sql 
      * @returns data
      */
-    static async set(from, player, DataName, value, sync_sql = false) {
+    static async set(player, DataName, value, sync_sql = false) {
         try {
-            switch (from) {
-                case "main":
-                    playersdata[player.id]['main'][DataName] = value;
-                    if (sync_sql) await sql('main', `UPDATE Account SET ${DataName} = '${value}' WHERE rId = "${await PlayerData.get('main', player, "rId")}"`);
-                    return playersdata[player.id]['main'][DataName];
-                case "rp":
-                    playersdata[player.id]['rp'][DataName] = value;
-                    if (sync_sql) await sql('rp', `UPDATE Account SET ${DataName} = '${value}' WHERE pId = "${await PlayerData.get('rp', player, "pId")}"`);
-                    return playersdata[player.id]['rp'][DataName];
-                case "rpg":
-                    playersdata[player.id]['rpg'][DataName] = value;
-                    if (sync_sql) await sql("rpg", `UPDATE Account SET ${DataName} = '${value}' WHERE pId = "${await PlayerData.get('rpg', player, "pId")}"`);
-                    return playersdata[player.id]['rpg'][DataName];
-            }
+            playersdata[player.id][DataName] = value;
+            if (sync_sql) await sql(`UPDATE Account SET ${DataName} = '${value}' WHERE pId = "${await PlayerData.get(player, "pId")}"`);
         } catch (error) {
             await logger.addlog.server({
                 locatin: "Server->System->Account->Class Playerdata->set()",
@@ -133,7 +105,7 @@ export class PlayerData {
      */
     static async delete(player) {
         try {
-            return delete playersdata[player.id];
+            delete playersdata[player.id]
         } catch (error) {
             await logger.addlog.server({
                 locatin: "Server->System->Account->Class Playerdata->set()",
@@ -153,7 +125,7 @@ export class playerIdGame {
         async idGameFromPlayerObject(player) {
             try {
                 for (let i = 0; i < process.env.Max_PLAYER; i++) {
-                    if (Idx[player.getSyncedMeta('inServer')][i] == player.id) {
+                    if (Idx[i] == player.id) {
                         return i
                     }
                 }
@@ -166,13 +138,12 @@ export class playerIdGame {
         },
         /**
          * for get player object from game id
-         * @param {string} from Enter the server rp || rpg 
          * @param {number} enterdid enter the idgame 
          * @returns altv player object
          */
-        async PlayerObjectFromGameid(from, enterdid) {
+        async PlayerObjectFromGameid(enterdid) {
             try {
-                return alt.players.getByID(Idx[enterdid][from]);
+                return alt.players.getByID(Idx[enterdid]);
             } catch (error) {
                 await logger.addlog.server({
                     locatin: "Server->System->Account->Class playerIdGame->PlayerObjectFromGameid()",
@@ -183,17 +154,14 @@ export class playerIdGame {
     };
     /**
      * set game id for player 
-     * @param {string} from Enter the server rp || rpg 
      * @param {object} player altv player object 
      * @returns New Game Id
      */
-    static async set(from, player) {
+    static async set(player) {
         try {
             for (let i = 1; i < process.env.Max_PLAYER; i++) {
-                if (Idx[from][i] == undefined) {
-                    Idx[from][i] = player.id
-                    player.setSyncedMeta("hasLogin", true)
-                    player.setSyncedMeta("inServer", from)
+                if (Idx[i] == undefined) {
+                    Idx[i] = player.id
                     return i;
                 }
             }
@@ -210,10 +178,9 @@ export class playerIdGame {
      */
     static async delete(player) {
         try {
-            let from = player.getSyncedMeta('inServer');
             for (let i = 0; i < process.env.Max_PLAYER; i++) {
-                if (Idx[from][i] == player.id) {
-                    delete Idx[from][i]
+                if (Idx[i] == player.id) {
+                    delete Idx[i]
                 }
             }
         } catch (error) {
@@ -226,7 +193,7 @@ export class playerIdGame {
 }
 export class FindPlayerAccount {
     static Name(value) {
-        let id = (Object.entries(playersdata['rpg']).filter((v, index, ar) => v[1].pName.toLocaleLowerCase().match(value.toLocaleLowerCase()) != undefined))
+        let id = (Object.entries(playersdata).filter((v, index, ar) => v[1].pName.toLocaleLowerCase().match(value.toLocaleLowerCase()) != undefined))
         if (id.length == undefined) {
             return ["undefined", null]
         } else if (id.length == 1) {
