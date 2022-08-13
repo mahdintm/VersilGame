@@ -22,7 +22,6 @@
         "mysql2": "^2.3.3",
         "node-code-generator": "^1.0.3",
         "nodemailer": "^6.6.3",
-        "redis": "^4.2.0",
         "sjcl": "^1.0.8"
     },
     "devDependencies": {
