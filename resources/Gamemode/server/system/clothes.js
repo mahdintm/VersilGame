@@ -62,6 +62,7 @@ alt.onClient("SERVER:ChangeSex", (player, Sex) => {
 });
 alt.onClient("SERVER:ClothesUiBoxStatus", (player, Status) => {
   if (Status) {
+    // console.log(clothes.GetClothesUtils());
     alt.emitClient(
       player,
       "CLIENT:Clothes",
