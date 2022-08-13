@@ -1,17 +1,17 @@
 import { sql } from "../database/mysql";
-import { redisDB } from "../database/redis";
 
-let datas = sql(`SELECT * FROM ServerSetting`)
+let ServerSettingData = {}
+let datas = await sql(`SELECT * FROM ServerSetting`)
 for (let i = 0; i < datas.length; i++) {
-    await redisDB.set('ServerSettings', datas[i].name, datas[i].value)
+    ServerSettingData[datas[i].name] = datas[i].value
 }
 
 export class ServerSetting {
     static async get(key) {
-        await redisDB.get('ServerSettings', key)
+        return await ServerSettingData[key]
     }
     static async set(key, value) {
-        await redisDB.set('ServerSettings', key, value)
+        ServerSettingData[key] = value
         await sql(`UPDATE ServerSetting SET ${key} = "${value}" WHERE name= "${key}"`)
     }
 }
