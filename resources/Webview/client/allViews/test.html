@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body onload="isWebViewReady(true)">
+    <h1>SALAAAAAAAAAM</h1>
+  </body>
+  <script>
+    function isWebViewReady(Status) {
+      if ("alt" in window && Status) {
+        alt.emit("view:Ready");
+      }
+    }
+  </script>
+</html>

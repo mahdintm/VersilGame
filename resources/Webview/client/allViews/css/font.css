@@ -2,3 +2,38 @@
   font-family: "IRANSans";
   src: url("../../plugins/font/IRANSans.ttf");
 }
+
+@font-face {
+  font-family: "DreamscapeSans";
+  src: url("../../plugins/font/DreamscapeSans.ttf");
+}
+
+@font-face {
+  font-family: "FranklinGothicDemiCondRegular";
+  src: url("../../plugins/font/FranklinGothicBookRegular.ttf");
+}
+
+@font-face {
+  font-family: "FranklinGothicBookRegular";
+  src: url("../../plugins/font/FranklinGothicBookRegular.ttf");
+}
+
+@font-face {
+  font-family: "BKoodakBold";
+  src: url("../../plugins/font/BKoodakBold.ttf");
+}
+
+@font-face {
+  font-family: "IRAN_Sans_Bold";
+  src: url("../../plugins/font/IRAN_Sans_Bold.ttf");
+}
+
+@font-face {
+  font-family: "IRAN_Sans_Regular";
+  src: url("../../plugins/font/IRAN_Sans_Regular.ttf");
+}
+
+@font-face {
+  font-family: "Reyhaneh";
+  src: url("../../plugins/font/Reyhaneh.ttf");
+}
