@@ -21,6 +21,7 @@ var staticcar = [],
     VehicleEngineON = [],
     GameID = {}
 
+export let LoadedVehicels = false
 //GetStaticVehicleList
 vehicleObject.filter(function (v, i) {
     vehicleObject[i]["hash"] = alt.hash(v.name);
@@ -435,6 +436,7 @@ setTimeout(async () => {
             console.log(`${"\x1b[31m"}${platefactionveh.i} ${"\x1b[32m"} Faction vehicle has been Loaded.${"\x1b[37m"}`)
             await VehicleClass.respawn.allserver('static', true, true)
             await VehicleClass.respawn.allserver('faction', true, true)
+            LoadedVehicels = true
         }
     }
 }, 10000);
