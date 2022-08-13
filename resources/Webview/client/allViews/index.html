@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AllViews</title>
+    <title>Versil Game WebViews</title>
     <link rel="stylesheet" href="css/main/main.css" />
     <link rel="stylesheet" href="../plugins/bootstrap/css/bootstrap.min.css" />
     <link rel="stylesheet" href="../plugins/mdb/css/mdb.min.css" />
@@ -14,7 +14,8 @@
     <script src="../plugins/bootstrap/js/bootstrap.min.js"></script>
     <script src="../plugins/fontawesome/js/all.min.js"></script>
   </head>
-  <body>
+  <body onload="isWebViewReady(true)">
+    <div class="LoginBox" id="LoginBox"></div>
     <div id="ChatBox"></div>
     <div class="ClothesBox" id="ClothesBox"></div>
     <div class="InventoryBox" id="InventoryBox"></div>
@@ -28,16 +29,41 @@
           id="eyeTracker_button_close"
           onclick="ButtonCloseEyeTrackerMenuPressed()"
         ></div>
-        <div class="eyeTrackerObjectBox" id="eyeTrackerObjectBox">
-        </div>
+        <div class="eyeTrackerObjectBox" id="eyeTrackerObjectBox"></div>
       </div>
     </div>
 
-    <script src="./js/importHTML.js"></script>
-    <script src="./js/clothes.js"></script>
-    <script src="./js/chat.js"></script>
-    <script src="./js/inventory.js"></script>
-    <script src="./js/vehicleInfo.js"></script>
-    <script src="./js/eyeTracker.js"></script>
+    <!-- HTMLCodes variables imported -->
+    <script src="./js/WebJS/HTMLCodes.js"></script>
+    <!-- importHTML Box -->
+    <script src="./js/WebJS/importHTML.js"></script>
+    <!-- Login Box -->
+    <script src="./js/WebJS/login.js"></script>
+    <script src="./js/lang/lang.js"></script>
+    <script src="./js/events/login.js"></script>
+    <!-- Chat Box -->
+    <script src="./js/events/chat.js"></script>
+    <!-- Clothes Box -->
+    <script src="./js/events/clothes.js"></script>
+    <!-- vehicleInfo Box -->
+    <script src="./js/events/vehicleInfo.js"></script>
+    <!-- eyeTracker Box -->
+    <script src="./js/events/eyeTracker.js"></script>
+    <!-- inventory Box -->
+    <script src="./js/WebJS/inventory.js"></script>
+
+    <script>
+      function isWebViewReady(Status) {
+        if ("alt" in window && Status) {
+          console.log("load shode va rafte tu 5 saniye");
+          setTimeout(() => {
+            alt.emit("view:Ready");
+          }, 5000);
+          setTimeout(() => {
+            alt.emit("TestListenerInVGView", "Inja Index.html has");
+          }, 15000);
+        }
+      }
+    </script>
   </body>
 </html>
