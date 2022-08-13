@@ -3,6 +3,8 @@
 import * as alt from "alt-client";
 import * as native from "natives";
 import { eyeTrackerObjects } from "../utils/eyeTrackerObjects";
+
+
 function SelectActionObject(actionName) {
   switch (actionName) {
     case "OpenClothesUiBox":

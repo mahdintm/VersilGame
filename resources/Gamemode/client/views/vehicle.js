@@ -4,47 +4,82 @@ import * as alt from "alt-client";
 import * as native from "natives";
 import { view, PlayerController, View } from "./viewCreator";
 import { ChangeValueFromVariable } from "../system/everyTick";
-alt.on("enteredVehicle", () => {
+import { VGView } from "./webViewController";
+import { WebViewStatus } from "../utils/WebViewStatus";
+import { EventNames } from "../utils/eventNames";
+
+alt.on("enteredVehicle", async () => {
   let playerVehicle = alt.Player.local.vehicle;
   SpeedOmeter(native.getIsVehicleEngineRunning(playerVehicle));
-  view.emit("ClientWEB:Vehicle:Information", true);
+  VGView.load(WebViewStatus.speedOmeter.name);
+  await VGView.emit(
+    WebViewStatus.speedOmeter.name,
+    "ClientWEB:Vehicle:Information",
+    {
+      Status: true,
+      RPM: CalcVehicleRPM(0),
+      Speed: 0,
+      Fuel: 0,
+      Engine: false,
+      TransitionStatus: true,
+    }
+  );
 });
-alt.on("leftVehicle", () => {
+alt.on("leftVehicle", async () => {
   SpeedOmeter(false);
-  view.emit("ClientWEB:Vehicle:Information", false);
+  await VGView.emit(
+    WebViewStatus.speedOmeter.name,
+    "ClientWEB:Vehicle:Information",
+    {
+      Status: false,
+      RPM: CalcVehicleRPM(0),
+      Speed: 0,
+      Fuel: 0,
+      Engine: false,
+      TransitionStatus: true,
+    }
+  );
+  VGView.unload(WebViewStatus.speedOmeter.name);
 });
 alt.on("Local:Vehicle:EngineStatus", (Status) => {
   SpeedOmeter(Status);
 });
-function SpeedOmeter(Status) {
+async function SpeedOmeter(Status) {
   if (!Status) {
-    view.emit(
+    await VGView.emit(
+      WebViewStatus.speedOmeter.name,
       "ClientWEB:Vehicle:Information",
-      true,
-      CalcVehicleRPM(0),
-      0,
-      GetVehicleFuel(),
-      false, // Engine
-      false // Transition 1s for Engine off
+      {
+        Status: true,
+        RPM: CalcVehicleRPM(0),
+        Speed: 0,
+        Fuel: GetVehicleFuel(),
+        Engine: false,
+        TransitionStatus: false,
+      }
     );
     ChangeValueFromVariable("VehicleSpeedOmeterInterval", false);
     return;
   }
   ChangeValueFromVariable("VehicleSpeedOmeterInterval", true);
 }
-export function VehicleSpeedOmeter() {
+export async function VehicleSpeedOmeter() {
   let playerVehicle = alt.Player.local.vehicle;
   if (playerVehicle == null) {
     ChangeValueFromVariable("VehicleSpeedOmeterInterval", false);
   }
   if (native.getIsVehicleEngineRunning(playerVehicle)) {
-    view.emit(
+    await VGView.emit(
+      WebViewStatus.speedOmeter.name,
       "ClientWEB:Vehicle:Information",
-      true,
-      CalcVehicleRPM(playerVehicle.rpm),
-      Math.floor(playerVehicle.speed * 3.6),
-      GetVehicleFuel(),
-      true
+      {
+        Status: true,
+        RPM: CalcVehicleRPM(playerVehicle.rpm),
+        Speed: Math.floor(playerVehicle.speed * 3.6),
+        Fuel: GetVehicleFuel(),
+        Engine: true,
+        TransitionStatus: true,
+      }
     );
   }
 }
@@ -66,11 +101,11 @@ function CalcVehicleRPM(rpm) {
       rpm = 280;
     }
   }
-  if (rpm < 13) rpm = 13;
+  if (rpm < 10) rpm = 10;
   if (rpm > 280) rpm = 280;
   LastRPM = rpm;
   return rpm;
-  //  0 -> 13
+  //  0 -> 10
   //  1 -> 38
   //  2 -> 64
   //  3 -> 90

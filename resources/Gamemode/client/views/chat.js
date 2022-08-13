@@ -1,39 +1,97 @@
 /// <reference types="@altv/types-client" />
 /// <reference types="@altv/types-natives" />
 import * as alt from "alt-client";
-import { view, PlayerController, View } from "./viewCreator";
-import { LocalStorage } from "../system/LocalStorage";
 
-alt.on("loadWebviews", async () => {
-  view.emit("ShowTimeStampCHAT", await LocalStorage.get("Chat_TimeStamp"));
-  alt.emitServer("Chat:Loaded");
+import { VGView } from "./webViewController";
+import { LocalStorage } from "../system/LocalStorage";
+import { EventNames } from "../utils/eventNames";
+import { WebViewStatus } from "../utils/WebViewStatus";
+
+alt.on(EventNames.allVue.localClient.loadWebviews, async () => {
+  VGView.load(WebViewStatus.chat.name);
+  await VGView.emit(
+    WebViewStatus.chat.name,
+    EventNames.chat.clientWEB.TimeStamp,
+    await LocalStorage.get("Chat_TimeStamp")
+  );
+  alt.emitServer(EventNames.chat.client.Loaded);
   async function closechat() {
-    View.Remove("Chat");
-    PlayerController(false);
+    VGView.close(WebViewStatus.chat.name);
   }
 
-  function addMessage(TimeStamp, name, text) {
+  async function addMessage(TimeStamp, name, text) {
     if (name) {
-      view.emit("CLIENT:AddMessage", TimeStamp, `${name}: ${text}`);
+      await VGView.emit(
+        WebViewStatus.chat.name,
+        EventNames.chat.clientWEB.AddMessage,
+        TimeStamp,
+        `${name}: ${text}`
+      );
     } else {
-      view.emit("CLIENT:AddMessage", TimeStamp, text);
+      await VGView.emit(
+        WebViewStatus.chat.name,
+        EventNames.chat.clientWEB.AddMessage,
+        TimeStamp,
+        text
+      );
     }
   }
 
-  view.on("CLIENT:CloseChat", closechat);
-  view.on("WEB:AddMessage", (text) => {
-    alt.emitServer("chat:message", text);
+  VGView.on(EventNames.chat.WEBclient.CloseChat, closechat);
+  VGView.on(EventNames.chat.WEBclient.AddMessage, (text) => {
+    alt.emitServer(EventNames.chat.client.Message, text);
     closechat();
   });
-  alt.onServer("ShowTimeStampCHAT", async () => {
+  alt.onServer(EventNames.chat.server.TimeStamp, async () => {
     let data = await LocalStorage.get("Chat_TimeStamp");
     if (data) {
-      view.emit("ShowTimeStampCHAT", false);
+      await VGView.emit(
+        WebViewStatus.chat.name,
+        EventNames.chat.clientWEB.TimeStamp,
+        false
+      );
       LocalStorage.set("Chat_TimeStamp", false);
     } else {
-      view.emit("ShowTimeStampCHAT", true);
+      await VGView.emit(EventNames.chat.clientWEB.TimeStamp, true);
       LocalStorage.set("Chat_TimeStamp", true);
     }
   });
-  alt.onServer("chat:message", addMessage);
+
+  alt.onServer(EventNames.chat.server.Message, addMessage);
+
+  alt.on(EventNames.chat.localClient.KeySlashPressed, async () => {
+    await VGView.open(WebViewStatus.chat.name, { isUseSlash: true });
+    await VGView.open(WebViewStatus.chat.name);
+  });
+  alt.on(EventNames.chat.localClient.KeyTPressed, async () => {
+    await VGView.open(WebViewStatus.chat.name);
+  });
+  alt.on(EventNames.chat.localClient.KeyPageUpPressed, async () => {
+    await VGView.emit(
+      WebViewStatus.chat.name,
+      EventNames.chat.clientWEB.Scroll,
+      true
+    );
+  });
+  alt.on(EventNames.chat.localClient.KeyPageDownPressed, async () => {
+    await VGView.emit(
+      WebViewStatus.chat.name,
+      EventNames.chat.clientWEB.Scroll,
+      false
+    );
+  });
+  alt.on(EventNames.chat.localClient.KeyRowUpPressed, async () => {
+    await VGView.isOpenEmit(
+      WebViewStatus.chat.name,
+      EventNames.chat.clientWEB.KeyRowPressed,
+      true
+    );
+  });
+  alt.on(EventNames.chat.localClient.KeyRowDownPressed, async () => {
+    await VGView.isOpenEmit(
+      WebViewStatus.chat.name,
+      EventNames.chat.clientWEB.KeyRowPressed,
+      false
+    );
+  });
 });
