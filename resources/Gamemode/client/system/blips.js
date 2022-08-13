@@ -1,15 +1,10 @@
 import * as alt from "alt";
 
 import * as native from "natives";
+
 let UnicBlipArr = [],
   StaticBlipArr = [];
 export class VGBlips {
-  /**
-   * Creates a new global blip
-   *
-   * @param {{pos: alt.Vector3, sprite: number, color: number, scale: number, shortRange: boolean, name: string}} blip
-   * @param {UnicBlip: boolean} UnicBlip
-   */
   static #CreateBlip(blip, UnicBlip = false) {
     const blipHandler = new alt.PointBlip(blip.pos.x, blip.pos.y, blip.pos.z);
 

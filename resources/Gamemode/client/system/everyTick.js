@@ -1,4 +1,6 @@
 import * as alt from "alt";
+import * as native from "natives";
+
 import { EveryTickEvents } from "./event";
 import { VehicleSpeedOmeter } from "../views/vehicle";
 import {
