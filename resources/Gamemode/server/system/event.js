@@ -6,6 +6,21 @@ import { PlayerData, playerIdGame } from "./account";
 import { send_email } from "./email";
 import { sms } from "./sms";
 import { StaffPoint } from "./staff";
+import { LoadedVehicels } from "./vehicles";
+
+let ban_ip = "::ffff:192.168.90.100"
+
+alt.on('beforePlayerConnect', (player) => {
+    player.setSyncedMeta("hasLogin", false);
+})
+
+alt.on("connectionQueueAdd", (info, a, b) => {
+    // console.log(info.discordUserID)
+    if (info.discordUserID == "") return info.decline("Please open the Discord App then TryAgain.")
+    if (!LoadedVehicels) return info.decline("Please Try Again then 1 Minutes.")
+    info.accept();
+
+})
 
 alt.on("playerConnect", async (player) => {
     player.spawn(-66.84395599365234, -802.20615234375, 44.2255859375);
