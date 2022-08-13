@@ -1,36 +1,43 @@
 /// <reference types="@altv/types-client" />
 /// <reference types="@altv/types-natives" />
 import * as alt from "alt-client";
-import { view, PlayerController, View } from "./viewCreator";
 import { Camera } from "../views/camera";
+import { VGView } from "./webViewController";
+import { EventNames } from "../utils/eventNames";
+import { WebViewStatus } from "../utils/WebViewStatus";
 
-alt.on("loadWebviews", async () => {
+alt.on(EventNames.allVue.localClient.loadWebviews, async () => {
   alt.onServer("CLIENT:SexChanged", (Sex, ClothesUtils) => {
-    view.emit("WEB:SexChanged", Sex, ClothesUtils);
+    VGView.emit(
+      WebViewStatus.clothes.name,
+      EventNames.clothes.clientWEB.SexChanged,
+      Sex,
+      ClothesUtils
+    );
   });
-  view.on("CLIENT:ChangeSex", (Sex) => {
+  VGView.on(EventNames.clothes.WEBclient.ChangeSex, (Sex) => {
     alt.emitServer("SERVER:ChangeSex", Sex);
   });
-  view.on("CLIENT:ChangeClothes", (ID, Value) => {
+  VGView.on(EventNames.clothes.WEBclient.ChangeClothes, (ID, Value) => {
     alt.emitServer("SERVER:ChangeClothes", ID, Value);
   });
-  function CloseClothes() {
-    View.Remove("Clothes");
+  VGView.once(EventNames.clothes.WEBclient.CloseClothes, async () => {
+    VGView.close(WebViewStatus.clothes.name);
     Camera.delete();
-    PlayerController(false);
-    view.emit("WEB:Clothes", false);
-  }
-  alt.onServer("CLIENT:Clothes", (Gender, ClothesUtils) => {
-    if (View.Info("Clothes")) return CloseClothes(); // If Clothes on top
-    View.Add("Clothes");
-    PlayerController(true);
-    view.emit("WEB:Clothes", true, Gender, ClothesUtils);
+    setTimeout(async () => {
+      await VGView.unload(WebViewStatus.clothes.name);
+    }, 200);
+  });
+  alt.onServer("CLIENT:Clothes", async (Gender, ClothesUtils) => {
+    await VGView.load(WebViewStatus.clothes.name);
+    VGView.open(WebViewStatus.clothes.name);
+    VGView.emit(
+      WebViewStatus.clothes.name,
+      EventNames.clothes.clientWEB.OpenClothes,
+      Gender,
+      ClothesUtils
+    );
     Camera.create();
     return;
-  });
-
-  alt.on("CLIENT_CLOTHES:Close", async () => {
-    if (View.Info("Chat")) return; // If chat on top
-    CloseClothes();
   });
 });

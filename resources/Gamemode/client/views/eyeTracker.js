@@ -6,11 +6,15 @@ import { view, PlayerController, View } from "./viewCreator";
 import { eyeTrackerObjects } from "../utils/eyeTrackerObjects";
 import { ChangeValueFromVariable } from "../system/everyTick";
 import { SendObjectTitlesToManageEyeTracker } from "../system/manageEyeTrackerFounded";
+import { VGView } from "./webViewController";
+import { WebViewStatus } from "../utils/WebViewStatus";
+import { EventNames } from "../utils/eventNames";
 
 let eyeTrackerFindStatus = false,
   eyeTrackerStatus = false,
   eyeTrackerMenuStatus = false,
-  ObjectFoundedDetails = { name: null, titles: null };
+  ObjectFoundedDetails = { name: null, titles: null },
+  isClosedEyeTracker = false;
 
 export function distance2d(vector1, vector2, distance) {
   let dist = Math.sqrt(
@@ -29,12 +33,21 @@ function SendStatuseyeTrackerToWebView(
 ) {
   if (Status) {
     if (!eyeTrackerFindStatus) {
-      view.emit("ClientWEB:eyeTracker:Status", true, "#00ff00");
+      VGView.emit(
+        WebViewStatus.eyeTracker.name,
+        EventNames.eyeTracker.clientWEB.Status,
+        true,
+        "#00ff00"
+      );
       eyeTrackerFindStatus = true;
     }
   } else {
     if (eyeTrackerFindStatus) {
-      view.emit("ClientWEB:eyeTracker:Status", true);
+      VGView.emit(
+        WebViewStatus.eyeTracker.name,
+        EventNames.eyeTracker.clientWEB.Status,
+        true
+      );
       eyeTrackerFindStatus = false;
     }
   }
@@ -118,9 +131,9 @@ function getRaycast() {
   let rot = native.getFinalRenderedCamRot(2);
   let fvector = GetDirectionFromRotation(rot);
   let frontOf = new alt.Vector3(
-    start.x + fvector.x * 2000,
-    start.y + fvector.y * 2000,
-    start.z + fvector.z * 2000
+    start.x + fvector.x * 10,
+    start.y + fvector.y * 10,
+    start.z + fvector.z * 10
   );
   let raycast = native.startExpensiveSynchronousShapeTestLosProbe(
     start.x,
@@ -147,20 +160,29 @@ function GetDirectionFromRotation(rotation) {
 
 export function DisableLeftClickControlAction() {
   native.disableControlAction(0, 24, true); // For Disable Left Click Mouse
+  if (native.getPedStealthMovement(alt.Player.local)) {
+    // if player is Ducking
+    // For Disable Left Ctrl
+    native.setPedStealthMovement(alt.Player.local, 0, "DEFAULT_ACTION");
+  }
 }
 function RunActionEyeTargetObject(ObjectTitles) {
   LeftClickMousePressed(false, true);
   SendObjectTitlesToManageEyeTracker(ObjectTitles);
 }
-function LeftClickMousePressed(Status, isForceClosed = false) {
+async function LeftClickMousePressed(Status, isForceClosed = false) {
   if (Status) {
     if (eyeTrackerMenuStatus) return;
     if (!eyeTrackerStatus) return;
     if (!eyeTrackerFindStatus) return;
 
     if (Object.values(ObjectFoundedDetails.titles).length > 1) {
-      PlayerController(true);
-      view.emit("ClientWEB:eyeTracker:MenuStatus", true, ObjectFoundedDetails);
+      // PlayerController(true);
+      await VGView.open(WebViewStatus.eyeTracker.name, {
+        Status: true,
+        ObjectFoundedDetails: ObjectFoundedDetails,
+      });
+
       eyeTrackerMenuStatus = true;
     } else {
       RunActionEyeTargetObject(ObjectFoundedDetails.titles[0]);
@@ -168,38 +190,54 @@ function LeftClickMousePressed(Status, isForceClosed = false) {
   } else {
     if (!eyeTrackerMenuStatus && !isForceClosed) return;
 
-    PlayerController(false);
+    // PlayerController(false);
     eyeTrackerMenuStatus = false;
     if (!eyeTrackerStatus || isForceClosed) eyeTrackerManager(false);
-    view.emit("ClientWEB:eyeTracker:MenuStatus", false);
+    await VGView.close(WebViewStatus.eyeTracker.name);
   }
 }
 alt.on("Local:eyeTracker:LeftClickMousePressed", () => {
   LeftClickMousePressed(true);
 });
-view.on("CLIENT:eyeTracker:ButtonCloseMenuPressed", () => {
+VGView.on(EventNames.eyeTracker.WEBclient.ButtonCloseMenuPressed, () => {
   LeftClickMousePressed(false);
 });
-view.on("CLIENT:eyeTracker:ObjectSelectedFromPlayer", (ObjectTitle) => {
-  RunActionEyeTargetObject(ObjectTitle);
-});
+VGView.on(
+  EventNames.eyeTracker.WEBclient.ObjectSelectedFromPlayer,
+  (ObjectTitle) => {
+    RunActionEyeTargetObject(ObjectTitle);
+  }
+);
 
-function eyeTrackerManager(Status) {
+async function eyeTrackerManager(Status) {
   if (Status) {
-    view.emit("ClientWEB:eyeTracker:Status", true);
+    VGView.load(WebViewStatus.eyeTracker.name);
+    await VGView.emit(
+      WebViewStatus.eyeTracker.name,
+      EventNames.eyeTracker.clientWEB.Status,
+      true
+    );
     ChangeValueFromVariable("eyeTragerInterval", true);
     ChangeValueFromVariable("disableLeftClickControlAction", true);
     eyeTrackerStatus = true;
-  } else {
-    if (!eyeTrackerMenuStatus) {
-      view.emit("ClientWEB:eyeTracker:Status", false);
-      LeftClickMousePressed(false);
-    }
+    isClosedEyeTracker = false;
+  } else if (!isClosedEyeTracker) {
     ChangeValueFromVariable("disableLeftClickControlAction", false);
     ChangeValueFromVariable("eyeTragerInterval", false);
     ChangeValueFromVariable("eyeTragerInternalInterval", undefined);
     eyeTrackerFindStatus = false;
     eyeTrackerStatus = false;
+    if (!eyeTrackerMenuStatus && !eyeTrackerStatus) {
+      await VGView.emit(
+        WebViewStatus.eyeTracker.name,
+        EventNames.eyeTracker.clientWEB.Status,
+        false
+      );
+      VGView.close(WebViewStatus.eyeTracker.name);
+      await VGView.unload(WebViewStatus.eyeTracker.name);
+      LeftClickMousePressed(false);
+      isClosedEyeTracker = true;
+    }
   }
 }
 
