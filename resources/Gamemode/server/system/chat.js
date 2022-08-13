@@ -1,6 +1,7 @@
 /// <reference types="@altv/types-server" />
 import * as alt from "alt-server";
 import { findbadword } from "../utils/badword_detect";
+import { EventNames } from "../utils/eventNames";
 import { PlayerData } from "./account";
 // import { findbadword } from "../utility/badword_detect";
 let cmdHandlers = {};
@@ -25,7 +26,7 @@ let cmdHandlers = {};
  *
  */
 export function sendchat(player, msg) {
-  alt.emitClient(player, "chat:message", Date.now(), null, msg);
+  alt.emitClient(player, EventNames.chat.server.Message, Date.now(), null, msg);
 }
 
 /**
@@ -52,16 +53,16 @@ function invokeCmd(player, cmd, args) {
     sendchat(player, `{FF0000} Unknown command /${cmd}`);
   }
 }
-alt.onClient("Chat:Loaded", (player) => {
+alt.onClient(EventNames.chat.client.Loaded, (player) => {
   alt.emitClient(
     player,
-    "chat:message",
+    EventNames.chat.server.Message,
     Date.now(),
     null,
     "Connected To Server!"
   );
 });
-alt.onClient("chat:message", async (player, msg) => {
+alt.onClient(EventNames.chat.client.Message, async (player, msg) => {
   if (msg[0] === "/") {
     msg = msg.trim().slice(1);
     if (msg.length > 0) {
@@ -86,11 +87,17 @@ alt.onClient("chat:message", async (player, msg) => {
         player == p
       )
         continue;
-      alt.emitClient(p, "chat:message", Date.now(), PlayerName, msgfilltered);
+      alt.emitClient(
+        p,
+        EventNames.chat.server.Message,
+        Date.now(),
+        PlayerName,
+        msgfilltered
+      );
     }
     alt.emitClient(
       player,
-      "chat:message",
+      EventNames.chat.server.Message,
       Date.now(),
       PlayerName,
       msgfilltered
