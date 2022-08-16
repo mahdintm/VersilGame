@@ -56,7 +56,7 @@ alt.on("keydown", (key) => {
       if (alt.isConsoleOpen()) return;
       if (native.isPauseMenuActive()) return;
 
-      alt.emit("Local:eyeTracker", true);
+      alt.emit(EventNames.eyeTracker.localClient.Manager, true);
       break;
   }
 });

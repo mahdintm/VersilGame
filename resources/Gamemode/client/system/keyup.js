@@ -18,7 +18,7 @@ alt.on("keyup", (key) => {
       if (alt.isConsoleOpen()) return;
       if (native.isPauseMenuActive()) return;
 
-      alt.emit("Local:eyeTracker:LeftClickMousePressed");
+      alt.emit(EventNames.eyeTracker.localClient.LeftClickMousePressed);
       break;
     case 0x1b:
       // ESC key pressed
@@ -32,7 +32,7 @@ alt.on("keyup", (key) => {
       if (alt.isConsoleOpen()) return;
       if (native.isPauseMenuActive()) return;
 
-      alt.emit("Local:eyeTracker", false);
+      alt.emit(EventNames.eyeTracker.localClient.Manager, false);
       break;
   }
 });

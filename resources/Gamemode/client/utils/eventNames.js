@@ -93,7 +93,10 @@ export const EventNames = {
     },
   },
   eyeTracker: {
-    localClient: {},
+    localClient: {
+      LeftClickMousePressed: "Local:eyeTracker:LeftClickMousePressed",
+      Manager: "Local:eyeTracker:Manager",
+    },
     localServer: {},
     server: {},
     client: {},

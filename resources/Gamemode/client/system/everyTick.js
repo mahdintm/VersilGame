@@ -3,12 +3,7 @@ import * as native from "natives";
 
 import { EveryTickEvents } from "./event";
 import { VehicleSpeedOmeter } from "../views/vehicle";
-import {
-  eyeTracker,
-  GetObject,
-  InternalEyeTrackerChecker,
-  DisableLeftClickControlAction,
-} from "../views/eyeTracker";
+import { VGEyeTracker } from "../views/eyeTracker";
 
 let eyeTragerInterval = false,
   VehicleSpeedOmeterInterval = false,
@@ -35,14 +30,14 @@ export function ChangeValueFromVariable(Variable, Value) {
 
 alt.everyTick(() => {
   EveryTickEvents();
-  //   GetObject();
+  // VGEyeTracker.GetObject();
   if (VehicleSpeedOmeterInterval) VehicleSpeedOmeter();
-  if (eyeTragerInterval) eyeTracker();
+  if (eyeTragerInterval) VGEyeTracker.eyeTracker();
 
   if (eyeTragerInternalInterval != undefined)
-    InternalEyeTrackerChecker(eyeTragerInternalInterval);
+    VGEyeTracker.InternalEyeTrackerChecker(eyeTragerInternalInterval);
 
   if (disableLeftClickControlAction) {
-    DisableLeftClickControlAction();
+    VGEyeTracker.DisableLeftClickControlAction();
   }
 });
