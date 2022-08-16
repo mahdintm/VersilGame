@@ -57,7 +57,7 @@ export class VGEyeTracker {
   static #CheckObjectWithHashID(eyeTrackerObjectHashID) {
     const [_, _hit, _endCoords, _surfaceNormal, _materialHash, _entityHit] =
       VGEyeTracker.#getRaycast();
-    if (!distance2d(alt.Player.local.pos, _endCoords, 3)) return false;
+    if (!VGEyeTracker.#distance2d(alt.Player.local.pos, _endCoords, 3)) return false;
 
     if (native.doesEntityHaveDrawable(_entityHit)) {
       if (native.getEntityModel(_entityHit) == eyeTrackerObjectHashID) {
@@ -137,7 +137,7 @@ export class VGEyeTracker {
     } else {
       if (!eyeTrackerMenuStatus && !isForceClosed) return;
       eyeTrackerMenuStatus = false;
-      if (!eyeTrackerStatus || isForceClosed) eyeTrackerManager(false);
+      if (!eyeTrackerStatus || isForceClosed) VGEyeTracker.eyeTrackerManager(false);
       await VGView.close(WebViewStatus.eyeTracker.name);
     }
   }

@@ -47,4 +47,6 @@ alt.on("disconnect", () => {
   peds.forEach((ped) => {
     native.deletePed(ped);
   });
+  native.stopAudioScenes();
+  native.freezeEntityPosition(alt.Player.local.scriptID, false);
 });
