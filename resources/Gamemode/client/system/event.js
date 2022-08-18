@@ -34,6 +34,7 @@ async function ConnectionComplet(player) {
   // alt.beginScaleformMovieMethodMinimap("SETUP_HEALTH_ARMOUR"); // hiding health and armour bars without abusing everyTick
   // native.scaleformMovieMethodAddParamInt(3); // hiding health and armour bars without abusing everyTick
   // native.endScaleformMovieMethod(); // hiding health and armour bars without abusing everyTick
+  alt.setConfigFlag("DISABLE_IDLE_CAMERA", true); // For disable IDLE camera
   native.destroyAllCams(true);
   native.renderScriptCams(false, false, 0, false, false, 0);
   native.doScreenFadeIn(0);
