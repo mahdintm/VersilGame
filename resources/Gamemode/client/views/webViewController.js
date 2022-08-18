@@ -4,20 +4,27 @@ import { EventNames } from "../utils/eventNames";
 import { WebViewStatus } from "../utils/WebViewStatus";
 
 // let _defaultURL = `http://192.168.1.50:8080`, // For Debug mode if you run Vue.js you can import IP in this Variable
-  let _defaultURL = `http://assets/Webview/client/allVue/index.html`,
+let _defaultURL = `http://assets/Webview/client/allVue/index.html`,
   _loadingPageURL = `http://assets/Webview/client/loadingPageVue/index.html`,
   _PhoneURL = `http://assets/Webview/client/phoneVue/index.html`,
+  _MusicURL = `http://assets/Webview/client/musicVue/index.html`,
   _isReadyLoading = false,
   _isReadyPhone = false,
+  _isReadyMusic = false,
   _isReady = false,
   _Loadingwebview,
   _Phonewebview,
+  _Musicwebview,
   _webview,
   isGameControlsStatus = false,
   isFirstTimeUseStartWebView = true,
   isLoadAllWebViewDoned = false,
-  _currentEvents = [];
+  _currentEvents = [],
+  PlayerDetails;
 
+alt.onServer(EventNames.player.server.PlayerDetails, (playerDetails) => {
+  PlayerDetails = playerDetails;
+});
 export class VGView {
   static async #createWebView(url) {
     return new alt.WebView(url, false);
@@ -103,8 +110,57 @@ export class VGView {
       }, 100);
     });
   }
+  static async #music(isRestart = false) {
+    if (isRestart && _Musicwebview) {
+      await _Musicwebview.destroy();
+      _Musicwebview = undefined;
+      _isReadyMusic = false;
+    }
+
+    if (!_Musicwebview) {
+      _Musicwebview = await VGView.#createWebView(_MusicURL);
+      _Musicwebview.on(`${WebViewStatus.musicVue.EventNames.ready}`, () => {
+        isRestart
+          ? console.log("MusicVue has been reseted, mounted & Ready to use!")
+          : console.log("MusicVue has been mounted & Ready to use!");
+
+        _isReadyMusic = true;
+        return true;
+      });
+    }
+  }
+  static async #resetMusic() {
+    VGView.#music(true);
+  }
+  static async #getMusic() {
+    return new Promise((resolve) => {
+      let attempts = 0;
+      let isNotFirstTime = true;
+      const interval = alt.setInterval(() => {
+        if (attempts >= 10 && isNotFirstTime) {
+          isNotFirstTime = false;
+          VGView.#resetMusic();
+          attempts = 0;
+          return;
+        } else if (attempts >= 50) {
+          VGView.#resetMusic();
+          attempts = 0;
+          return;
+        }
+        if (!_Musicwebview) {
+          attempts += 1;
+          return;
+        }
+        if (!_isReadyMusic) {
+          attempts += 1;
+          return;
+        }
+        alt.clearInterval(interval);
+        return resolve(_Musicwebview);
+      }, 100);
+    });
+  }
   static async #phone(isRestart = false) {
-    const isLoadingPageViewLoaded = await VGView.#getLoading();
     if (isRestart && _Phonewebview) {
       await _Phonewebview.destroy();
       _Phonewebview = undefined;
@@ -197,6 +253,27 @@ export class VGView {
       }, 100);
     });
   }
+  static async #isAllComponentsLoaded() {
+    await _Loadingwebview.emit(
+      WebViewStatus.loadingPage.EventNames.ProcessText,
+      "Loading Game"
+    );
+    return new Promise((resolve) => {
+      native.newLoadSceneStartSphere(
+        PlayerDetails.SpawnPos.x,
+        PlayerDetails.SpawnPos.y,
+        PlayerDetails.SpawnPos.z,
+        50.0,
+        0
+      );
+      const interval = alt.setInterval(() => {
+        if (native.isNewLoadSceneLoaded()) {
+          alt.clearInterval(interval);
+          return resolve(true);
+        }
+      }, 100);
+    });
+  }
   static async #GameControls(isGameControls) {
     if (_webview) {
       if (isGameControls && !isGameControlsStatus) {
@@ -254,6 +331,8 @@ export class VGView {
       await view.emit(WebViewStatus[ViewName].EventNames.unLoad);
       WebViewStatus[ViewName].isActive = false;
       await VGView.#GameControls(false);
+      if (ViewName == "login")
+        _Musicwebview.emit(WebViewStatus.IntroVue.EventNames.unLoad);
       return true;
     } catch (error) {
       return false;
@@ -367,12 +446,14 @@ export class VGView {
   static async startWebView() {
     if (!isFirstTimeUseStartWebView) return;
     isFirstTimeUseStartWebView = false;
+    await VGView.#music();
+    await VGView.#getMusic();
     await VGView.#loadingPage(true);
     await VGView.#phone();
     await VGView.#create();
-    if (await VGView.#get()) {
-      await VGView.#loadingPage(false);
-    }
+    if (await VGView.#get())
+      if (await VGView.#isAllComponentsLoaded())
+        await VGView.#loadingPage(false);
   }
   /**
    * It is used to take control from player & give this to WebView.
@@ -391,6 +472,14 @@ export class VGView {
     if (await VGView.#isFirstTimeCompeleteLoaded()) {
       await VGView.#loadingPage(Status);
     }
+  }
+  /**
+   * Manage loading page.
+   * @param {string} AudioName
+   * @memberof VGView
+   */
+  static async AudioRequest(AudioName) {
+    console.log(AudioName, "This is not worked");
   }
   /**
    * This feature has not been created yet.
@@ -574,22 +663,107 @@ export class VGView {
       try {
         if (WebViewStatus[viewName].isOpen) {
           await VGView.#setEmit(eventName, ...args);
-        } else {
-          if (await VGView.#isWebViewRequestEmitActive(viewName)) {
-            await VGView.#setEmit(eventName, ...args);
-          }
         }
       } catch (error) {}
     } else if (await VGView.#isFirstTimeCompeleteLoaded()) {
       try {
         if (WebViewStatus[viewName].isOpen) {
           await VGView.#setEmit(eventName, ...args);
-        } else {
-          if (await VGView.#isWebViewRequestEmitActive(viewName)) {
-            await VGView.#setEmit(eventName, ...args);
-          }
         }
       } catch (error) {}
+    }
+  }
+  /**
+   * is Open emit an send keyLeft to the WebView.
+   * @static
+   * @param {boolean} StatusLeft
+   * @memberof VGView
+   */
+  static async isOpenKeyLeftEmit(StatusLeft) {
+    if (isLoadAllWebViewDoned) {
+      if (native.isPauseMenuActive()) return;
+      let TopViewName = await VGView.#checkPriorityForisOpenItems();
+      if (TopViewName != null) {
+        try {
+          await VGView.emit(
+            WebViewStatus[TopViewName].name,
+            EventNames[TopViewName].clientWEB.KeyRowLeftPressed,
+            StatusLeft
+          );
+        } catch (error) {}
+      }
+    } else if (await VGView.#isFirstTimeCompeleteLoaded()) {
+      if (native.isPauseMenuActive()) return;
+      let TopViewName = await VGView.#checkPriorityForisOpenItems();
+      if (TopViewName != null) {
+        try {
+          await VGView.emit(
+            WebViewStatus[TopViewName].name,
+            EventNames[TopViewName].clientWEB.KeyRowLeftPressed,
+            StatusLeft
+          );
+        } catch (error) {}
+      }
+    }
+  }
+  /**
+   * is Opened WebView.
+   * @static
+   * @param {string} viewName
+   * @returns {boolean}
+   * @memberof VGView
+   */
+  static async isOpen(viewName) {
+    if (isLoadAllWebViewDoned) {
+      try {
+        return WebViewStatus[viewName].isOpen;
+      } catch (error) {}
+    } else if (await VGView.#isFirstTimeCompeleteLoaded()) {
+      try {
+        return WebViewStatus[viewName].isOpen;
+      } catch (error) {}
+    }
+  }
+  /**
+   * return top WebView.
+   * @static
+   * @returns {string}
+   * @memberof VGView
+   */
+  static async getTopView() {
+    return await VGView.#checkPriorityForisOpenItems();
+  }
+  /**
+   * is Open emit an send keyUP to the WebView.
+   * @static
+   * @param {boolean} StatusUP
+   * @memberof VGView
+   */
+  static async isOpenKeyUPEmit(StatusUP) {
+    if (isLoadAllWebViewDoned) {
+      if (native.isPauseMenuActive()) return;
+      let TopViewName = await VGView.#checkPriorityForisOpenItems();
+      if (TopViewName != null) {
+        try {
+          await VGView.emit(
+            WebViewStatus[TopViewName].name,
+            EventNames[TopViewName].clientWEB.KeyRowUpPressed,
+            StatusUP
+          );
+        } catch (error) {}
+      }
+    } else if (await VGView.#isFirstTimeCompeleteLoaded()) {
+      if (native.isPauseMenuActive()) return;
+      let TopViewName = await VGView.#checkPriorityForisOpenItems();
+      if (TopViewName != null) {
+        try {
+          await VGView.emit(
+            WebViewStatus[TopViewName].name,
+            EventNames[TopViewName].clientWEB.KeyRowUpPressed,
+            StatusUP
+          );
+        } catch (error) {}
+      }
     }
   }
   /**

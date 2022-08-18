@@ -1,4 +1,15 @@
 export let WebViewStatus = {
+  musicVue: {
+    name: "musicVue",
+    priority: 110,
+    isActive: false,
+    isOpen: false,
+    isMultiView: true,
+    isNeedGameControl: false,
+    EventNames: {
+      ready: "WEBclient:MusicVue:mountedAndReady",
+    },
+  },
   loadingPage: {
     name: "loadingPage",
     priority: 100,
@@ -9,6 +20,7 @@ export let WebViewStatus = {
     EventNames: {
       ready: "ClientWEB:LoadingPageWebView:Ready",
       fullLoad: "ClientWEB:LoadingPageWebView:FullLoaded",
+      ProcessText: "ClientWEB:LoadingPageWebView:ProcessText",
       destroy: "ClientWEB:LoadingPageWebView:Destroy",
     },
   },
@@ -89,6 +101,12 @@ export let WebViewStatus = {
       load: "ClientWEB:eyeTrackerWebView:Load",
       unLoad: "ClientWEB:eyeTrackerWebView:unLoad",
       close: "ClientWEB:eyeTrackerWebView:close",
+    },
+  },
+  IntroVue: {
+    EventNames: {
+      load: "ClientWEB:IntroMusic:Load",
+      unLoad: "ClientWEB:IntroMusic:unLoad",
     },
   },
 };
