@@ -8,6 +8,7 @@ import { SendObjectTitlesToManageEyeTracker } from "../system/manageEyeTrackerFo
 import { VGView } from "./webViewController";
 import { WebViewStatus } from "../utils/WebViewStatus";
 import { EventNames } from "../utils/eventNames";
+import { ClothesDetails } from "../utils/ClothesDetails";
 
 let eyeTrackerFindStatus = false,
   eyeTrackerStatus = false,
@@ -57,7 +58,8 @@ export class VGEyeTracker {
   static #CheckObjectWithHashID(eyeTrackerObjectHashID) {
     const [_, _hit, _endCoords, _surfaceNormal, _materialHash, _entityHit] =
       VGEyeTracker.#getRaycast();
-    if (!VGEyeTracker.#distance2d(alt.Player.local.pos, _endCoords, 3)) return false;
+    if (!VGEyeTracker.#distance2d(alt.Player.local.pos, _endCoords, 3))
+      return false;
 
     if (native.doesEntityHaveDrawable(_entityHit)) {
       if (native.getEntityModel(_entityHit) == eyeTrackerObjectHashID) {
@@ -137,9 +139,13 @@ export class VGEyeTracker {
     } else {
       if (!eyeTrackerMenuStatus && !isForceClosed) return;
       eyeTrackerMenuStatus = false;
-      if (!eyeTrackerStatus || isForceClosed) VGEyeTracker.eyeTrackerManager(false);
+      if (!eyeTrackerStatus || isForceClosed)
+        VGEyeTracker.eyeTrackerManager(false);
       await VGView.close(WebViewStatus.eyeTracker.name);
     }
+  }
+  static async #PlayerUseAltTab() {
+    VGEyeTracker.eyeTrackerManager(false);
   }
   static async eyeTrackerManager(Status) {
     if (Status) {
@@ -180,6 +186,8 @@ export class VGEyeTracker {
     }
   }
   static async eyeTracker() {
+    if (!alt.isGameFocused()) return VGEyeTracker.#PlayerUseAltTab();
+
     let [_, _hit, _endCoords, _surfaceNormal, _materialHash, _entityHit] =
       VGEyeTracker.#getRaycast();
     if (!_hit) return;
@@ -189,6 +197,15 @@ export class VGEyeTracker {
       Object.values(eyeTrackerObjects[i].HashIDs).forEach(
         (eyeTrackerObjectHashID) => {
           if (VGEyeTracker.#CheckObjectWithHashID(eyeTrackerObjectHashID)) {
+            if (eyeTrackerObjectHashID == 920595805) {
+              // Clothes SHOP
+              if (
+                ClothesDetails.InteriorsID.indexOf(
+                  native.getInteriorFromEntity(alt.Player.local.scriptID)
+                ) == -1
+              )
+                return;
+            }
             VGEyeTracker.#SendStatuseyeTrackerToWebView(
               true,
               eyeTrackerObjects[i].name,
@@ -205,6 +222,8 @@ export class VGEyeTracker {
     }
   }
   static InternalEyeTrackerChecker(eyeTrackerObjectHashID) {
+    if (!alt.isGameFocused()) return VGEyeTracker.#PlayerUseAltTab();
+
     if (!VGEyeTracker.#CheckObjectWithHashID(eyeTrackerObjectHashID)) {
       VGEyeTracker.#SendStatuseyeTrackerToWebView(false);
       ChangeValueFromVariable("eyeTragerInterval", true);
