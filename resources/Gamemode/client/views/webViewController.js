@@ -119,6 +119,7 @@ export class VGView {
 
     if (!_Musicwebview) {
       _Musicwebview = await VGView.#createWebView(_MusicURL);
+      _Musicwebview.emit(EventNames.introMusic.clientWEB.changeVolume, 0.3);
       _Musicwebview.on(`${WebViewStatus.musicVue.EventNames.ready}`, () => {
         isRestart
           ? console.log("MusicVue has been reseted, mounted & Ready to use!")

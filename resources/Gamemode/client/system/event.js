@@ -60,4 +60,12 @@ async function ConnectionComplet(player) {
   native.setAudioFlag("LoadMPData", true);
   native.setAudioFlag("DisableFlightMusic", true);
   native.setClockTime(13, 0, 0);
+
+  native.requestIpl("gabz_pillboxmilo");
+  native.requestIpl("gabz_pillbox_2milo");
+  native.removeIpl("rc12b_fixed");
+  native.removeIpl("rc12b_destroyed");
+  native.removeIpl("rc12b_default");
+  native.removeIpl("rc12b_hospitalinterior_lod");
+  native.removeIpl("rc12b_hospitalinterior");
 }
