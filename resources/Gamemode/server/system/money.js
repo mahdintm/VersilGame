@@ -1,6 +1,6 @@
 import { PlayerData } from "./account";
 
-export class money {
+export class Money {
     static async set(player, ammount) {
         await PlayerData.set(
             player,
