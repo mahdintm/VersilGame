@@ -4,7 +4,6 @@ import { logger } from "./logger";
 import { hashing } from "../utils/hash";
 import { DiscordHook } from "../utils/discord-hook";
 import { sendchat } from "./chat";
-
 var playersdata = {}
 var Idx = {}
 export class PlayerData {
@@ -41,8 +40,8 @@ export class PlayerData {
             let DaTa = await sql(`select * FROM Account WHERE pName = "${(obj.username).toLowerCase()}"`);
             if (await hashing.sjcl.verify(obj.password, DaTa.pPassword) != true)
                 return alt.emitClient(player, 'CallBack_Login_Account_To_Server', false);
-            // if (DaTa.pOnline == 1)
-            // return console.log("online");
+            if (DaTa.pOnline == 1)
+                return console.log("online");
             //settingup Data
             let time = Date.now();
             await sql(`update Account set pOnline="${1}",pLastLogin="${time}" WHERE pId="${DaTa.pId}"`)
@@ -198,23 +197,29 @@ export class FindPlayerAccount {
             return ["undefined", null]
         } else if (id.length == 1) {
             return ["finded", alt.Player.getByID(id[0][1].altvID)]
-        }
-        if (id[1] != undefined) {
+        } else if (id.length > 1 && id.length <= 6) {
             let data = []
             for (let i = 0; i < id.length; i++) {
                 data.push({ id: id[i][1].gameID, name: id[i][1].pName })
             }
             return ["duplicate", data]
+        } else {
+            return ['duplicate_Highest']
         }
     }
     static GameID(ID) {
         return alt.Player.getByID(Idx[player.getSyncedMeta('inServer')][ID])
     }
+
+    static async FromReferral(id) {
+        let ID = (Object.entries(playersdata).filter((v, index, ar) => v[1].pId == id))
+        return ID.length > 0 ? ID[0][0] : undefined
+    }
 }
 
 var reg = new RegExp('^[0-9]$');
 
-export function FindPlayerForCMD(value) {
+export async function FindPlayerForCMD(value) {
     if (reg.test(value)) {
         if (GetPlayerIdAltv(value) != undefined) {
             return FindPlayerAccount.GameID(value)
@@ -222,17 +227,29 @@ export function FindPlayerForCMD(value) {
             return undefined;
         }
     } else {
-        let f = findbyname(player, value)
+        let f = FindPlayerAccount.name(value)
         if (f[0] == undefined) {
             return undefined;
         } else if (f[0] == "duplicate") {
-            sendchat(player, f[1])
+            var text = "";
+            for (let i = 0; i < f[1].length; i++) {
+                text = text + `Id: ${f[1][i].id} Name: ${f[1][i].pName} \n`
+            }
+            sendchat(player, text)
+            return undefined;
+        } else if (f[0] == "duplicate_Highest") {
+            sendchat(player, await Language.GetValue(
+                player.getSyncedMeta('Language'),
+                "YOU_DO_NOT_HAVE_SUFFICIENT_ACCESS_TO_DO_THIS"))
             return undefined;
         } else {
             return f[1];
         }
     }
 }
+// console.log(await FindPlayerAccount.FromReferral(1002))
+
+
 
 
 // metaSync:
