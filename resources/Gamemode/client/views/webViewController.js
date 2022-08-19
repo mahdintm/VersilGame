@@ -5,8 +5,8 @@ import { defaultPlayerDetails } from "../utils/defaultPlayerDetails";
 import { EventNames } from "../utils/eventNames";
 import { WebViewStatus } from "../utils/WebViewStatus";
 
-// let _defaultURL = `http://192.168.1.50:8080`, // For Debug mode if you run Vue.js you can import IP in this Variable
-let _defaultURL = `http://assets/Webview/client/allVue/index.html`,
+let _defaultURL = `http://192.168.1.50:8080`, // For Debug mode if you run Vue.js you can import IP in this Variable
+  // let _defaultURL = `http://assets/Webview/client/allVue/index.html`,
   _loadingPageURL = `http://assets/Webview/client/loadingPageVue/index.html`,
   _PhoneURL = `http://assets/Webview/client/phoneVue/index.html`,
   _MusicURL = `http://assets/Webview/client/musicVue/index.html`,
@@ -33,7 +33,7 @@ export class VGView {
     return new Promise((resolve) => {
       let attempts = 0;
       const interval = alt.setInterval(async () => {
-        PlayerDetails = await LocalStorage.get("PlayerDetails");
+        PlayerDetails = await LocalStorage.getPlayerDetails();
         if (attempts >= 5) {
           await LocalStorage.Delete("PlayerDetails");
           await LocalStorage.set("PlayerDetails", defaultPlayerDetails);
@@ -501,8 +501,10 @@ export class VGView {
     await VGView.#phone();
     await VGView.#create();
     if (await VGView.#get())
-      if (await VGView.#isAllComponentsLoaded())
+      if (await VGView.#isAllComponentsLoaded()) {
+        alt.emit(EventNames.player.localClient.startScriptConnection);
         await VGView.#loadingPage(false);
+      }
   }
   /**
    * It is used to take control from player & give this to WebView.

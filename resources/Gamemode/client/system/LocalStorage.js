@@ -34,4 +34,17 @@ export class LocalStorage {
     await alt.LocalStorage.save(); // Saves the changes to the disk.
     return value;
   }
+  static async getPlayerDetails() {
+    const PlayerDetails = await alt.LocalStorage.get("PlayerDetails");
+    return PlayerDetails;
+  }
+  static async setPlayerDetails(key, value) {
+    const PlayerDetails = await alt.LocalStorage.get("PlayerDetails");
+    try {
+      PlayerDetails[key] = value;
+      await alt.LocalStorage.set("PlayerDetails", PlayerDetails); // Sets the specified key to the specified value in the local storage.
+      await alt.LocalStorage.save(); // Saves the changes to the disk.
+      return value;
+    } catch (error) {}
+  }
 }

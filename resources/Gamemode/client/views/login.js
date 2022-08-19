@@ -34,32 +34,34 @@ export async function LoadLoginPage() {
     });
   }
   setTimeout(LoginCamera, 10); // Agar in nabashad camera e'mal nemishavad
+
   await VGView.emit(
     WebViewStatus.login.name,
     EventNames.login.clientWEB.SetDataWeb,
     {
-      WebLanguage: await LocalStorage.get("WebLanguage"),
-      WebDarkMode: await LocalStorage.get("WebDarkMode"),
-      Remember: await LocalStorage.get("Remember"),
-      LoginData: await LocalStorage.get("LoginData"),
+      WebLanguage: (await LocalStorage.getPlayerDetails()).WebLanguage,
+      WebDarkMode: (await LocalStorage.getPlayerDetails()).WebDarkMode,
+      Remember: (await LocalStorage.getPlayerDetails()).Remember,
+      LoginData: (await LocalStorage.getPlayerDetails()).LoginData,
     }
   );
   VGView.on(EventNames.login.WEBclient.LoginAccount, async (obj) => {
     if (obj.Remember == true) {
-      LocalStorage.set("Remember", true);
-      LocalStorage.set("LoginData", {
-        password: obj.Password,
+      LocalStorage.setPlayerDetails("Remember", true);
+      LocalStorage.setPlayerDetails("LoginData", {
         username: obj.Username,
+        password: obj.Password,
       });
     } else {
-      if ((await LocalStorage.get("LoginData")) != undefined) {
-        LocalStorage.set("Remember", false);
-        LocalStorage.set("LoginData", undefined);
-      }
+      LocalStorage.setPlayerDetails("Remember", false);
+      LocalStorage.setPlayerDetails("LoginData", {
+        username: "",
+        password: "",
+      });
     }
     await alt.emitServer("Login_Account_To_Server", {
-      password: obj.Password,
       username: obj.Username,
+      password: obj.Password,
     });
   });
 
@@ -83,7 +85,6 @@ export async function LoadLoginPage() {
 // In OldLoadLoginPage() ghadimi ast va faghat be dalile dashtane asamiye event ha negah dashte shode ast
 // Baad az etmame kar ba event name ha in ghesmat bayad hazf gardad
 async function OldLoadLoginPage() {
-
   // view.web.emit("SetDataWeb", {
   //   WebLanguage: await LocalStorage.get("WebLanguage"),
   //   WebDarkMode: await LocalStorage.get("WebDarkMode"),
@@ -108,11 +109,9 @@ async function OldLoadLoginPage() {
   //     username: obj.Username,
   //   });
   // });
-
   // view.web.on("Register_Account", async (obj) => {
   //   await alt.emitServer("Register_Account_To_Server", obj);
   // });
-
   // alt.onServer("CallBack_Login_Account_To_Server", (state) => {
   //   if (state == true) {
   //     //hide
@@ -149,7 +148,6 @@ async function OldLoadLoginPage() {
   //     return view.web.emit("CallBackValidationCodeServerSide", true, data);
   //   return view.web.emit("CallBackValidationCodeServerSide", false, ":D");
   // });
-
   // view.web.on("StartCamera", () => {
   //   alt.toggleGameControls(false);
   //   alt.showCursor(true);
@@ -165,10 +163,8 @@ async function OldLoadLoginPage() {
   //   native.setCamCoord(camera3, -1000, -1000, 1000);
   //   native.setCamRot(camera3, 0, 0, 1, 2);
   //   native.setCamFov(camera3, 90);
-
   //   native.setCamActive(camera, true);
   //   native.renderScriptCams(true, false, 16, true, false, 0);
-
   //   alt.setTimeout(async () => {
   //     native.setCamActiveWithInterp(camera2, camera, 10000, 1, 1);
   //   }, 1000);

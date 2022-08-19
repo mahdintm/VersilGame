@@ -1,4 +1,3 @@
-/// <reference types="@altv/types-client" />
 /// <reference types="@altv/types-natives" />
 import * as alt from "alt-client";
 
@@ -12,7 +11,9 @@ alt.on(EventNames.allVue.localClient.loadWebviews, async () => {
   await VGView.emit(
     WebViewStatus.chat.name,
     EventNames.chat.clientWEB.TimeStamp,
-    await LocalStorage.get("Chat_TimeStamp")
+    (
+      await LocalStorage.getPlayerDetails()
+    ).Chat_TimeStamp
   );
   alt.emitServer(EventNames.chat.client.Loaded);
   async function closechat() {
@@ -43,18 +44,17 @@ alt.on(EventNames.allVue.localClient.loadWebviews, async () => {
     closechat();
   });
   alt.onServer(EventNames.chat.server.TimeStamp, async () => {
-    let data = await LocalStorage.get("Chat_TimeStamp");
-    if (data) {
-      await VGView.emit(
-        WebViewStatus.chat.name,
-        EventNames.chat.clientWEB.TimeStamp,
-        false
-      );
-      LocalStorage.set("Chat_TimeStamp", false);
-    } else {
-      await VGView.emit(EventNames.chat.clientWEB.TimeStamp, true);
-      LocalStorage.set("Chat_TimeStamp", true);
-    }
+    await VGView.emit(
+      WebViewStatus.chat.name,
+      EventNames.chat.clientWEB.TimeStamp,
+      !(
+        await LocalStorage.getPlayerDetails()
+      ).Chat_TimeStamp
+    );
+    LocalStorage.setPlayerDetails(
+      "Chat_TimeStamp",
+      !(await LocalStorage.getPlayerDetails()).Chat_TimeStamp
+    );
   });
 
   alt.onServer(EventNames.chat.server.Message, addMessage);
