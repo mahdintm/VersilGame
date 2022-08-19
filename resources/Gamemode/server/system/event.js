@@ -9,13 +9,17 @@ import { StaffPoint } from "./staff";
 import { LoadedVehicels } from "./vehicles";
 import { playerDetails } from "../utils/playerDetails";
 import { EventNames } from "../utils/eventNames";
+import { sql } from "../database/mysql";
+
+
+await sql('update Account set pOnline = "0"')
+
 
 let ban_ip = "::ffff:192.168.90.100";
 
 alt.on("beforePlayerConnect", (player) => {
   player.setSyncedMeta("hasLogin", false);
 });
-
 alt.on("connectionQueueAdd", (info, a, b) => {
   // console.log(info.discordUserID)
   if (info.discordUserID == "")
@@ -85,6 +89,7 @@ await alt.on("playerDisconnect", async (player, reason) => {
     sqlid: await PlayerData.get(player, "pId"),
     username: await PlayerData.get(player, "pName"),
   });
+  PlayerData.set(player, 'pOnline', 0, true)
   StaffPoint.sarOFF(player);
   PlayerData.delete(player);
   playerIdGame.delete(player);
