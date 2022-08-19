@@ -3,6 +3,7 @@ import * as native from "natives";
 import { LocalStorage } from "./LocalStorage";
 import { LoadLoginPage } from "../views/login";
 import { EventNames } from "../utils/eventNames";
+import { defaultPlayerDetails } from "../utils/defaultPlayerDetails";
 
 alt.on("connectionComplete", ConnectionComplet);
 
@@ -29,6 +30,8 @@ async function ConnectionComplet(player) {
     // DiscordID: alt.Discord.currentUser.id,
     Language: await LocalStorage.get("WebLanguage"),
   });
+  if (!(await LocalStorage.get("PlayerDetails")))
+    await LocalStorage.set("PlayerDetails", defaultPlayerDetails);
 
   LoadLoginPage(); //for load web view login page
   // alt.beginScaleformMovieMethodMinimap("SETUP_HEALTH_ARMOUR"); // hiding health and armour bars without abusing everyTick
