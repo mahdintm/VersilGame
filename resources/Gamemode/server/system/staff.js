@@ -2,11 +2,12 @@ import * as alt from 'alt';
 import { sql } from '../database/mysql';
 import { Time } from '../utils/clock';
 import { Language } from '../utils/dialogs';
-import { PlayerData } from './account';
+import { FindPlayerAccount, PlayerData } from './account';
 import { sendchat } from './chat';
 import { ServerSetting } from './server_settings';
 import './CMD_Admin'
 import './CMD_Staff'
+import { Colors } from '../utils/colors';
 
 let SarONs = [],
     interval;
@@ -18,7 +19,7 @@ export class StaffSystem {
         return await PlayerData.get(player, "pAdmin") >= 1 ? true : false;
     }
     static async CheckAdmin(player, level) {
-        return await PlayerData.get(player, "pAdmin") >= level ? true : false;
+        return await PlayerData.get(player, "pAdmin") == level ? true : false;
     }
     static CheckObject = {
         MakeAdmin: async (player) => {
@@ -29,13 +30,13 @@ export class StaffSystem {
         return await PlayerData.get(player, "pHelper") >= 1 ? true : false;
     }
     static async CheckHelper(player, level) {
-        return await PlayerData.get(player, "pHelper") >= level ? true : false;
+        return await PlayerData.get(player, "pHelper") == level ? true : false;
     }
     static async IsLeader(player) {
         return await PlayerData.get(player, "pLeader") >= 1 ? true : false;
     }
     static async CheckLeader(player, level) {
-        return await PlayerData.get(player, "pLeader") >= level ? true : false;
+        return await PlayerData.get(player, "pLeader") == level ? true : false;
     }
     static async Send_NotAdmin(player) {
         sendchat(player, await Language.GetValue(player.getSyncedMeta('Language'), "YOU_ARE_NOT_ADMIN"))
@@ -50,42 +51,63 @@ export class StaffSystem {
             return false
         }
     }
-    static AdminBot = {
-        SendChatToPlayer: (player, msg) => {
+    static Warn = {
+        Player: (player, msg) => {
             sendchat(player, `AdminBot: ${msg}`)
         },
-        SendChatToAdmins: (msg) => {
+        Admins: async (msg) => {
             let allPlayers = alt.Player.all
             for (let i = 0; i < allPlayers.length; i++) {
-                if (!StaffSystem.IsLeader(allPlayers[i])) continue
-                sendchat(player, `AdminBot: ${msg}`)
+                if (!StaffSystem.IsAdmin(allPlayers[i])) continue
+                sendchat(
+                    allPlayers[i],
+                    `{${await Colors.chat.AdminWarn}}` +
+                    await Language.GetValue(allPlayers[i].getSyncedMeta('Language'), "CHAT_ADMIN_WARN") +
+                    `{${Colors.chat.Default}} ` +
+                    msg
+                )
             }
         },
-        SendChatToHelpers: (msg) => {
+        Helpers: async (msg) => {
             let allPlayers = alt.Player.all
             for (let i = 0; i < allPlayers.length; i++) {
                 if (!StaffSystem.IsHelper(allPlayers[i])) continue
-                sendchat(player, `AdminBot: ${msg}`)
+                sendchat(
+                    allPlayers[i],
+                    `{${await Colors.chat.HelperWarn}}` +
+                    await Language.GetValue(allPlayers[i].getSyncedMeta('Language'), "CHAT_HELPER_WARN") +
+                    `{${Colors.chat.Default}} ` +
+                    msg
+                )
             }
         },
-        SendChatToLeaders: (msg) => {
+        Leaders: async (msg) => {
             let allPlayers = alt.Player.all
             for (let i = 0; i < allPlayers.length; i++) {
                 if (!StaffSystem.IsLeader(allPlayers[i])) continue
-                sendchat(player, `AdminBot: ${msg}`)
+                sendchat(
+                    allPlayers[i],
+                    `{${await Colors.chat.LeaderWarn}}` +
+                    await Language.GetValue(allPlayers[i].getSyncedMeta('Language'), "CHAT_LEADER_WARN") +
+                    `{${Colors.chat.Default}} ` +
+                    msg
+                )
             }
         },
-        SendChatToAdmins: (msg) => {
+        Staff: async (msg) => {
             let allPlayers = alt.Player.all
             for (let i = 0; i < allPlayers.length; i++) {
                 if (!StaffSystem.IsStaff(allPlayers[i])) continue
-                sendchat(player, `AdminBot: ${msg}`)
+                sendchat(
+                    allPlayers[i],
+                    `{${await Colors.chat.StaffWarn}}` +
+                    await Language.GetValue(allPlayers[i].getSyncedMeta('Language'), "CHAT_STAFF_WARN") +
+                    `{${Colors.chat.Default}} ` +
+                    msg
+                )
             }
         }
     }
-}
-
-export class StaffPoint {
     static async sarON(player) {
         // await sql('log', `INSERT INTO staff_log(Referral_ID, timestamp, inServer, department, value) VALUES ("${await PlayerData.get(player, 'pId')}","${Date.now()}","SAR",'${JSON.stringify({ status: true })}')`)
         player.setSyncedMeta('sar', true)
@@ -116,123 +138,261 @@ export class StaffPoint {
         for (let i = 0; i < allPlayers.length; i++) {
             if (await allPlayers[i].getSyncedMeta('hasLogin') == false) continue
             if (!await StaffSystem.IsStaff(allPlayers[i])) continue
-            await PlayerData.set(allPlayers[i], 'pStaff_Point', await PlayerData.get(allPlayers[i], 'pStaff_Point'), true)
+            await PlayerData.set(player, allPlayers[i], 'pStaff_Point', await PlayerData.get(allPlayers[i], 'pStaff_Point'), true)
         }
     }
-    static async calculatorSP(player) {
-        let Sp = JSON.parse(PlayerData.get('pStaff_Point')).staff_point
-        if (Sp < ServerSetting.get('lowestSpHelper_1') && StaffSystem.IsHelper(player)) {
-            //helper 1
-            if (StaffSystem.CheckHelper(player, 2)) {
-                return PlayerData.set('pHelper', 1, true);
+    static async CalculatorSPAll() {
+        let datas = await sql('select pId,pAdmin , pHelper , pLeader , pStaff_Point ,pOnline from Account where pAdmin>0 or pHelper >0 or pLeader>0')
+        if (datas.length != undefined) {
+            datas.forEach(async data => {
+                if (data.pOnline == 1) {
+                    let playerid = await FindPlayerAccount.FromReferral(data.pId)
+                    if (playerid)
+                        this.CalculatorSP(await alt.Player.getByID(playerid))
+                } else {
+                    this.#CalculatorSP_DB(data)
+                }
+            });
+        } else {
+            if (datas.pOnline == 1) {
+                let playerid = await FindPlayerAccount.FromReferral(datas.pId)
+                if (playerid)
+                    this.CalculatorSP(await alt.Player.getByID(playerid))
             } else {
-                if (!StaffSystem.CheckHelper(player, 1)) {
-                    return PlayerData.set('pHelper', 1, true);
-                }
-            }
-        } else if (Sp < ServerSetting.get('lowestSpHelper_2') && StaffSystem.IsHelper(player)) {
-            //helper 2
-            if (StaffSystem.CheckHelper(player, 3)) {
-                return PlayerData.set('pHelper', 2, true);
-            } else {
-                if (!StaffSystem.CheckHelper(player, 2)) {
-                    return PlayerData.set('pHelper', 2, true);
-                }
-            }
-        } else if (Sp < ServerSetting.get('lowestSpHelper_3') && (StaffSystem.IsHelper(player) || StaffSystem.IsAdmin(player))) {
-            //helper 3
-            if (StaffSystem.IsAdmin(player)) {
-                if (Sp < (ServerSetting.get('lowestSpAdmin_1') - 10)) {
-                    PlayerData.set('pHelper', 3, true);
-                    return PlayerData.set('pAdmin', 0, true);
-                }
-            } else {
-                if (!StaffSystem.CheckHelper(player, 3)) {
-                    return PlayerData.set('pHelper', 3, true);
-                }
-            }
-        } else if (Sp > ServerSetting.get('lowestSpAdmin_1')) {
-            //admin 1
-            if (StaffSystem.IsAdmin(player)) {
-                if (Sp > (ServerSetting.get('lowestSpAdmin_2') - 10) && StaffSystem.CheckAdmin(player, 2)) {
-                    return PlayerData.set('pAdmin', 1, true);
-                }
-            } else {
-                if (PlayerData.get('pCanAdmin') == true) {
-                    if (StaffSystem.IsHelper(player)) {
-                        PlayerData.set('pHelper', 0, true);
-                    }
-                    if (StaffSystem.IsLeader(player)) {
-                        PlayerData.set('pLeader', 0, true);
-                    }
-                    return PlayerData.set('pAdmin', 1, true);
-                }
-            }
-        } else if (Sp > ServerSetting.get('lowestSpAdmin_2')) {
-            //admin 2
-            if (StaffSystem.IsAdmin(player)) {
-                if (Sp > (ServerSetting.get('lowestSpAdmin_3') - 10) && StaffSystem.CheckAdmin(player, 3)) {
-                    return PlayerData.set('pAdmin', 2, true);
-                }
-            } else {
-                if (PlayerData.get('pCanAdmin') == true) {
-                    if (StaffSystem.IsHelper(player)) {
-                        PlayerData.set('pHelper', 0, true);
-                    }
-                    if (StaffSystem.IsLeader(player)) {
-                        PlayerData.set('pLeader', 0, true);
-                    }
-                    return PlayerData.set('pAdmin', 2, true);
-                }
-            }
-        } else if (Sp > ServerSetting.get('lowestSpAdmin_3')) {
-            //admin 3
-            if (StaffSystem.IsAdmin(player)) {
-                if (Sp < (ServerSetting.get('lowestSpAdmin_4') - 10) && StaffSystem.CheckAdmin(player, 4)) {
-                    return PlayerData.set('pAdmin', 3, true);
-                }
-            } else {
-                if (PlayerData.get('pCanAdmin') == true) {
-                    if (StaffSystem.IsHelper(player)) {
-                        PlayerData.set('pHelper', 0, true);
-                    }
-                    if (StaffSystem.IsLeader(player)) {
-                        PlayerData.set('pLeader', 0, true);
-                    }
-                    return PlayerData.set('pAdmin', 3, true);
-                }
-            }
-        } else if (Sp > ServerSetting.get('lowestSpAdmin_4')) {
-            //admin 4
-            if (StaffSystem.IsAdmin(player)) {
-                if (Sp > (ServerSetting.get('lowestSpAdmin_5') - 10) && StaffSystem.CheckAdmin(player, 5)) {
-                    return PlayerData.set('pAdmin', 4, true);
-                }
-            } else {
-                if (PlayerData.get('pCanAdmin') == true) {
-                    if (StaffSystem.IsHelper(player)) {
-                        PlayerData.set('pHelper', 0, true);
-                    }
-                    if (StaffSystem.IsLeader(player)) {
-                        PlayerData.set('pLeader', 0, true);
-                    }
-                    return PlayerData.set('pAdmin', 4, true);
-                }
-            }
-        } else if (Sp > ServerSetting.get('lowestSpAdmin_5')) {
-            //admin 5
-            if (PlayerData.get('pCanAdmin') == true) {
-                if (StaffSystem.IsHelper(player)) {
-                    PlayerData.set('pHelper', 0, true);
-                }
-                if (StaffSystem.IsLeader(player)) {
-                    PlayerData.set('pLeader', 0, true);
-                }
-                return PlayerData.set('pAdmin', 5, true);
+                this.#CalculatorSP_DB(datas)
             }
         }
+    }
+    static async CalculatorSP(player) {
+        let staffpoint = await PlayerData.get(player, 'pStaff_Point')
+        let NowNameDay = await Time.GetNameDay()
+        if (staffpoint.week[NowNameDay] >= 36000000)
+            await StaffPoint.give(player, 4)
+        else if (staffpoint.week[NowNameDay] >= 25200000)
+            await StaffPoint.give(player, 3)
+        else if (staffpoint.week[NowNameDay] >= 16200000)
+            await StaffPoint.give(player, 2)
+        else if (staffpoint.week[NowNameDay] >= 10800000)
+            await StaffPoint.give(player, 1)
+        else if (staffpoint.week[NowNameDay] < 5400000)
+            await StaffPoint.take(player, 1)
+    }
+    static async #CalculatorSP_DB(data) {
+        let staffpoint = JSON.parse(data.pStaff_Point);
+        let NowNameDay = await Time.GetNameDay()
+        if (staffpoint.week[NowNameDay] >= 36000000)
+            staffpoint.staff_point += 4
+        else if (staffpoint.week[NowNameDay] >= 25200000)
+            staffpoint.staff_point += 3
+        else if (staffpoint.week[NowNameDay] >= 16200000)
+            staffpoint.staff_point += 2
+        else if (staffpoint.week[NowNameDay] >= 10800000)
+            staffpoint.staff_point += 1
+        else if (staffpoint.week[NowNameDay] < 5400000)
+            staffpoint.staff_point -= 1
+        await sql(`update Account SET pStaff_Point="${JSON.stringify(staffpoint)}" where pId="${data.pId}"`);
+    }
+    static async CalculatorRoleAll() {
+        let datas = await sql('select pId,pAdmin , pHelper , pLeader , pStaff_Point ,pOnline,pCanAdmin from Account where pAdmin>0 or pHelper >0 or pLeader>0')
+        if (datas.length != undefined) {
+            datas.forEach(async data => {
+                if (data.pOnline == 1) {
+                    let playerid = await FindPlayerAccount.FromReferral(data.pId)
+                    if (playerid)
+                        this.CalculatorRole(await alt.Player.getByID(playerid))
+                } else {
+                    this.#CalculatorRole_DB(data)
+                }
+            });
+        } else {
+            if (datas.pOnline == 1) {
+                let playerid = await FindPlayerAccount.FromReferral(datas.pId)
+                if (playerid)
+                    this.CalculatorRole(await alt.Player.getByID(playerid))
+            } else {
+                this.#CalculatorRole_DB(datas)
+            }
+        }
+    }
+    static async #CalculatorRole_DB(data) {
+        let Sp = JSON.parse(data.pStaff_Point).staff_point
+        if (data.pAdmin >= 8) {
+            return
+        }
+        if (Sp < await ServerSetting.get('lowestSpHelper_1')) {
+            //demote
+            return await sql(`update Account set pHelper="0",pLeader="0",pCanAdmin="0",pAdmin="0" where pId="${data.pId}"`)
+        } else if ((Sp >= await ServerSetting.get('lowestSpHelper_1') && Sp < await ServerSetting.get('lowestSpHelper_2')) && !data.pLeader >= 1) {
+            //helper 1
+            return await sql(`update Account set pHelper="1",pAdmin="0",pCanAdmin="0" where pId="${data.pId}"`)
+        } else if ((Sp >= await ServerSetting.get('lowestSpHelper_2') && Sp < await ServerSetting.get('lowestSpHelper_3')) && !data.pLeader >= 1) {
+            return await sql(`update Account set pHelper="2",pAdmin="0",pCanAdmin="0" where pId="${data.pId}"`)
+        } else if ((Sp >= await ServerSetting.get('lowestSpHelper_3') && Sp < await ServerSetting.get('lowestSpAdmin_1')) && !data.pLeader >= 1) {
+            //helper 3
+            if (data.pAdmin >= 1) {
+                if (Sp < (await ServerSetting.get('lowestSpAdmin_1') - 10)) {
+                    return await sql(`update Account set pHelper="3",pAdmin="0",pCanAdmin="0" where pId="${data.pId}"`)
+                }
+            } else {
+                return await sql(`update Account set pHelper="3",pAdmin="0",pCanAdmin="0" where pId="${data.pId}"`)
+            }
+        } else if ((Sp >= await ServerSetting.get('lowestSpAdmin_1') && Sp < await ServerSetting.get('lowestSpAdmin_2'))) {
+            //admin 1
+            if (data.pAdmin >= 1 && data.pCanAdmin) {
+                if (Sp < (await ServerSetting.get('lowestSpAdmin_2') - 10)) {
+                    return await sql(`update Account set pAdmin="1" where pId="${data.pId}"`)
+                }
+            } else {
+                if (data.pCanAdmin) {
+                    return await sql(`update Account set pAdmin="1",pLeader="0",pHelper="3" where pId="${data.pId}"`)
+                }
+                else {
+                    return await sql(`update Account set pAdmin="0",pLeader="0",pHelper="3" where pId="${data.pId}"`)
+                }
+            }
+        } else if ((Sp >= await ServerSetting.get('lowestSpAdmin_2') && Sp < await ServerSetting.get('lowestSpAdmin_3'))) {
+            //admin 2
+            if (data.pAdmin >= 1 && data.pCanAdmin) {
+                if (Sp < (await ServerSetting.get('lowestSpAdmin_3') - 10)) {
+                    return await sql(`update Account set pAdmin="2" where pId="${data.pId}"`)
+                }
+            } else {
+                if (data.pCanAdmin)
+                    return await sql(`update Account set pAdmin="2",pLeader="0",pHelper="3" where pId="${data.pId}"`)
+                else
+                    return await sql(`update Account set pAdmin="0",pLeader="0",pHelper="3" where pId="${data.pId}"`)
+            }
+        } else if ((Sp >= await ServerSetting.get('lowestSpAdmin_3') && Sp < await ServerSetting.get('lowestSpAdmin_4'))) {
+            //admin 3
+            if (data.pAdmin >= 1 && data.pCanAdmin) {
+                if (Sp < (await ServerSetting.get('lowestSpAdmin_4') - 10)) {
+                    return await sql(`update Account set pAdmin="3" where pId="${data.pId}"`)
+                }
+            } else {
+                if (data.pCanAdmin)
+                    return await sql(`update Account set pAdmin="3",pLeader="0",pHelper="3" where pId="${data.pId}"`)
+                else
+                    return await sql(`update Account set pAdmin="0",pLeader="0",pHelper="3" where pId="${data.pId}"`)
+            }
+        } else if ((Sp >= await ServerSetting.get('lowestSpAdmin_4') && Sp < await ServerSetting.get('lowestSpAdmin_5'))) {
+            //admin 4
+            if (data.pAdmin >= 1) {
+                if (Sp < (await ServerSetting.get('lowestSpAdmin_5') - 10) && (data.pAdmin >= 5 && data.pAdmin <= 7)) {
+                    return await sql(`update Account set pAdmin="4" where pId="${data.pId}"`)
+                }
+            }
+        }
+
+    }
+    static async CalculatorRole(player) {
+        let Sp = JSON.parse(await PlayerData.get(player, 'pStaff_Point')).staff_point
+        if (await StaffSystem.CheckAdmin(player, 8) || await StaffSystem.CheckAdmin(player, 9) || await StaffSystem.CheckAdmin(player, 10)) {
+            return
+        }
+        if (Sp < await ServerSetting.get('lowestSpHelper_1')) {
+            //demote
+            await PlayerData.set(player, 'pHelper', 0, true);
+            await PlayerData.set(player, 'pLeader', 0, true);
+            await PlayerData.set(player, 'pCanAdmin', 0, true);
+            return await PlayerData.set(player, 'pAdmin', 0, true);
+        } else if ((Sp >= await ServerSetting.get('lowestSpHelper_1') && Sp < await ServerSetting.get('lowestSpHelper_2')) && !await StaffSystem.IsLeader(player)) {
+            //helper 1
+            await PlayerData.set(player, 'pHelper', 1, true);
+            await PlayerData.set(player, 'pCanAdmin', 0, true);
+            return await PlayerData.set(player, 'pAdmin', 0, true);
+        } else if ((Sp >= await ServerSetting.get('lowestSpHelper_2') && Sp < await ServerSetting.get('lowestSpHelper_3')) && !await StaffSystem.IsLeader(player)) {
+            //helper 2
+            await PlayerData.set(player, 'pCanAdmin', 0, true);
+            await PlayerData.set(player, 'pAdmin', 0, true);
+            return await PlayerData.set(player, 'pHelper', 2, true);
+        } else if ((Sp >= await ServerSetting.get('lowestSpHelper_3') && Sp < await ServerSetting.get('lowestSpAdmin_1')) && !await StaffSystem.IsLeader(player)) {
+            //helper 3
+            if (await StaffSystem.IsAdmin(player)) {
+                if (Sp < (await ServerSetting.get('lowestSpAdmin_1') - 10)) {
+                    await PlayerData.set(player, 'pHelper', 3, true);
+                    await PlayerData.set(player, 'pAdmin', 0, true);
+                    return await PlayerData.set(player, 'pCanAdmin', 0, true)
+                }
+            } else {
+                await PlayerData.set(player, 'pAdmin', 0, true);
+                await PlayerData.set(player, 'pCanAdmin', 0, true)
+                return await PlayerData.set(player, 'pHelper', 3, true);
+            }
+        } else if ((Sp >= await ServerSetting.get('lowestSpAdmin_1') && Sp < await ServerSetting.get('lowestSpAdmin_2'))) {
+            //admin 1
+            if (await StaffSystem.IsAdmin(player)) {
+                if (Sp < (await ServerSetting.get('lowestSpAdmin_2') - 10)) {
+                    return await PlayerData.set(player, 'pAdmin', 1, true);
+                }
+            } else {
+                this.#SetPlayerRoleWithCanAdmin(player, AdminLevel)
+            }
+        } else if ((Sp >= await ServerSetting.get('lowestSpAdmin_2') && Sp < await ServerSetting.get('lowestSpAdmin_3'))) {
+            //admin 2
+            if (await StaffSystem.IsAdmin(player)) {
+                if (Sp < (await ServerSetting.get('lowestSpAdmin_3') - 10)) {
+                    return await PlayerData.set(player, 'pAdmin', 2, true);
+                }
+            } else {
+                this.#SetPlayerRoleWithCanAdmin(player, 2)
+            }
+        } else if ((Sp >= await ServerSetting.get('lowestSpAdmin_3') && Sp < await ServerSetting.get('lowestSpAdmin_4'))) {
+            //admin 3
+            if (await StaffSystem.IsAdmin(player)) {
+                if (Sp < (await ServerSetting.get('lowestSpAdmin_4') - 10)) {
+                    return await PlayerData.set(player, 'pAdmin', 3, true);
+                }
+            } else {
+                this.#SetPlayerRoleWithCanAdmin(player, 3)
+            }
+        } else if ((Sp >= await ServerSetting.get('lowestSpAdmin_4') && Sp < await ServerSetting.get('lowestSpAdmin_5'))) {
+            //admin 4
+            if (await StaffSystem.IsAdmin(player)) {
+                if (Sp < (await ServerSetting.get('lowestSpAdmin_5') - 10) && (await StaffSystem.CheckAdmin(player, 5) || await StaffSystem.CheckAdmin(player, 6) || await StaffSystem.CheckAdmin(player, 7))) {
+                    return await PlayerData.set(player, 'pAdmin', 4, true);
+                }
+            }
+        }
+        // } else if (Sp >= await ServerSetting.get('lowestSpAdmin_5') && Sp < 700) {
+        //     //admin 5
+        //     if (await StaffSystem.IsAdmin(player) && (await StaffSystem.CheckAdmin(player, 6) || await StaffSystem.CheckAdmin(player, 7))) {
+        //         return await PlayerData.set(player, 'pAdmin', 5, true);
+        //     }
+        // }
+    }
+    static async #SetPlayerRoleWithCanAdmin(player, AdminLevel) {
+        if (await PlayerData.get(player, 'pCanAdmin') == true) {
+            await PlayerData.set(player, 'pHelper', 3, true);
+            await PlayerData.set(player, 'pLeader', 0, true);
+            return await PlayerData.set(player, 'pAdmin', AdminLevel, true);
+        } else {
+            await PlayerData.set(player, 'pHelper', 3, true);
+            await PlayerData.set(player, 'pLeader', 0, true);
+            return await PlayerData.set(player, 'pAdmin', 0, true);
+        }
+    }
+}
+export class StaffPoint {
+    static async set(player, amount) {
+        let playerstaff = await JSON.parse(await PlayerData.get(player, 'pStaff_Point'))
+        playerstaff.staff_point = parseInt(amount);
+        await PlayerData.set(player, 'pStaff_Point', JSON.stringify(playerstaff), true)
+    }
+    static async give(player, amount) {
+        let playerstaff = await JSON.parse(await PlayerData.get(player, 'pStaff_Point'))
+        playerstaff.staff_point += parseInt(amount);
+        await PlayerData.set(player, 'pStaff_Point', JSON.stringify(playerstaff), true)
+    }
+    static async get(player) {
+        return JSON.parse(await PlayerData.get(player, 'pStaff_Point')).staff_point
+    }
+    static async take(player, amount) {
+        let playerstaff = await JSON.parse(await PlayerData.get(player, 'pStaff_Point'))
+        playerstaff.staff_point -= parseInt(amount);
+        await PlayerData.set(player, 'pStaff_Point', JSON.stringify(playerstaff), true)
     }
 }
 
 // StaffPoint.LoodAllStaff()
-StaffPoint.CreateInterval(await Time.GetNameDay())
+// StaffPoint.CreateInterval(await Time.GetNameDay())
+// StaffSystem.calculatorSP()

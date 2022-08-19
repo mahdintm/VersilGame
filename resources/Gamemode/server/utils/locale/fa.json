@@ -1,3 +1,5 @@
 {
-    "YOU_ARE_NOT_ADMIN": "شما ادمین نیستید."
+    "YOU_ARE_NOT_ADMIN": "شما ادمین نیستید.",
+    "YOU_DO_NOT_HAVE_SUFFICIENT_ACCESS_TO_DO_THIS": "شما دسترسی کافی برای انجام این کار ندارید.",
+    "MANY_USERS_WITH_THIS_NAME_WHERE_FOUND": "کاربران زیادی با این اسم پیدا شد."
 }
