@@ -80,18 +80,4 @@ alt.on(EventNames.allVue.localClient.loadWebviews, async () => {
       false
     );
   });
-  alt.on(EventNames.chat.localClient.KeyRowUpPressed, async () => {
-    await VGView.isOpenEmit(
-      WebViewStatus.chat.name,
-      EventNames.chat.clientWEB.KeyRowPressed,
-      true
-    );
-  });
-  alt.on(EventNames.chat.localClient.KeyRowDownPressed, async () => {
-    await VGView.isOpenEmit(
-      WebViewStatus.chat.name,
-      EventNames.chat.clientWEB.KeyRowPressed,
-      false
-    );
-  });
 });

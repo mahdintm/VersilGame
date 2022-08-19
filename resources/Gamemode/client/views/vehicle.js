@@ -2,7 +2,6 @@
 /// <reference types="@altv/types-natives" />
 import * as alt from "alt-client";
 import * as native from "natives";
-import { view, PlayerController, View } from "./viewCreator";
 import { ChangeValueFromVariable } from "../system/everyTick";
 import { VGView } from "./webViewController";
 import { WebViewStatus } from "../utils/WebViewStatus";
@@ -66,7 +65,7 @@ async function SpeedOmeter(Status) {
 export async function VehicleSpeedOmeter() {
   let playerVehicle = alt.Player.local.vehicle;
   if (playerVehicle == null) {
-    ChangeValueFromVariable("VehicleSpeedOmeterInterval", false);
+    return ChangeValueFromVariable("VehicleSpeedOmeterInterval", false);
   }
   if (native.getIsVehicleEngineRunning(playerVehicle)) {
     await VGView.emit(

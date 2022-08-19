@@ -9,8 +9,6 @@ export const eyeTrackerObjects = [
     name: "Clothes_NPCs",
     titles: [
       { title: "Clothes", action: "OpenClothesUiBox" },
-      { title: "1", action: "1" },
-      { title: "2", action: "2" },
     ],
     HashIDs: [920595805],
   },

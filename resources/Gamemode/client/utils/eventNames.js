@@ -11,6 +11,7 @@ export const EventNames = {
     },
     localServer: {},
     server: {
+      PlayerDetails: "Server:ManagePlayer:PlayerDetails",
       isFreezePlayer: "Server:ManagePlayer:isFreezePlayer",
     },
     client: {},
@@ -51,8 +52,6 @@ export const EventNames = {
       KeyTPressed: "Local:Chat:KeyTPressed",
       KeyPageUpPressed: "Local:Chat:KeyPageUpPressed",
       KeyPageDownPressed: "Local:Chat:KeyPageDownPressed",
-      KeyRowUpPressed: "Local:Chat:KeyRowUpPressed",
-      KeyRowDownPressed: "Local:Chat:KeyRowDownPressed",
     },
     localServer: {},
     server: {
@@ -70,7 +69,7 @@ export const EventNames = {
       OpenChat: "ClientWEB:Chat:OpenChat",
       CloseChat: "ClientWEB:Chat:CloseChat",
       Scroll: "ClientWEB:Chat:Scroll",
-      KeyRowPressed: "ClientWEB:Chat:KeyRowPressed",
+      KeyRowUpPressed: "ClientWEB:Chat:KeyRowUpPressed",
     },
     WEBclient: {
       CloseChat: "WEBClient:Chat:CloseChat",
@@ -85,15 +84,22 @@ export const EventNames = {
     clientWEB: {
       OpenClothes: "ClientWEB:Clothes:OpenClothes",
       SexChanged: "ClientWEB:Clothes:SexChanged",
+      KeyRowUpPressed: "ClientWEB:clothes:KeyRowUpPressed",
+      KeyRowLeftPressed: "ClientWEB:clothes:KeyRowLeftPressed",
     },
     WEBclient: {
       ChangeClothes: "WEBclient:Clothes:ChangeClothes",
       ChangeSex: "WEBclient:Clothes:ChangeSex",
-      CloseClothes: "ClientWEB:Clothes:CloseClothes",
+      CloseClothes: "WEBclient:Clothes:CloseClothes",
+      Suggestion: "WEBclient:Clothes:Suggestion",
+      OrderList: "WEBclient:Clothes:OrderList",
     },
   },
   eyeTracker: {
-    localClient: {},
+    localClient: {
+      LeftClickMousePressed: "Local:eyeTracker:LeftClickMousePressed",
+      Manager: "Local:eyeTracker:Manager",
+    },
     localServer: {},
     server: {},
     client: {},

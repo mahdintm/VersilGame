@@ -12,6 +12,16 @@ registerCmd("gp", (player) => {
       3
     )}, z: ${player.pos.z.toFixed(3)}`
   );
+  console.log(
+    `ROT = x: ${player.rot.x}, y: ${player.rot.y}, z: ${player.rot.z}`
+  );
+});
+registerCmd("gpp", (player) => {
+  console.log(
+    `{x: ${player.pos.x.toFixed(3)}, y:${player.pos.y.toFixed(3)}, z:${
+      player.pos.z.toFixed(3) - 1
+    }, heading:${player.rot.z * (180 / Math.PI)}}`
+  );
 });
 
 registerCmd("vs", (player, args) => {
@@ -37,4 +47,23 @@ alt.on("playerDamage", (player) => {
 alt.on("playerDeath", (player) => {
   player.spawn(player.pos);
   player.clearBloodDamage();
+});
+
+registerCmd("front", (player, args) => {
+  if (!args) return;
+  function getVectorInFrontOfPlayer(entity, distance) {
+    const forwardVector = {
+      x: -Math.sin(entity.rot.z + 90) * Math.abs(Math.cos(entity.rot.x)),
+      y: Math.cos(entity.rot.z + 90) * Math.abs(Math.cos(entity.rot.x)),
+      z: Math.sin(entity.rot.x),
+    };
+    const posFront = {
+      x: entity.pos.x + forwardVector.x * distance,
+      y: entity.pos.y + forwardVector.y * distance,
+      z: entity.pos.z,
+    };
+    return new alt.Vector3(posFront.x, posFront.y, posFront.z);
+  }
+  console.log(player.rot);
+  player.pos = getVectorInFrontOfPlayer(player, args);
 });

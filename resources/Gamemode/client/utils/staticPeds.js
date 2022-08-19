@@ -6,7 +6,7 @@ export const staticPeds = {
     isFreezed: true,
     pos: [
       /**
-          console.log(`{x: ${player.pos.x.toFixed(3)}, y:${player.pos.y.toFixed(3)}, z:${player.pos.z.toFixed(3)}, heading:${player.rot.z * (180 / Math.PI)}}`);
+          console.log(`{x: ${player.pos.x.toFixed(3)}, y:${player.pos.y.toFixed(3)}, z:${player.pos.z.toFixed(3) - 1}, heading:${player.rot.z * (180 / Math.PI)}}`);
           @param return This object
         */
       { x: -63.64, y: -798.527, z: 43.226, heading: -39.68504173826947 }, // Tested

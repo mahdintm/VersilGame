@@ -11,6 +11,7 @@ export const EventNames = {
     },
     localServer: {},
     server: {
+      PlayerDetails: "Server:ManagePlayer:PlayerDetails",
       isFreezePlayer: "Server:ManagePlayer:isFreezePlayer",
     },
     client: {},
