@@ -9,3 +9,4 @@ import "./manageStaticBlips";
 import "./peds";
 import "./manageStaticNPCs";
 import "./manageEyeTrackerFounded";
+import "./AFK"
