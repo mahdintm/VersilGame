@@ -112,4 +112,9 @@ export const EventNames = {
       ObjectSelectedFromPlayer: "WEBclient:eyeTracker:ObjectSelectedFromPlayer",
     },
   },
+  introMusic: {
+    clientWEB: {
+      changeVolume: "ClientWEB:introMusic:changeVolume",
+    },
+  },
 };

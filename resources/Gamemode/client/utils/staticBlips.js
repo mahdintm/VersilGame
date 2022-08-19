@@ -27,7 +27,10 @@ export const staticBlips = {
     color: 38,
     scale: 1,
     shortRange: true,
-    pos: [{ x: 432.514, y: -982.259, z: 30.695 }],
+    pos: [
+      { x: 432.514, y: -982.259, z: 30.695 },
+      { x: -1094.031, y: -807.613, z: 19.288 },
+    ],
   },
   MedicalDepartments: {
     name: "Medical Departments",
@@ -44,6 +47,25 @@ export const staticBlips = {
     scale: 1,
     shortRange: true,
     pos: [{ x: 29.196, y: -1350.989, z: 29.33 }],
+  },
+  CityHall: {
+    name: "City Hall",
+    sprite: 526,
+    color: 5,
+    scale: 1,
+    shortRange: true,
+    pos: [
+      { x: -542.387, y: -209.235, z: 37.637 },
+      { x: -1278.105, y: -561.099, z: 30.207 },
+    ],
+  },
+  CourtHouse: {
+    name: "Court House",
+    sprite: 461,
+    color: 13,
+    scale: 1,
+    shortRange: true,
+    pos: [{ x: 242.888, y: -392.149, z: 46.298 }],
   },
   GasStations: {
     name: "Gas Stations",
