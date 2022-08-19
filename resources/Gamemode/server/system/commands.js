@@ -1,11 +1,11 @@
 import * as alt from "alt-server";
+import { EventNames } from "../utils/eventNames";
 import { registerCmd, sendchat } from "./chat";
 
-
 //Free Commands Functions
-function ShowTimeChat(params) {
-    return alt.emitClient(player, "ShowTimeStampCHAT");
+function ShowTimeStamp(player, args) {
+  return alt.emitClient(player, EventNames.chat.server.TimeStamp);
 }
 
 //FreeCommands RegisterCMD
-registerCmd('timechat', ShowTimeChat);
+registerCmd("timestamp", ShowTimeStamp);

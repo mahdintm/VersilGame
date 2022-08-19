@@ -1,10 +1,12 @@
 import * as alt from "alt-client";
 import * as native from "natives";
+import { LocalStorage } from "../system/LocalStorage";
+import { defaultPlayerDetails } from "../utils/defaultPlayerDetails";
 import { EventNames } from "../utils/eventNames";
 import { WebViewStatus } from "../utils/WebViewStatus";
 
-// let _defaultURL = `http://192.168.1.50:8080`, // For Debug mode if you run Vue.js you can import IP in this Variable
-let _defaultURL = `http://assets/Webview/client/allVue/index.html`,
+let _defaultURL = `http://192.168.1.50:8080`, // For Debug mode if you run Vue.js you can import IP in this Variable
+  // let _defaultURL = `http://assets/Webview/client/allVue/index.html`,
   _loadingPageURL = `http://assets/Webview/client/loadingPageVue/index.html`,
   _PhoneURL = `http://assets/Webview/client/phoneVue/index.html`,
   _MusicURL = `http://assets/Webview/client/musicVue/index.html`,
@@ -20,12 +22,50 @@ let _defaultURL = `http://assets/Webview/client/allVue/index.html`,
   isFirstTimeUseStartWebView = true,
   isLoadAllWebViewDoned = false,
   _currentEvents = [],
+  SpawnDetails,
   PlayerDetails;
 
-alt.onServer(EventNames.player.server.PlayerDetails, (playerDetails) => {
-  PlayerDetails = playerDetails;
+alt.onServer(EventNames.player.server.PlayerDetails, (spawnDetails) => {
+  SpawnDetails = spawnDetails;
 });
 export class VGView {
+  static async #getPlayerDetailsFromLocalStorage() {
+    return new Promise((resolve) => {
+      let attempts = 0;
+      const interval = alt.setInterval(async () => {
+        PlayerDetails = await LocalStorage.getPlayerDetails();
+        if (attempts >= 5) {
+          await LocalStorage.Delete("PlayerDetails");
+          await LocalStorage.set("PlayerDetails", defaultPlayerDetails);
+          attempts = 0;
+          return;
+        }
+        if (!PlayerDetails) {
+          attempts += 1;
+          return;
+        }
+        if (!PlayerDetails.isCompleteLoaded) {
+          attempts += 1;
+          return;
+        }
+
+        alt.clearInterval(interval);
+        return resolve(true);
+      }, 100);
+    });
+  }
+  static async #isLoadedPlayerDetailsAndSpawnPos() {
+    if (await VGView.#getPlayerDetailsFromLocalStorage()) {
+      return new Promise((resolve) => {
+        const interval = alt.setInterval(() => {
+          if (SpawnDetails.isCompleteLoaded) {
+            alt.clearInterval(interval);
+            return resolve(true);
+          }
+        }, 100);
+      });
+    }
+  }
   static async #createWebView(url) {
     return new alt.WebView(url, false);
   }
@@ -73,13 +113,6 @@ export class VGView {
     }
   }
   static async #resetLoading() {
-    // Reset Loading Page Webview
-    // Inja bayad yek logger injad beshe ta esme player ro sabt kone va
-    // ma motevajeh beshim che kasi dar che zamani niyaz peyda karde ta reset beshe
-    // Player zamani niyaz peyda mikone be reset shodan ke (404 - not found) begire
-    // Va zamani ke az halate debug mode kharej beshim in mozu' dige nabayad pish biyad o
-    // 100 dar 100 bayad logger, log bendaze ta irade kar ro dar biyarim
-
     await VGView.#loadingPage(true, true);
   }
   static async #getLoading() {
@@ -111,26 +144,41 @@ export class VGView {
     });
   }
   static async #music(isRestart = false) {
-    if (isRestart && _Musicwebview) {
-      await _Musicwebview.destroy();
-      _Musicwebview = undefined;
-      _isReadyMusic = false;
-    }
+    if (await VGView.#isLoadedPlayerDetailsAndSpawnPos()) {
+      if (isRestart && _Musicwebview) {
+        await _Musicwebview.destroy();
+        _Musicwebview = undefined;
+        _isReadyMusic = false;
+      }
 
-    if (!_Musicwebview) {
-      _Musicwebview = await VGView.#createWebView(_MusicURL);
-      _Musicwebview.emit(EventNames.introMusic.clientWEB.changeVolume, 0.3);
-      _Musicwebview.on(`${WebViewStatus.musicVue.EventNames.ready}`, () => {
-        isRestart
-          ? console.log("MusicVue has been reseted, mounted & Ready to use!")
-          : console.log("MusicVue has been mounted & Ready to use!");
+      if (!_Musicwebview) {
+        _Musicwebview = await VGView.#createWebView(_MusicURL);
+        if (PlayerDetails.isPlayIntroMusic) {
+          _Musicwebview.emit(
+            EventNames.introMusic.clientWEB.changeVolume,
+            PlayerDetails.IntroMusicVolume
+          );
+          _Musicwebview.emit(WebViewStatus.IntroVue.EventNames.load);
+        }
+        _Musicwebview.on(`${WebViewStatus.musicVue.EventNames.ready}`, () => {
+          isRestart
+            ? console.log("MusicVue has been reseted, mounted & Ready to use!")
+            : console.log("MusicVue has been mounted & Ready to use!");
 
-        _isReadyMusic = true;
-        return true;
-      });
+          _isReadyMusic = true;
+          return true;
+        });
+      }
     }
   }
   static async #resetMusic() {
+    // Reset Loading Page Webview
+    // Inja bayad yek logger injad beshe ta esme player ro sabt kone va
+    // ma motevajeh beshim che kasi dar che zamani niyaz peyda karde ta reset beshe
+    // Player zamani niyaz peyda mikone be reset shodan ke (404 - not found) begire
+    // Va zamani ke az halate debug mode kharej beshim in mozu' dige nabayad pish biyad o
+    // 100 dar 100 bayad logger, log bendaze ta irade kar ro dar biyarim
+
     VGView.#music(true);
   }
   static async #getMusic() {
@@ -261,9 +309,9 @@ export class VGView {
     );
     return new Promise((resolve) => {
       native.newLoadSceneStartSphere(
-        PlayerDetails.SpawnPos.x,
-        PlayerDetails.SpawnPos.y,
-        PlayerDetails.SpawnPos.z,
+        SpawnDetails.SpawnPos.x,
+        SpawnDetails.SpawnPos.y,
+        SpawnDetails.SpawnPos.z,
         50.0,
         0
       );
@@ -453,8 +501,10 @@ export class VGView {
     await VGView.#phone();
     await VGView.#create();
     if (await VGView.#get())
-      if (await VGView.#isAllComponentsLoaded())
+      if (await VGView.#isAllComponentsLoaded()) {
+        alt.emit(EventNames.player.localClient.startScriptConnection);
         await VGView.#loadingPage(false);
+      }
   }
   /**
    * It is used to take control from player & give this to WebView.

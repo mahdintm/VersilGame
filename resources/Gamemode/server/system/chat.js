@@ -26,7 +26,7 @@ let cmdHandlers = {};
  *
  */
 export function sendchat(player, msg) {
-  alt.emitClient(player, "chat:message", Date.now(), null, msg);
+  alt.emitClient(player, EventNames.chat.server.Message, Date.now(), null, msg);
 }
 
 /**

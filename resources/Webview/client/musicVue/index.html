@@ -1,1 +1,76 @@
-<!DOCTYPE html><html lang=""><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" href="favicon.ico"><title>html</title><link href="css/app.cea26f89.css" rel="preload" as="style"><link href="js/app.7e6c5940.js" rel="preload" as="script"><link href="js/chunk-vendors.2bf6790d.js" rel="preload" as="script"><link href="css/app.cea26f89.css" rel="stylesheet"></head><body><noscript><strong>We're sorry but html doesn't work properly without JavaScript enabled. Please enable it to continue.</strong></noscript><div id="app"></div><script src="js/chunk-vendors.2bf6790d.js"></script><script src="js/app.7e6c5940.js"></script></body></html>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title></title>
+  </head>
+  <body onload="WebViewMounted()">
+    <script>
+      // Variables
+      let sourceAudioTag,
+        AudioTag,
+        AudioVolume,
+        WebViewEvents = {
+          musicVue: {
+            mountedAndReady: "WEBclient:MusicVue:mountedAndReady",
+          },
+          IntroVue: {
+            src: "./Audios/intro1.ogg",
+            load: "ClientWEB:IntroMusic:Load",
+            unLoad: "ClientWEB:IntroMusic:unLoad",
+            changeVolume: "ClientWEB:introMusic:changeVolume",
+          },
+        };
+    </script>
+    <script>
+      // WebView Functions
+      function CreateAudioElement(
+        AudioName,
+        AudioSRC,
+        isLoop = false,
+        AudioType = "audio/ogg"
+      ) {
+        document.title = AudioName;
+        sourceAudioTag = document.createElement("source");
+        AudioTag = document.createElement("audio");
+        sourceAudioTag.setAttribute("src", AudioSRC);
+        sourceAudioTag.setAttribute("type", AudioType);
+        AudioTag.appendChild(sourceAudioTag);
+        AudioTag.setAttribute("autoplay", true);
+        if (isLoop) AudioTag.setAttribute("loop", true);
+        AudioTag.volume = AudioVolume;
+      }
+      function DeleteAudioElement() {
+        if (!AudioTag) return;
+        AudioTag.pause();
+        sourceAudioTag.setAttribute("src", "");
+        sourceAudioTag.setAttribute("type", "");
+        AudioTag.appendChild(sourceAudioTag);
+        AudioTag.load();
+        AudioTag = null;
+      }
+      function ChangeAudioVolume(audioVolume) {
+        if (audioVolume < 0) audioVolume = 0;
+        if (audioVolume > 1) audioVolume = 1;
+        AudioVolume = audioVolume;
+      }
+    </script>
+    <script>
+      // AltV Functions
+      function WebViewMounted() {
+        if ("alt" in window) {
+          alt.emit(WebViewEvents.musicVue.mountedAndReady);
+        }
+        alt.on(WebViewEvents.IntroVue.load, () => {
+          CreateAudioElement("Versil intro", WebViewEvents.IntroVue.src);
+        });
+        alt.on(WebViewEvents.IntroVue.unLoad, () => {
+          DeleteAudioElement();
+        });
+        alt.on(WebViewEvents.IntroVue.changeVolume, ChangeAudioVolume);
+      }
+    </script>
+  </body>
+</html>

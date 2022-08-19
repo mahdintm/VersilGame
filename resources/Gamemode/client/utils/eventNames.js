@@ -7,6 +7,7 @@
 export const EventNames = {
   player: {
     localClient: {
+      startScriptConnection: "Local:WebView:startScriptConnection",
       webViewCompleteLoaded: "Local:WebView:WebViewCompleteLoaded",
     },
     localServer: {},
