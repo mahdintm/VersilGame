@@ -5,7 +5,7 @@ import { character } from "../utils/character";
 import { PlayerData, playerIdGame } from "./account";
 import { send_email } from "./email";
 import { sms } from "./sms";
-import { StaffPoint } from "./staff";
+import { StaffSystem } from "./staff";
 import { LoadedVehicels } from "./vehicles";
 import { playerDetails } from "../utils/playerDetails";
 import { EventNames } from "../utils/eventNames";
@@ -90,7 +90,7 @@ await alt.on("playerDisconnect", async (player, reason) => {
     username: await PlayerData.get(player, "pName"),
   });
   PlayerData.set(player, 'pOnline', 0, true)
-  StaffPoint.sarOFF(player);
+  StaffSystem.sarOFF(player);
   PlayerData.delete(player);
   playerIdGame.delete(player);
 });
