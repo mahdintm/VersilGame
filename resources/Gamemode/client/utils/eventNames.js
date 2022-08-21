@@ -78,10 +78,14 @@ export const EventNames = {
     },
   },
   clothes: {
-    localClient: {},
+    localClient: {
+      ActiveClothes: "local:Clothes:ActiveClothes",
+    },
     localServer: {},
     server: {},
-    client: {},
+    client: {
+      ClothesUiBoxStatus: "Client:Clothes:ClothesUiBoxStatus",
+    },
     clientWEB: {
       OpenClothes: "ClientWEB:Clothes:OpenClothes",
       SexChanged: "ClientWEB:Clothes:SexChanged",
@@ -116,6 +120,23 @@ export const EventNames = {
   introMusic: {
     clientWEB: {
       changeVolume: "ClientWEB:introMusic:changeVolume",
+    },
+  },
+  scoreBoard: {
+    localClient: {
+      ActiveScoreBoard: "local:Clothes:ActiveScoreBoard",
+    },
+    server: {
+      SetScoreBoardDetails: "Server:ScoreBoard:SetScoreBoardDetails",
+    },
+    client: {
+      GetScoreBoardDetails: "Client:ScoreBoard:GetScoreBoardDetails",
+    },
+    clientWEB: {
+      SetScoreBoardDetails: "ClientWEB:ScoreBoard:SetScoreBoardDetails",
+    },
+    WEBclient: {
+      CloseScoreBoard: "WEBclient:ScoreBoard:CloseScoreBoard",
     },
   },
 };
