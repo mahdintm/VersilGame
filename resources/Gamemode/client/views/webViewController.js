@@ -5,8 +5,8 @@ import { defaultPlayerDetails } from "../utils/defaultPlayerDetails";
 import { EventNames } from "../utils/eventNames";
 import { WebViewStatus } from "../utils/WebViewStatus";
 
-// let _defaultURL = `http://192.168.1.50:8080`, // For Debug mode if you run Vue.js you can import IP in this Variable
-  let _defaultURL = `http://assets/Webview/client/allVue/index.html`,
+let _defaultURL = `http://192.168.1.50:8080`, // For Debug mode if you run Vue.js you can import IP in this Variable
+  // let _defaultURL = `http://assets/Webview/client/allVue/index.html`,
   _loadingPageURL = `http://assets/Webview/client/loadingPageVue/index.html`,
   _PhoneURL = `http://assets/Webview/client/phoneVue/index.html`,
   _MusicURL = `http://assets/Webview/client/musicVue/index.html`,
@@ -608,10 +608,18 @@ export class VGView {
         case WebViewStatus.eyeTracker.name:
           await VGView.emit(
             WebViewStatus.eyeTracker.name,
-            "ClientWEB:eyeTracker:MenuStatus",
+            EventNames.eyeTracker.clientWEB.MenuStatus,
             false
           );
           WebViewStatus.eyeTracker.isOpen = false;
+          await VGView.#GameControls(false);
+          break;
+        case WebViewStatus.scoreBoard.name:
+          await VGView.emit(
+            WebViewStatus.scoreBoard.name,
+            WebViewStatus.scoreBoard.EventNames.close
+          );
+          WebViewStatus.scoreBoard.isOpen = false;
           await VGView.#GameControls(false);
           break;
         case WebViewStatus.clothes.name:
