@@ -67,3 +67,15 @@ registerCmd("front", (player, args) => {
   console.log(player.rot);
   player.pos = getVectorInFrontOfPlayer(player, args);
 });
+
+registerCmd("setpos", (player, args) => {
+  if (!args[0]) return;
+  if (!args[1]) return;
+  if (!args[2]) return;
+
+  player.pos = new alt.Vector3(
+    parseFloat(args[0]),
+    parseFloat(args[1]),
+    parseFloat(args[2])
+  );
+});
