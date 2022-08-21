@@ -9,3 +9,6 @@ import "./clothes";
 import "./vehicles";
 import "./commandsTest";
 import "./staff";
+import "./ScoreBoard";
+
+// import "./vgClothes";
