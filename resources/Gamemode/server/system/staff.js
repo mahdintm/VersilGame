@@ -8,6 +8,7 @@ import { ServerSetting } from './server_settings';
 import './CMD_Admin'
 import './CMD_Staff'
 import { Colors } from '../utils/colors';
+import { Hoster } from './hoster';
 
 let SarONs = [],
     interval,
@@ -18,13 +19,15 @@ export class StaffSystem {
         Level: {
             check: async (player, FunctionName) => {
                 if (await StaffSystem.IsAdmin(player)) {
-                    return await PlayerData.get(player, 'pAdmin') >= Admin_Commands[FunctionName]['aLevel'] ? true : false
-                }
-                if (await StaffSystem.IsHelper(player)) {
-                    return await PlayerData.get(player, 'pHelper') >= Admin_Commands[FunctionName]['hLevel'] ? true : false
-                }
-                if (await StaffSystem.IsLeader(player)) {
-                    return await PlayerData.get(player, 'pLeader') >= Admin_Commands[FunctionName]['lLevel'] ? true : false
+                    return await StaffSystem.CheckAdmin(player, Admin_Commands[FunctionName]['aLevel'])
+                } else if (await StaffSystem.IsHelper(player)) {
+                    return await StaffSystem.CheckHelper(player, Admin_Commands[FunctionName]['hLevel'])
+                } else if (await StaffSystem.IsLeader(player)) {
+                    return await StaffSystem.CheckLeader(player, Admin_Commands[FunctionName]['lLevel'])
+                } else if (await Hoster.IsHoster(player)) {
+                    return await Hoster.CheckHoster(player, Admin_Commands[FunctionName]['hoLevel'])
+                } else {
+                    return false
                 }
             },
             get: async (FunctionName, from) => {
@@ -55,7 +58,7 @@ export class StaffSystem {
         Load: async () => {
             let data = await sql(`Select * from AdminCommands`)
             await data.forEach(async element => {
-                Admin_Commands[element.name] = data
+                Admin_Commands[element.name] = element
             });
         }
     }
@@ -64,7 +67,7 @@ export class StaffSystem {
         return await PlayerData.get(player, "pAdmin") >= 1 ? true : false;
     }
     static async CheckAdmin(player, level) {
-        return await PlayerData.get(player, "pAdmin") == level ? true : false;
+        return await PlayerData.get(player, "pAdmin") >= level ? true : false;
     }
     static CheckObject = {
         MakeAdmin: async (player) => {
@@ -75,13 +78,13 @@ export class StaffSystem {
         return await PlayerData.get(player, "pHelper") >= 1 ? true : false;
     }
     static async CheckHelper(player, level) {
-        return await PlayerData.get(player, "pHelper") == level ? true : false;
+        return await PlayerData.get(player, "pHelper") >= level ? true : false;
     }
     static async IsLeader(player) {
         return await PlayerData.get(player, "pLeader") >= 1 ? true : false;
     }
     static async CheckLeader(player, level) {
-        return await PlayerData.get(player, "pLeader") == level ? true : false;
+        return await PlayerData.get(player, "pLeader") >= level ? true : false;
     }
     static async Send_NotAdmin(player) {
         sendchat(player, await Language.GetValue(player.getSyncedMeta('Language'), "YOU_ARE_NOT_ADMIN"))
@@ -277,6 +280,8 @@ export class StaffSystem {
             if (data.pAdmin >= 1) {
                 if (Sp < (await ServerSetting.get('lowestSpAdmin_1') - 10)) {
                     return await sql(`update Account set pHelper="3",pAdmin="0",pCanAdmin="0" where pId="${data.pId}"`)
+                } else {
+                    return await sql(`update Account setpAdmin="1" where pId="${data.pId}"`)
                 }
             } else {
                 return await sql(`update Account set pHelper="3",pAdmin="0",pCanAdmin="0" where pId="${data.pId}"`)
@@ -357,6 +362,8 @@ export class StaffSystem {
                     await PlayerData.set(player, 'pHelper', 3, true);
                     await PlayerData.set(player, 'pAdmin', 0, true);
                     return await PlayerData.set(player, 'pCanAdmin', 0, true)
+                } else {
+                    await PlayerData.set(player, 'pAdmin', 1, true);
                 }
             } else {
                 await PlayerData.set(player, 'pAdmin', 0, true);
@@ -365,12 +372,19 @@ export class StaffSystem {
             }
         } else if ((Sp >= await ServerSetting.get('lowestSpAdmin_1') && Sp < await ServerSetting.get('lowestSpAdmin_2'))) {
             //admin 1
+            console.log(1)
             if (await StaffSystem.IsAdmin(player)) {
+                console.log(2)
+
                 if (Sp < (await ServerSetting.get('lowestSpAdmin_2') - 10)) {
+                    console.log(3)
+
                     return await PlayerData.set(player, 'pAdmin', 1, true);
                 }
             } else {
-                this.#SetPlayerRoleWithCanAdmin(player, AdminLevel)
+                console.log(4)
+
+                this.#SetPlayerRoleWithCanAdmin(player, 1)
             }
         } else if ((Sp >= await ServerSetting.get('lowestSpAdmin_2') && Sp < await ServerSetting.get('lowestSpAdmin_3'))) {
             //admin 2
