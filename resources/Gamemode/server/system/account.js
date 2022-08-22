@@ -90,7 +90,7 @@ export class PlayerData {
     static async set(player, DataName, value, sync_sql = false) {
         try {
             playersdata[player.id][DataName] = value;
-            if (sync_sql) await sql(`UPDATE Account SET ${DataName} = '${value}' WHERE pId = "${await PlayerData.get(player, "pId")}"`);
+            if (sync_sql) await sql(`UPDATE Account SET ${DataName} = "${value}" WHERE pId = "${await PlayerData.get(player, "pId")}"`);
         } catch (error) {
             await logger.addlog.server({
                 locatin: "Server->System->Account->Class Playerdata->set()",
@@ -192,7 +192,7 @@ export class playerIdGame {
 }
 export class FindPlayerAccount {
     static Name(value) {
-        let id = (Object.entries(playersdata).filter((v, index, ar) => v[1].pName.toLocaleLowerCase().match(value.toLocaleLowerCase()) != undefined))
+        let id = (Object.entries(playersdata).filter((v, index, ar) => v[1].pName.toLowerCase().match(value.toLowerCase()) != undefined))
         if (id.length == undefined) {
             return ["undefined", null]
         } else if (id.length == 1) {
@@ -219,7 +219,7 @@ export class FindPlayerAccount {
 
 var reg = new RegExp('^[0-9]$');
 
-export async function FindPlayerForCMD(value) {
+export async function FindPlayerForCMD(player, value) {
     if (reg.test(value)) {
         if (GetPlayerIdAltv(value) != undefined) {
             return FindPlayerAccount.GameID(value)
@@ -227,7 +227,7 @@ export async function FindPlayerForCMD(value) {
             return undefined;
         }
     } else {
-        let f = FindPlayerAccount.name(value)
+        let f = FindPlayerAccount.Name(value)
         if (f[0] == undefined) {
             return undefined;
         } else if (f[0] == "duplicate") {

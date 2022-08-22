@@ -10,10 +10,55 @@ import './CMD_Staff'
 import { Colors } from '../utils/colors';
 
 let SarONs = [],
-    interval;
-
+    interval,
+    Admin_Commands = {};
 
 export class StaffSystem {
+    static CMD = {
+        Level: {
+            check: async (player, FunctionName) => {
+                if (await StaffSystem.IsAdmin(player)) {
+                    return await PlayerData.get(player, 'pAdmin') >= Admin_Commands[FunctionName]['aLevel'] ? true : false
+                }
+                if (await StaffSystem.IsHelper(player)) {
+                    return await PlayerData.get(player, 'pHelper') >= Admin_Commands[FunctionName]['hLevel'] ? true : false
+                }
+                if (await StaffSystem.IsLeader(player)) {
+                    return await PlayerData.get(player, 'pLeader') >= Admin_Commands[FunctionName]['lLevel'] ? true : false
+                }
+            },
+            get: async (FunctionName, from) => {
+                switch (from) {
+                    case "Admin":
+                        return Admin_Commands[FunctionName]["aLevel"]
+                    case "Helper":
+                        return Admin_Commands[FunctionName]["hLevel"]
+                    case "Leader":
+                        return Admin_Commands[FunctionName]["lLevel"]
+                    default:
+                        break;
+                }
+            },
+            set: (FunctionName, from, Level) => {
+                switch (from) {
+                    case "Admin":
+                        return Admin_Commands[FunctionName]["aLevel"] = Level
+                    case "Helper":
+                        return Admin_Commands[FunctionName]["hLevel"] = Level
+                    case "Leader":
+                        return Admin_Commands[FunctionName]["lLevel"] = Level
+                    default:
+                        break;
+                }
+            }
+        },
+        Load: async () => {
+            let data = await sql(`Select * from AdminCommands`)
+            await data.forEach(async element => {
+                Admin_Commands[element.name] = data
+            });
+        }
+    }
     //admin
     static async IsAdmin(player) {
         return await PlayerData.get(player, "pAdmin") >= 1 ? true : false;
@@ -23,7 +68,7 @@ export class StaffSystem {
     }
     static CheckObject = {
         MakeAdmin: async (player) => {
-            return await PlayerData.get(player, "pMakeAdmin") >= level ? true : false;
+            return await PlayerData.get(player, "pMakeAdmin") == true ? true : false;
         }
     }
     static async IsHelper(player) {
@@ -392,6 +437,9 @@ export class StaffPoint {
         await PlayerData.set(player, 'pStaff_Point', JSON.stringify(playerstaff), true)
     }
 }
+
+
+StaffSystem.CMD.Load()
 
 // StaffPoint.LoodAllStaff()
 // StaffPoint.CreateInterval(await Time.GetNameDay())

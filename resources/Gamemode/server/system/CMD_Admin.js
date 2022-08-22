@@ -1,23 +1,31 @@
-import { FindPlayerForCMD, PlayerData } from "./account";
+import { FindPlayerAccount, FindPlayerForCMD, PlayerData } from "./account";
 import { registerCmd, sendchat } from "./chat";
-import { StaffSystem } from "./staff";
+import { StaffPoint, StaffSystem } from "./staff";
 
-function MakeAdmin(player, args) {
-    if (!StaffSystem.IsAdmin(player, 1)) return StaffSystem.Send_NotAdmin(player)
-    if (!StaffSystem.CheckObject.MakeAdmin(player)) return StaffSystem.Send_Auth(player)
+async function MakeAdmin(player, args) {
+    if (!await StaffSystem.IsAdmin(player)) return await StaffSystem.Send_NotAdmin(player)
+    if (!(await StaffSystem.CheckObject.MakeAdmin(player) && await StaffSystem.CMD.Level.check('MakeAdmin')))
+        return await StaffSystem.Send_Auth(player)
     if (args[0] == undefined || args[1] == undefined)
         return sendchat(player, 'makeadmin(ma) [PlayerName/PlayerID] [AdminLevel]');
-    let taraf = FindPlayerForCMD(player, args[0])
+    let taraf = await FindPlayerForCMD(player, args[0])
     if (taraf == undefined) return
 
-    PlayerData.set(taraf, 'pAdmin', args[1], true)
+    await PlayerData.set(taraf, 'pAdmin', args[1], true)
 }
 
-function name(params) {
+// function SetStaffPoint(player, args) {
+//     StaffPoint.set(player, args[0])
+// }
 
-}
+
+// function test(player, args) {
+
+// }
 registerCmd('makeadmin', MakeAdmin)
-registerCmd('ma', MakeAdmin)
+// registerCmd('ma', MakeAdmin)
+// registerCmd('test', SetStaffPoint)
+// registerCmd('test1', (player) => { StaffSystem.CalculatorRoleAll() })
 // //Staff Commands Functions
 // function AdminVehicle(player, args) {
 //     if (!StaffSystem.IsAdmin(player)) return AdminSystem.Send_NotAdmin(player);
