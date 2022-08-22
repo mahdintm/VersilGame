@@ -90,7 +90,7 @@ export class PlayerData {
     static async set(player, DataName, value, sync_sql = false) {
         try {
             playersdata[player.id][DataName] = value;
-            if (sync_sql) await sql(`UPDATE Account SET ${DataName} = "${value}" WHERE pId = "${await PlayerData.get(player, "pId")}"`);
+            if (sync_sql) await sql(`UPDATE Account SET ${DataName} = '${value}' WHERE pId = "${await PlayerData.get(player, "pId")}"`);
         } catch (error) {
             await logger.addlog.server({
                 locatin: "Server->System->Account->Class Playerdata->set()",
