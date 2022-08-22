@@ -64,7 +64,7 @@ export class VehicleClass {
             const allvehs = alt.Vehicle.all
             for (let i = 0; i < allvehs.length; i++) {
                 if (GameID[i] == undefined) continue;
-                return GameID[i] = vehicle
+                return GameID[i] = vehicle.id
             }
         }
     };
@@ -235,13 +235,11 @@ export class VehicleClass {
         async admin(player, Model) {
             let VehicleModel = Model;
             const NewVehicle = await new alt.Vehicle(VehicleModel, player.pos.x, player.pos.y, player.pos.z, player.rot.x, player.rot.y, player.rot.z);
-            let newsql = await sql(`INSERT INTO Vehicles (model,pos,type,statictype) VALUES (${VehicleModel},'${JSON.stringify({ x: player.pos.x, y: player.pos.y, z: player.pos.z, rx: player.rot.x, ry: player.rot.y, rz: player.rot.z })}',"faction","${sttype}")`)
             let vehdet = await VehicleClass.GetVehicleDetail(VehicleModel)
             let Plate = await PlayerData.get(player, "pAdmin") == 10 ? NewVehicle.numberPlateText = "Owner" : NewVehicle.numberPlateText = "Admin Veh"
-
             vehicles[NewVehicle.id] = {
                 model: VehicleModel,
-                type: "faction",
+                type: "admin",
                 pos: {
                     x: player.pos.x,
                     y: player.pos.y,
@@ -251,7 +249,7 @@ export class VehicleClass {
                     rz: player.rot.z,
                 },
                 plate: Plate,
-                gameid: await VehicleClass.id(NewVehicle.id),
+                gameid: await VehicleClass.gameid.newid(NewVehicle),
                 maxspeed: vehdet.MaxSpeed,
                 maxfuel: vehdet.MaxFuel,
                 fuel: vehdet.MaxFuel,
@@ -270,9 +268,10 @@ export class VehicleClass {
                     dirtLevel: 0,
                 },
                 engine: false, // Boolean
-                sqlid: newsql.insertId,
+                sqlid: null,
                 factionid: -1, // -1 for none faction
             }
+            await player.setIntoVehicle(NewVehicle, 1)
         }
     };
     static load = {

@@ -1,6 +1,7 @@
 import { FindPlayerAccount, FindPlayerForCMD, PlayerData } from "./account";
 import { registerCmd, sendchat } from "./chat";
 import { StaffPoint, StaffSystem } from "./staff";
+import { VehicleClass } from "./vehicles";
 
 async function MakeAdmin(player, args) {
     if (!await StaffSystem.IsAdmin(player)) return await StaffSystem.Send_NotAdmin(player)
@@ -50,6 +51,17 @@ async function SetStaffPoint(player, args) {
     await StaffPoint.set(taraf, parseInt(args[1]))
     await StaffSystem.CalculatorRole(player)
 }
+async function AdminVehicle(player, args) {
+    if (!await StaffSystem.IsAdmin(player)) return await StaffSystem.Send_NotAdmin(player)
+    if (!await StaffSystem.CMD.Level.check(player, 'AdminVehicle'))
+        return await StaffSystem.Send_Auth(player)
+    if (args[0] == undefined)
+        return sendchat(player, 'AdminVehicle(veh) [Model]');
+    //--------------------------------------------------
+    await VehicleClass.create.admin(player, args[0])
+
+}
+
 registerCmd('makeadmin', MakeAdmin)
 registerCmd('MA', MakeAdmin)
 registerCmd('GiveStaffPoint', GiveStaffPoint)
@@ -58,6 +70,8 @@ registerCmd('TakeStaffPoint', TakeStaffPoint)
 registerCmd('TakeSP', TakeStaffPoint)
 registerCmd('SetStaffPoint', SetStaffPoint)
 registerCmd('SetSP', SetStaffPoint)
+registerCmd('AdminVehicle', AdminVehicle)
+registerCmd('veh', AdminVehicle)
 
 registerCmd("test", async (player, args) => {
     await PlayerData.set(player, 'pAdmin', args[0], true)
