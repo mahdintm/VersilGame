@@ -135,6 +135,9 @@ alt.on("keydown", async (key) => {
       break;
     case 0x14:
       // CapsLock pressed
+      if (alt.isConsoleOpen()) return;
+      if (native.isPauseMenuActive()) return;
+
       alt.emit(EventNames.scoreBoard.localClient.ActiveScoreBoard, true);
       break;
   }

@@ -124,7 +124,8 @@ export const EventNames = {
   },
   scoreBoard: {
     localClient: {
-      ActiveScoreBoard: "local:Clothes:ActiveScoreBoard",
+      ActiveScoreBoard: "local:ScoreBoard:ActiveScoreBoard",
+      LeftClickMousePressed: "Local:ScoreBoard:LeftClickMousePressed",
     },
     server: {
       SetScoreBoardDetails: "Server:ScoreBoard:SetScoreBoardDetails",

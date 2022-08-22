@@ -7,7 +7,7 @@ import { VGEyeTracker } from "../views/eyeTracker";
 import { VGPeds } from "./peds";
 import { ClothesDetails } from "../utils/ClothesDetails";
 import { VGCameraClothes } from "../views/cameraClothes";
-import { GetScoreBoardDetails } from "../views/scoreBoard";
+import { VGScoreBoard } from "../views/scoreBoard";
 
 let eyeTragerInterval = false,
   VehicleSpeedOmeterInterval = false,
@@ -19,7 +19,8 @@ let eyeTragerInterval = false,
   KeyWOrSStatus = false,
   SetZoomCameraWithKeysStatus = false,
   KeyZoomStatus = false,
-  ScoreBoardStatus = false;
+  ScoreBoardStatus = false,
+  disableLeftClickControlFromScoreBoard = false;
 
 export function ChangeValueFromVariable(Variable, Value) {
   switch (Variable) {
@@ -56,6 +57,9 @@ export function ChangeValueFromVariable(Variable, Value) {
     case "ScoreBoardStatus":
       ScoreBoardStatus = Value;
       break;
+    case "disableLeftClickControlFromScoreBoard":
+      disableLeftClickControlFromScoreBoard = Value;
+      break;
   }
 }
 alt.everyTick(() => {
@@ -82,6 +86,9 @@ alt.everyTick(() => {
   if (SetZoomCameraWithKeysStatus && !SetZRotCameraWithKeyWStatus) {
     VGCameraClothes.ZoomCamera(KeyZoomStatus);
   }
+  if (disableLeftClickControlFromScoreBoard) {
+    VGScoreBoard.DisableLeftClickControlAction();
+  }
   // console.log(native.getInteriorFromEntity(alt.Player.local.scriptID));
 });
 
@@ -103,7 +110,7 @@ alt.setInterval(() => {
 
   //rase har sanie
   if (ScoreBoardStatus) {
-    GetScoreBoardDetails();
+    VGScoreBoard.GetScoreBoardDetails();
   }
 
   // console.log("Ping:", alt.getPing());

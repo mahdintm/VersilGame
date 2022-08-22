@@ -381,6 +381,7 @@ export class VGView {
       const view = await VGView.#get();
       await view.emit(WebViewStatus[ViewName].EventNames.unLoad);
       WebViewStatus[ViewName].isActive = false;
+      WebViewStatus[ViewName].isOpen = false;
       await VGView.#GameControls(false);
       if (ViewName == "login")
         _Musicwebview.emit(WebViewStatus.IntroVue.EventNames.unLoad);
@@ -578,6 +579,11 @@ export class VGView {
           break;
         case WebViewStatus.clothes.name:
           WebViewStatus.clothes.isOpen = true;
+          break;
+        case WebViewStatus.scoreBoard.name:
+          console.log("ehem");
+          WebViewStatus.scoreBoard.isOpen = true;
+          VGView.#GameControls(true);
           break;
       }
       return true;

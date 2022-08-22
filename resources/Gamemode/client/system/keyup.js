@@ -22,6 +22,7 @@ alt.on("keyup", async (key) => {
       if (native.isPauseMenuActive()) return;
 
       alt.emit(EventNames.eyeTracker.localClient.LeftClickMousePressed);
+      alt.emit(EventNames.scoreBoard.localClient.LeftClickMousePressed);
       break;
     case 0x1b:
       // ESC key pressed
@@ -99,6 +100,9 @@ alt.on("keyup", async (key) => {
       break;
     case 0x14:
       // CapsLock pressed
+      if (alt.isConsoleOpen()) return;
+      if (native.isPauseMenuActive()) return;
+
       alt.emit(EventNames.scoreBoard.localClient.ActiveScoreBoard, false);
       break;
   }
