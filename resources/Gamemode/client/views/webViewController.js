@@ -5,8 +5,8 @@ import { defaultPlayerDetails } from "../utils/defaultPlayerDetails";
 import { EventNames } from "../utils/eventNames";
 import { WebViewStatus } from "../utils/WebViewStatus";
 
-// let _defaultURL = `http://192.168.1.50:8080`, // For Debug mode if you run Vue.js you can import IP in this Variable
-let _defaultURL = `http://assets/Webview/client/allVue/index.html`,
+let _defaultURL = `http://192.168.1.50:8080`, // For Debug mode if you run Vue.js you can import IP in this Variable
+  // let _defaultURL = `http://assets/Webview/client/allVue/index.html`,
   _loadingPageURL = `http://assets/Webview/client/loadingPageVue/index.html`,
   _PhoneURL = `http://assets/Webview/client/phoneVue/index.html`,
   _MusicURL = `http://assets/Webview/client/musicVue/index.html`,
@@ -23,7 +23,8 @@ let _defaultURL = `http://assets/Webview/client/allVue/index.html`,
   isLoadAllWebViewDoned = false,
   _currentEvents = [],
   SpawnDetails,
-  PlayerDetails;
+  PlayerDetails,
+  DebugMode = false;
 
 alt.onServer(EventNames.player.server.PlayerDetails, (spawnDetails) => {
   SpawnDetails = spawnDetails;
@@ -84,7 +85,8 @@ export class VGView {
         _Loadingwebview.on(
           `${WebViewStatus.loadingPage.EventNames.ready}`,
           () => {
-            console.log("----- Loading Page Webview has been mounted -----");
+            if (DebugMode)
+              console.log("----- Loading Page Webview has been mounted -----");
             _isReadyLoading = true;
           }
         );
@@ -106,7 +108,8 @@ export class VGView {
             _Loadingwebview = undefined;
             _isReadyLoading = false;
             isLoadAllWebViewDoned = true;
-            console.log("----- Loading Page Webview has been destroy -----");
+            if (DebugMode)
+              console.log("----- Loading Page Webview has been destroy -----");
           }
         );
       }
@@ -161,9 +164,12 @@ export class VGView {
           _Musicwebview.emit(WebViewStatus.IntroVue.EventNames.load);
         }
         _Musicwebview.on(`${WebViewStatus.musicVue.EventNames.ready}`, () => {
-          isRestart
-            ? console.log("MusicVue has been reseted, mounted & Ready to use!")
-            : console.log("MusicVue has been mounted & Ready to use!");
+          if (DebugMode)
+            isRestart
+              ? console.log(
+                  "MusicVue has been reseted, mounted & Ready to use!"
+                )
+              : console.log("MusicVue has been mounted & Ready to use!");
 
           _isReadyMusic = true;
           return true;
@@ -219,9 +225,10 @@ export class VGView {
     if (!_Phonewebview) {
       _Phonewebview = await VGView.#createWebView(_PhoneURL);
       _Phonewebview.on(`${WebViewStatus.phone.EventNames.ready}`, () => {
-        isRestart
-          ? console.log("Phone has been reseted, mounted & Ready to use!")
-          : console.log("Phone has been mounted & Ready to use!");
+        if (DebugMode)
+          isRestart
+            ? console.log("Phone has been reseted, mounted & Ready to use!")
+            : console.log("Phone has been mounted & Ready to use!");
 
         _isReadyPhone = true;
         return true;
@@ -267,9 +274,10 @@ export class VGView {
     if (!_webview) {
       _webview = await VGView.#createWebView(_defaultURL);
       _webview.on(EventNames.allVue.WEBclient.mountedAndReady, () => {
-        isRestart
-          ? console.log("WebView has been reseted, mounted & Ready to use!")
-          : console.log("WebView has been mounted & Ready to use!");
+        if (DebugMode)
+          isRestart
+            ? console.log("WebView has been reseted, mounted & Ready to use!")
+            : console.log("WebView has been mounted & Ready to use!");
 
         _isReady = true;
         return true;
@@ -367,8 +375,7 @@ export class VGView {
         await VGView.#GameControls(true);
       }
       WebViewStatus[ViewName].isActive = true;
-
-      console.log(ViewName);
+      if (DebugMode) console.log(ViewName);
       return true;
     } catch (error) {
       return false;
@@ -488,7 +495,7 @@ export class VGView {
       const view = await VGView.#get();
       view.emit(eventName, ...args);
     }
-    console.log("VGView.emit: ", eventName, ...args);
+    if (DebugMode) console.log("VGView.emit: ", eventName, ...args);
   }
   /**
    * This feature must be used when the player connects to the server,
@@ -533,7 +540,7 @@ export class VGView {
    * @memberof VGView
    */
   static async AudioRequest(AudioName) {
-    console.log(AudioName, "This is not worked");
+    if (DebugMode) console.log(AudioName, "This is not worked");
   }
   /**
    * This feature has not been created yet.
@@ -581,7 +588,6 @@ export class VGView {
           WebViewStatus.clothes.isOpen = true;
           break;
         case WebViewStatus.scoreBoard.name:
-          console.log("ehem");
           WebViewStatus.scoreBoard.isOpen = true;
           VGView.#GameControls(true);
           break;
@@ -636,7 +642,7 @@ export class VGView {
       }
       return true;
     } catch (error) {
-      console.log(7);
+      if (DebugMode) console.log(7);
       return false;
     }
   }
@@ -675,7 +681,7 @@ export class VGView {
    * @memberof VGView
    */
   static async unload(ViewName) {
-    console.log("unload", ViewName);
+    if (DebugMode) console.log("unload", ViewName);
     if (await VGView.#isFirstTimeCompeleteLoaded()) {
       await VGView.#closeWebView(ViewName);
       if (await VGView.#isClosed(ViewName)) {
