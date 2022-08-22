@@ -36,7 +36,7 @@ async function ConnectionComplet(player) {
   alt.on(EventNames.player.localClient.startScriptConnection, async () => {
     alt.emitServer("SyncData_LOCAL", {
       // DiscordID: alt.Discord.currentUser.id,
-      Language: await LocalStorage.get("WebLanguage"),
+      Language: (await LocalStorage.getPlayerDetails()).WebLanguage,
     });
     native.destroyCam(FisrtPlayerCamera, false);
     LoadLoginPage(); //for load web view login page
