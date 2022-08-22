@@ -4,34 +4,65 @@ import { StaffPoint, StaffSystem } from "./staff";
 
 async function MakeAdmin(player, args) {
     if (!await StaffSystem.IsAdmin(player)) return await StaffSystem.Send_NotAdmin(player)
-    if (!(await StaffSystem.CheckObject.MakeAdmin(player) && await StaffSystem.CMD.Level.check('MakeAdmin')))
+    if (!(await StaffSystem.CheckObject.MakeAdmin(player) && await StaffSystem.CMD.Level.check(player, 'MakeAdmin')))
         return await StaffSystem.Send_Auth(player)
     if (args[0] == undefined || args[1] == undefined)
         return sendchat(player, 'makeadmin(ma) [PlayerName/PlayerID] [AdminLevel]');
     let taraf = await FindPlayerForCMD(player, args[0])
     if (taraf == undefined) return
-
+    //--------------------------------------------------
     await PlayerData.set(taraf, 'pAdmin', args[1], true)
+    await StaffSystem.CalculatorRole(player)
 }
-
-// function SetStaffPoint(player, args) {
-//     StaffPoint.set(player, args[0])
-// }
-
-
-// function test(player, args) {
-
-// }
+async function GiveStaffPoint(player, args) {
+    if (!await StaffSystem.IsAdmin(player)) return await StaffSystem.Send_NotAdmin(player)
+    if (!await StaffSystem.CMD.Level.check(player, 'GiveStaffPoint'))
+        return await StaffSystem.Send_Auth(player)
+    if (args[0] == undefined || args[1] == undefined)
+        return sendchat(player, 'GiveStaffPoint(GiveSP) [PlayerName/PlayerID] [Amount]');
+    let taraf = await FindPlayerForCMD(player, args[0])
+    if (taraf == undefined) return
+    //--------------------------------------------------
+    await StaffPoint.give(taraf, parseInt(args[1]))
+    await StaffSystem.CalculatorRole(player)
+}
+async function TakeStaffPoint(player, args) {
+    if (!await StaffSystem.IsAdmin(player)) return await StaffSystem.Send_NotAdmin(player)
+    if (!await StaffSystem.CMD.Level.check(player, 'TakeStaffPoint'))
+        return await StaffSystem.Send_Auth(player)
+    if (args[0] == undefined || args[1] == undefined)
+        return sendchat(player, 'TakeStaffPoint(TakeSP) [PlayerName/PlayerID] [Amount]');
+    let taraf = await FindPlayerForCMD(player, args[0])
+    if (taraf == undefined) return
+    //--------------------------------------------------
+    await StaffPoint.take(taraf, parseInt(args[1]))
+    await StaffSystem.CalculatorRole(player)
+}
+async function SetStaffPoint(player, args) {
+    if (!await StaffSystem.IsAdmin(player)) return await StaffSystem.Send_NotAdmin(player)
+    if (!await StaffSystem.CMD.Level.check(player, 'SetStaffPoint'))
+        return await StaffSystem.Send_Auth(player)
+    if (args[0] == undefined || args[1] == undefined)
+        return sendchat(player, 'SetStaffPoint(SetSP) [PlayerName/PlayerID] [Amount]');
+    let taraf = await FindPlayerForCMD(player, args[0])
+    if (taraf == undefined) return
+    //--------------------------------------------------
+    await StaffPoint.set(taraf, parseInt(args[1]))
+    await StaffSystem.CalculatorRole(player)
+}
 registerCmd('makeadmin', MakeAdmin)
-// registerCmd('ma', MakeAdmin)
-// registerCmd('test', SetStaffPoint)
-// registerCmd('test1', (player) => { StaffSystem.CalculatorRoleAll() })
-// //Staff Commands Functions
-// function AdminVehicle(player, args) {
-//     if (!StaffSystem.IsAdmin(player)) return AdminSystem.Send_NotAdmin(player);
-//     if (!StaffSystem.CheckAdmin(player, 1)) return AdminSystem.Send_NotAdmin(player);
+registerCmd('MA', MakeAdmin)
+registerCmd('GiveStaffPoint', GiveStaffPoint)
+registerCmd('GiveSP', GiveStaffPoint)
+registerCmd('TakeStaffPoint', TakeStaffPoint)
+registerCmd('TakeSP', TakeStaffPoint)
+registerCmd('SetStaffPoint', SetStaffPoint)
+registerCmd('SetSP', SetStaffPoint)
 
-// }
+registerCmd("test", async (player, args) => {
+    await PlayerData.set(player, 'pAdmin', args[0], true)
+});
+
 
 
 // registerCmd('veh', AdminVehicle)
