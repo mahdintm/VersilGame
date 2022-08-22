@@ -97,5 +97,9 @@ alt.on("keyup", async (key) => {
 
       alt.emit(EventNames.eyeTracker.localClient.Manager, false);
       break;
+    case 0x14:
+      // CapsLock pressed
+      alt.emit(EventNames.scoreBoard.localClient.ActiveScoreBoard, false);
+      break;
   }
 });

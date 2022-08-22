@@ -26,7 +26,7 @@ export let WebViewStatus = {
   },
   login: {
     name: "login",
-    priority: 90,
+    priority: 95,
     isActive: false,
     isOpen: false,
     isMultiView: false,
@@ -35,6 +35,19 @@ export let WebViewStatus = {
       load: "ClientWEB:LoginWebView:Load",
       unLoad: "ClientWEB:LoginWebView:unLoad",
       close: "ClientWEB:LoginWebView:close",
+    },
+  },
+  scoreBoard: {
+    name: "scoreBoard",
+    priority: 90,
+    isActive: false,
+    isOpen: false,
+    isMultiView: false,
+    isNeedGameControl: false,
+    EventNames: {
+      load: "ClientWEB:scoreBoardWebView:Load",
+      unLoad: "ClientWEB:scoreBoardWebView:unLoad",
+      close: "ClientWEB:scoreBoardWebView:close",
     },
   },
   chat: {

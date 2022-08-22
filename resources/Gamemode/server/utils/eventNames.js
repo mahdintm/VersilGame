@@ -74,4 +74,18 @@ export const EventNames = {
       AddMessage: "WEBClient:Chat:AddMessage",
     },
   },
+  scoreBoard: {
+    localClient: {
+      ActiveScoreBoard: "local:Clothes:ActiveScoreBoard",
+    },
+    server: {
+      SetScoreBoardDetails: "Server:ScoreBoard:SetScoreBoardDetails",
+    },
+    client: {
+      GetScoreBoardDetails: "Client:ScoreBoard:GetScoreBoardDetails",
+    },
+    clientWEB: {
+      SetScoreBoardDetails: "ClientWEB:ScoreBoard:SetScoreBoardDetails",
+    },
+  },
 };

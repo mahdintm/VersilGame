@@ -34,7 +34,11 @@ function CreateClothesPed(Gender) {
     });
   }
 }
+
 alt.on(EventNames.allVue.localClient.loadWebviews, async () => {
+  alt.on(EventNames.clothes.localClient.ActiveClothes, () => {
+    alt.emitServer();
+  });
   VGView.on(EventNames.clothes.WEBclient.ChangeSex, (Sex) => {
     alt.emitServer("SERVER:ChangeSex", Sex);
   });

@@ -7,6 +7,7 @@ import { VGEyeTracker } from "../views/eyeTracker";
 import { VGPeds } from "./peds";
 import { ClothesDetails } from "../utils/ClothesDetails";
 import { VGCameraClothes } from "../views/cameraClothes";
+import { GetScoreBoardDetails } from "../views/scoreBoard";
 
 let eyeTragerInterval = false,
   VehicleSpeedOmeterInterval = false,
@@ -17,7 +18,8 @@ let eyeTragerInterval = false,
   SetZRotCameraWithKeyWStatus = false,
   KeyWOrSStatus = false,
   SetZoomCameraWithKeysStatus = false,
-  KeyZoomStatus = false;
+  KeyZoomStatus = false,
+  ScoreBoardStatus = false;
 
 export function ChangeValueFromVariable(Variable, Value) {
   switch (Variable) {
@@ -51,9 +53,11 @@ export function ChangeValueFromVariable(Variable, Value) {
     case "KeyZoomStatus":
       KeyZoomStatus = Value;
       break;
+    case "ScoreBoardStatus":
+      ScoreBoardStatus = Value;
+      break;
   }
 }
-
 alt.everyTick(() => {
   EveryTickEvents();
   // VGEyeTracker.GetObject();
@@ -81,7 +85,27 @@ alt.everyTick(() => {
   // console.log(native.getInteriorFromEntity(alt.Player.local.scriptID));
 });
 
-// setInterval(() => {
-//   console.log("Ping:", alt.getPing());
-//   console.log("FPS:", alt.getFps());
-// }, 2000);
+alt.setInterval(() => {
+  const timeNow = new Date();
+  const nowHoure = timeNow.getHours();
+  const nowMinute = timeNow.getMinutes();
+  const nowSecond = timeNow.getSeconds();
+  //rase har saat
+  if (nowMinute < 1 && nowSecond < 1) {
+    //rase har 24saat
+    if (nowHoure == 24) {
+    }
+    //rase har saat
+  }
+  //rase har daqiqe
+  if (nowSecond < 1) {
+  }
+
+  //rase har sanie
+  if (ScoreBoardStatus) {
+    GetScoreBoardDetails();
+  }
+
+  // console.log("Ping:", alt.getPing());
+  // console.log("FPS:", alt.getFps());
+}, 1000);
