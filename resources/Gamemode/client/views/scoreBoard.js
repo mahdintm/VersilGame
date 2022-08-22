@@ -25,6 +25,7 @@ alt.on(EventNames.allVue.localClient.loadWebviews, () => {
       );
     }
     VGView.once(EventNames.scoreBoard.WEBclient.CloseScoreBoard, async () => {
+      ChangeValueFromVariable("ScoreBoardStatus", false);
       await VGView.unload(WebViewStatus.scoreBoard.name);
     });
   });

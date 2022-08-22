@@ -23,8 +23,8 @@ class VGScoreBoardServer {
     const ScoreBoardDetails = {
       PlayersLimit: 1024,
       ConnectedPlayers: this.#GetConnectedPlayers(),
-      UpTimeServer: "unknow",
-      PlayerPlayTime: "unknow",
+      UpTimeServer: "unknown",
+      PlayerPlayTime: "unknown",
       PlayersDetails: await this.#GetPlayersDetails(),
     };
     return ScoreBoardDetails;

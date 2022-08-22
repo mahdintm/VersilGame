@@ -58,7 +58,6 @@ export function ChangeValueFromVariable(Variable, Value) {
       break;
   }
 }
-let lastSecond = null;
 alt.everyTick(() => {
   EveryTickEvents();
   // VGEyeTracker.GetObject();
@@ -84,7 +83,9 @@ alt.everyTick(() => {
     VGCameraClothes.ZoomCamera(KeyZoomStatus);
   }
   // console.log(native.getInteriorFromEntity(alt.Player.local.scriptID));
+});
 
+alt.setInterval(() => {
   const timeNow = new Date();
   const nowHoure = timeNow.getHours();
   const nowMinute = timeNow.getMinutes();
@@ -99,17 +100,12 @@ alt.everyTick(() => {
   //rase har daqiqe
   if (nowSecond < 1) {
   }
-  if (lastSecond != nowSecond) {
-    //rase har sanie
-    if (ScoreBoardStatus) {
-      console.log(lastSecond);
-      GetScoreBoardDetails();
-    }
-  }
-  lastSecond = nowSecond;
-});
 
-// setInterval(() => {
-//   console.log("Ping:", alt.getPing());
-//   console.log("FPS:", alt.getFps());
-// }, 2000);
+  //rase har sanie
+  if (ScoreBoardStatus) {
+    GetScoreBoardDetails();
+  }
+
+  // console.log("Ping:", alt.getPing());
+  // console.log("FPS:", alt.getFps());
+}, 1000);
