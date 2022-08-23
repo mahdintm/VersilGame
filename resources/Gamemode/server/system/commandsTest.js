@@ -8,12 +8,23 @@ registerCmd("g", (player) => {
 });
 registerCmd("gp", (player) => {
   console.log(
-    `x: ${player.pos.x.toFixed(3)}, y: ${player.pos.y.toFixed(
+    `{x: ${player.pos.x.toFixed(3)}, y: ${player.pos.y.toFixed(
       3
-    )}, z: ${player.pos.z.toFixed(3)}`
+    )}, z: ${player.pos.z.toFixed(3)},`
   );
+  console.log(`rx: ${player.rot.x}, ry: ${player.rot.y}, rz: ${player.rot.z}}`);
+});
+registerCmd("gpc", (player) => {
   console.log(
-    `ROT = x: ${player.rot.x}, y: ${player.rot.y}, z: ${player.rot.z}`
+    `{x: ${player.pos.x.toFixed(3)}, y:${player.pos.y.toFixed(
+      3
+    )}, z:${player.pos.z.toFixed(3)},`
+  );
+
+  console.log(
+    `rx: ${player.rot.x}, ry: ${player.rot.y}, rz: ${
+      player.rot.z * (180 / Math.PI)
+    }}`
   );
 });
 registerCmd("gpp", (player) => {
@@ -23,7 +34,6 @@ registerCmd("gpp", (player) => {
     }, heading:${player.rot.z * (180 / Math.PI)}}`
   );
 });
-
 registerCmd("vs", (player, args) => {
   if (!args) return;
   if (!player.vehicle)
