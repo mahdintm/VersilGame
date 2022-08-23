@@ -1,7 +1,8 @@
 import "./login";
 import "./chat";
-import "./clothes";
+import "./clothesShop";
 import "./vehicle";
 import "./eyeTracker";
 import "./webViewController";
 import "./scoreBoard";
+
