@@ -78,11 +78,51 @@ export class VGPeds {
   static async #SetHeadingOnPed(ped, heading) {
     native.setEntityHeading(ped, heading);
   }
+  static #SetPedOnFoot(ped) {
+    const pedPos = native.getEntityCoords(
+      ped,
+      !native.isEntityDead(ped, false)
+    );
+    native.getGroundZFor3dCoord(
+      pedPos.x,
+      pedPos.y,
+      pedPos.z + 1,
+      1,
+      false,
+      false
+    )[1];
+  }
+  static #SetPropOnPed(ped, propId, drawableId, textureId) {
+    native.setPedPropIndex(ped, propId, drawableId, textureId, true);
+  }
+  static #SetComponentOnPed(ped, componentId, drawableId, textureId) {
+    if (componentId == 11 && drawableId == 0)
+      return native.setPedComponentVariation(
+        ped,
+        componentId,
+        drawableId,
+        textureId,
+        0
+      );
+
+    native.setPedComponentVariation(ped, componentId, drawableId, textureId, 2);
+  }
   static CreateStaticPed(PedDetails) {
     this.#CreatePed(PedDetails);
   }
   static CreateUnicPed(PedDetails) {
     this.#CreateUnicPed(PedDetails);
+  }
+  static ClearPropsWithPedName(PedName) {
+    unicPeds.forEach((unicPed) => {
+      if (unicPed.name == PedName) {
+        native.clearPedProp(unicPed.ped, 0);
+        native.clearPedProp(unicPed.ped, 1);
+        native.clearPedProp(unicPed.ped, 2);
+        native.clearPedProp(unicPed.ped, 6);
+        native.clearPedProp(unicPed.ped, 7);
+      }
+    });
   }
   static DeleteUnicPed(PedName) {
     this.#RemoveUnicPed(PedName);
@@ -95,30 +135,31 @@ export class VGPeds {
   ) {
     unicPeds.forEach((unicPed) => {
       if (unicPed.name == pedName) {
-        native.setPedComponentVariation(
+        VGPeds.#SetComponentOnPed(
           unicPed.ped,
           componentId,
           drawableId,
-          textureId,
-          2
+          textureId
         );
-        const pedPos = native.getEntityCoords(
-          unicPed.ped,
-          !native.isEntityDead(unicPed.ped, false)
-        );
-        native.getGroundZFor3dCoord(
-          pedPos.x,
-          pedPos.y,
-          pedPos.z + 1,
-          1,
-          false,
-          false
-        )[1];
+        VGPeds.#SetPedOnFoot(unicPed.ped);
       }
     });
   }
   static async SetComponentOnPed(ped, componentId, drawableId, textureId) {
-    native.setPedComponentVariation(ped, componentId, drawableId, textureId, 2);
+    VGPeds.#SetComponentOnPed(ped, componentId, drawableId, textureId);
+    VGPeds.#SetPedOnFoot(ped);
+  }
+  static async SetPropOnPedName(pedName, propId, drawableId, textureId) {
+    unicPeds.forEach((unicPed) => {
+      if (unicPed.name == pedName) {
+        VGPeds.#SetPropOnPed(unicPed.ped, propId, drawableId, textureId);
+        VGPeds.#SetPedOnFoot(unicPed.ped);
+      }
+    });
+  }
+  static async SetPropOnPed(ped, propId, drawableId, textureId) {
+    VGPeds.#SetPropOnPed(ped, propId, drawableId, textureId);
+    VGPeds.#SetPedOnFoot(ped);
   }
   static async SetHeadingPedWithKeyUp(pedName, Status) {
     unicPeds.forEach((unicPed) => {
