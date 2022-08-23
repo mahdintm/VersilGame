@@ -2,6 +2,7 @@
 import * as alt from "alt-server";
 import { registerCmd } from "./chat";
 import { character } from "../utils/character";
+import { EventNames } from "../utils/eventNames";
 
 export class clothes {
   static GetClothesUtils() {
@@ -56,13 +57,10 @@ alt.onClient("SERVER:ChangeSex", (player, Sex) => {
   );
   return;
 });
-alt.onClient("SERVER:ClothesUiBoxStatus", (player, Status) => {
-  if (Status) {
-    alt.emitClient(
-      player,
-      "CLIENT:Clothes",
-      player.getMeta("Gender"),
-      clothes.GetClothesUtils()
-    );
-  }
+alt.onClient(EventNames.clothes.client.GetGender, (player) => {
+  alt.emitClient(
+    player,
+    EventNames.clothes.server.SendGender,
+    player.getMeta("Gender"),
+  );
 });
