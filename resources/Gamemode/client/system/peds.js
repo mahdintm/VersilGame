@@ -1,6 +1,5 @@
 import * as alt from "alt";
 import * as native from "natives";
-import { ClothesDetails } from "../utils/ClothesDetails";
 
 let peds = [],
   unicPeds = [];
