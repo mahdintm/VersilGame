@@ -87,6 +87,8 @@ export class VGCameraClothes {
     if (camera) {
       camera = null;
     }
+    CountSetZupValue = 0;
+    CountSetZoomValue = 0;
     native.destroyAllCams(true);
     native.renderScriptCams(false, false, 0, false, false, 0);
   }
