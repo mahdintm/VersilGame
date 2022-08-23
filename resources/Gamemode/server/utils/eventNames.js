@@ -30,7 +30,15 @@ export const EventNames = {
       mountedAndReady: "WEBclient:allVue:mountedAndReady",
     },
   },
-
+  clothes: {
+    localServer: {},
+    server: {
+      SendGender: "Server:Clothes:SendGender",
+    },
+    client: {
+      GetGender: "Client:Clothes:GetGender",
+    },
+  },
   login: {
     localClient: {
       LoginStartCam: "Local:Login:LoginStartCam",
