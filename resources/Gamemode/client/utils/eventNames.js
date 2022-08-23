@@ -82,15 +82,19 @@ export const EventNames = {
       ActiveClothes: "local:Clothes:ActiveClothes",
     },
     localServer: {},
-    server: {},
+    server: {
+      SendGender: "Server:Clothes:SendGender",
+    },
     client: {
-      ClothesUiBoxStatus: "Client:Clothes:ClothesUiBoxStatus",
+      GetGender: "Client:Clothes:GetGender",
     },
     clientWEB: {
       OpenClothes: "ClientWEB:Clothes:OpenClothes",
       SexChanged: "ClientWEB:Clothes:SexChanged",
       KeyRowUpPressed: "ClientWEB:clothes:KeyRowUpPressed",
       KeyRowLeftPressed: "ClientWEB:clothes:KeyRowLeftPressed",
+      SetSuggestion: "ClientWEB:clothes:SetSuggestion",
+      SetDrawableIndex: "ClientWEB:clothes:SetDrawableIndex",
     },
     WEBclient: {
       ChangeClothes: "WEBclient:Clothes:ChangeClothes",
