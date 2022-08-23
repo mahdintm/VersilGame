@@ -111,8 +111,6 @@ class VGClothes {
 
     const allClothes = [];
 
-
-
     ComponentsLength.forEach((Component) => {
       allClothes.push([Component.ComponentName, Component.DrawableLength]);
     });
