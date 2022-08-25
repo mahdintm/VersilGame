@@ -7,6 +7,8 @@ class VGScoreBoardServer {
   static async #GetPlayersDetails() {
     let PlayersDetails = [];
     for await (const player of alt.Player.all) {
+      if (player.getSyncedMeta("hasLogin") == false) return;
+
       PlayersDetails.push({
         ID: await PlayerData.get(player, "gameID"),
         Name: await PlayerData.get(player, "pName"),
