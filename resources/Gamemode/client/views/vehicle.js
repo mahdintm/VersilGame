@@ -74,7 +74,7 @@ export async function VehicleSpeedOmeter() {
       {
         Status: true,
         RPM: CalcVehicleRPM(playerVehicle.rpm),
-        Speed: Math.floor(playerVehicle.speed * 3.6),
+        Speed: Math.floor(native.getEntitySpeed(playerVehicle) * 3.6),
         Fuel: GetVehicleFuel(),
         Engine: true,
         TransitionStatus: true,
