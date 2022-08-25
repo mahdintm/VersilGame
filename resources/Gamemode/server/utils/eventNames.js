@@ -13,6 +13,9 @@ export const EventNames = {
     server: {
       PlayerDetails: "Server:ManagePlayer:PlayerDetails",
       isFreezePlayer: "Server:ManagePlayer:isFreezePlayer",
+      Add3DText: "Server:ManagePlayer:Add3DText",
+      Remove3DText: "Server:ManagePlayer:Remove3DText",
+      Modify3DText: "Server:ManagePlayer:Modify3DText",
     },
     client: {},
     clientWEB: {},
