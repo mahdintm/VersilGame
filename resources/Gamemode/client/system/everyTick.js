@@ -8,6 +8,8 @@ import { VGPeds } from "./peds";
 import { ClothesDetails } from "../utils/ClothesDetails";
 import { VGCameraClothes } from "../views/cameraClothes";
 import { VGScoreBoard } from "../views/scoreBoard";
+import { distance2d, drawText3d } from "./functions";
+import { VG3DText } from "./load3DText";
 
 let eyeTragerInterval = false,
   VehicleSpeedOmeterInterval = false,
@@ -64,6 +66,7 @@ export function ChangeValueFromVariable(Variable, Value) {
 }
 alt.everyTick(() => {
   EveryTickEvents();
+  VG3DText.Load();
   // VGEyeTracker.GetObject();
   if (VehicleSpeedOmeterInterval) VehicleSpeedOmeter();
   if (eyeTragerInterval) VGEyeTracker.eyeTracker();
