@@ -7,8 +7,7 @@ class VGScoreBoardServer {
   static async #GetPlayersDetails() {
     let PlayersDetails = [];
     for await (const player of alt.Player.all) {
-      if (player.getSyncedMeta("hasLogin") == false) return;
-
+      if (player.getSyncedMeta("hasLogin") == false) continue;
       PlayersDetails.push({
         ID: await PlayerData.get(player, "gameID"),
         Name: await PlayerData.get(player, "pName"),
@@ -18,13 +17,18 @@ class VGScoreBoardServer {
     }
     return PlayersDetails;
   }
-  static #GetConnectedPlayers() {
-    return alt.Player.all.length;
+  static async #GetConnectedPlayers() {
+    let PlayersCOUNT = 0;
+    for await (const player of alt.Player.all) {
+      if (player.getSyncedMeta("hasLogin") == false) continue;
+      PlayersCOUNT++
+    }
+    return PlayersCOUNT
   }
   static async GetScoreBoardDetails() {
     const ScoreBoardDetails = {
       PlayersLimit: 1024,
-      ConnectedPlayers: this.#GetConnectedPlayers(),
+      ConnectedPlayers: await this.#GetConnectedPlayers(),
       UpTimeServer: "unknown",
       PlayerPlayTime: "unknown",
       PlayersDetails: await this.#GetPlayersDetails(),
