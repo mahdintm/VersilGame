@@ -351,6 +351,37 @@ export class VehicleClass {
             }
         }
     };
+    static delete = {
+        static: async (vehicle) => {
+            let vehicleid = vehicle.id
+            if (vehicles[vehicle.id]['type'] == 'static') {
+                await vehicle.destroy();
+                await sql(`delete from Vehicles where id="${vehicles[vehicleid]['sqlid']}"`)
+                delete vehicles[vehicleid]
+                return true
+            } else
+                return false
+        },
+        admin: async (vehicle) => {
+            let vehicleid = vehicle.id
+            if (vehicles[vehicle.id]['type'] == 'admin') {
+                await vehicle.destroy();
+                delete vehicles[vehicleid]
+                return true
+            } else
+                return false
+        },
+        faction: async (vehicle) => {
+            let vehicleid = vehicle.id
+            if (vehicles[vehicle.id]['type'] == 'faction') {
+                await vehicle.destroy();
+                await sql(`delete from Vehicles where id="${vehicles[vehicleid]['sqlid']}"`)
+                delete vehicles[vehicleid]
+                return true
+            } else
+                return false
+        }
+    }
     static respawn = {
         async avehicle(vehicle, force = false, repair = false) {
             if (await vehicle.driver == null && force == false) return
@@ -422,7 +453,6 @@ export class VehicleClass {
         }
     }
 }
-
 
 setTimeout(async () => {
     let VehicleData_ = await sql(`SELECT * FROM Vehicles`)

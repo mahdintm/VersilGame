@@ -1,3 +1,4 @@
+import { vehicleObject } from "../utils/VehicleList";
 import { FindPlayerAccount, FindPlayerForCMD, PlayerData } from "./account";
 import { registerCmd, sendchat } from "./chat";
 import { StaffPoint, StaffSystem } from "./staff";
@@ -51,16 +52,71 @@ async function SetStaffPoint(player, args) {
     await StaffPoint.set(taraf, parseInt(args[1]))
     await StaffSystem.CalculatorRole(player)
 }
-async function AdminVehicle(player, args) {
+async function CreateAdminVehicle(player, args) {
     if (!await StaffSystem.IsAdmin(player)) return await StaffSystem.Send_NotAdmin(player)
-    if (!await StaffSystem.CMD.Level.check(player, 'AdminVehicle'))
+    if (!await StaffSystem.CMD.Level.check(player, 'CreateAdminVehicle'))
         return await StaffSystem.Send_Auth(player)
     if (args[0] == undefined)
         return sendchat(player, 'AdminVehicle(veh) [Model]');
     //--------------------------------------------------
-    await VehicleClass.create.admin(player, args[0])
+    if (isNaN(args[0]) && args !== undefined && args[0].length >= 3) {
+        for (const [key, str] of Object.entries(vehicleObject)) {
+            if (str.name.match(args[0].toLowerCase())) {
+                return await VehicleClass.create.admin(player, str.name)
+            }
+            if (str.name == "end") {
+                return sendchat(player, `esme veh eshtebas`);
+            }
+        }
+    } else if (!isNaN(args[0]) && args[0] != undefined) {
+        for (const [key, str] of Object.entries(vehicleObject)) {
+            if (args[0] >= 400 && args[0] <= 700) {
+                if (str.id == args[0]) {
+                    return await VehicleClass.create.admin(player, str.name)
+                }
+                if (str.name == "end") {
+                    return sendchat(player, `id veh eshtebas`);
+                }
+            } else {
+                return sendchat(player, `faqat az 400 ta 561`);
+            }
+        }
+    } else {
+        return sendchat(player, `faqat az 400 ta 561`);
+    }
 
 }
+async function DeleteAdminVehicle(player) {
+    if (!await StaffSystem.IsAdmin(player)) return await StaffSystem.Send_NotAdmin(player)
+    if (!await StaffSystem.CMD.Level.check(player, 'DeleteAdminVehicle'))
+        return await StaffSystem.Send_Auth(player)
+    //--------------------------------------------------
+    if (!player.vehicle)
+        return sendchat(player, 'AdminVehicle(veh) [Model]');
+    let a = await VehicleClass.delete.admin(player.vehicle)
+    a == true ? console.log("deleted") : console.log("you can not delete this vehicle")
+}
+async function DeleteStaticVehicle(player) {
+    if (!await StaffSystem.IsAdmin(player)) return await StaffSystem.Send_NotAdmin(player)
+    if (!await StaffSystem.CMD.Level.check(player, 'DeleteStaticVehicle'))
+        return await StaffSystem.Send_Auth(player)
+    //--------------------------------------------------
+    if (!player.vehicle)
+        return sendchat(player, 'AdminVehicle(veh) [Model]');
+    let a = await VehicleClass.delete.static(player.vehicle)
+    a == true ? console.log("deleted") : console.log("you can not delete this vehicle")
+}
+async function DeleteFactionVehicle(player) {
+    if (!await StaffSystem.IsAdmin(player)) return await StaffSystem.Send_NotAdmin(player)
+    if (!await StaffSystem.CMD.Level.check(player, 'DeleteFactionVehicle'))
+        return await StaffSystem.Send_Auth(player)
+    //--------------------------------------------------
+    if (!player.vehicle)
+        return sendchat(player, 'AdminVehicle(veh) [Model]');
+    let a = await VehicleClass.delete.faction(player.vehicle)
+    a == true ? console.log("deleted") : console.log("you can not delete this vehicle")
+}
+
 
 registerCmd('makeadmin', MakeAdmin)
 registerCmd('MA', MakeAdmin)
@@ -70,8 +126,15 @@ registerCmd('TakeStaffPoint', TakeStaffPoint)
 registerCmd('TakeSP', TakeStaffPoint)
 registerCmd('SetStaffPoint', SetStaffPoint)
 registerCmd('SetSP', SetStaffPoint)
-registerCmd('AdminVehicle', AdminVehicle)
-registerCmd('veh', AdminVehicle)
+registerCmd('AdminVehicle', CreateAdminVehicle)
+registerCmd('veh', CreateAdminVehicle)
+registerCmd('DV', DeleteAdminVehicle)
+registerCmd('DeleteAdminVehicle', DeleteAdminVehicle)
+registerCmd('DSV', DeleteStaticVehicle)
+registerCmd('DeleteStaticVehicle', DeleteStaticVehicle)
+registerCmd('DFV', DeleteFactionVehicle)
+registerCmd('DeleteFactionVehicle', DeleteFactionVehicle)
+
 
 registerCmd("test", async (player, args) => {
     await PlayerData.set(player, 'pAdmin', args[0], true)
