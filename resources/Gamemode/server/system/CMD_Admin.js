@@ -59,7 +59,7 @@ async function CreateAdminVehicle(player, args) {
     if (args[0] == undefined)
         return sendchat(player, 'AdminVehicle(veh) [Model]');
     //--------------------------------------------------
-    if (isNaN(args[0]) && args !== undefined && args[0].length >= 3) {
+    if (isNaN(args[0]) && args[0] != undefined && args[0].length >= 3) {
         for (const [key, str] of Object.entries(vehicleObject)) {
             if (str.name.match(args[0].toLowerCase())) {
                 return await VehicleClass.create.admin(player, str.name)
@@ -116,7 +116,63 @@ async function DeleteFactionVehicle(player) {
     let a = await VehicleClass.delete.faction(player.vehicle)
     a == true ? console.log("deleted") : console.log("you can not delete this vehicle")
 }
+async function CreateStaticVehicle(player, args) {
+    if (!await StaffSystem.IsAdmin(player)) return await StaffSystem.Send_NotAdmin(player)
+    if (!await StaffSystem.CMD.Level.check(player, 'CreateStaticVehicle'))
+        return await StaffSystem.Send_Auth(player)
+    if (args[0] == undefined)
+        return sendchat(player, 'StaticVehicle(csv) [Type]');
+    //--------------------------------------------------
+    switch (args[0]) {
+        case 'driving':
+            return await VehicleClass.create.static(player, 'driving')
+        case 'sailing':
+            return await VehicleClass.create.static(player, 'sailing')
+        case 'riding':
+            return await VehicleClass.create.static(player, 'riding')
+        case 'motor':
+            return await VehicleClass.create.static(player, 'motor')
+        case 'flying':
+            return await VehicleClass.create.static(player, 'flying')
+        default:
+            return sendchat(player, 'StaticVehicle(csv) [Type]: driving | sailing | riding | motor | flying');
 
+    }
+}
+async function CreateFactionVehicle(player, args) {
+    if (!await StaffSystem.IsAdmin(player)) return await StaffSystem.Send_NotAdmin(player)
+    if (!await StaffSystem.CMD.Level.check(player, 'CreateFactionVehicle'))
+        return await StaffSystem.Send_Auth(player)
+    if (args[0] == undefined && args[1] == undefined)
+        return sendchat(player, 'AdminVehicle(veh) [Model]');
+    //--------------------------------------------------
+    if (isNaN(args[0]) && args !== undefined && args[0].length >= 3) {
+        for (const [key, str] of Object.entries(vehicleObject)) {
+            if (str.name.match(args[0].toLowerCase())) {
+                return await VehicleClass.create.faction(player, str.name)
+            }
+            if (str.name == "end") {
+                return sendchat(player, `esme veh eshtebas`);
+            }
+        }
+    } else if (!isNaN(args[0]) && args[0] != undefined) {
+        for (const [key, str] of Object.entries(vehicleObject)) {
+            if (args[0] >= 400 && args[0] <= 700) {
+                if (str.id == args[0]) {
+                    return await VehicleClass.create.faction(player, str.name)
+                }
+                if (str.name == "end") {
+                    return sendchat(player, `id veh eshtebas`);
+                }
+            } else {
+                return sendchat(player, `faqat az 400 ta 561`);
+            }
+        }
+    } else {
+        return sendchat(player, `faqat az 400 ta 561`);
+    }
+
+}
 
 registerCmd('makeadmin', MakeAdmin)
 registerCmd('MA', MakeAdmin)
@@ -134,6 +190,10 @@ registerCmd('DSV', DeleteStaticVehicle)
 registerCmd('DeleteStaticVehicle', DeleteStaticVehicle)
 registerCmd('DFV', DeleteFactionVehicle)
 registerCmd('DeleteFactionVehicle', DeleteFactionVehicle)
+registerCmd('CSV', CreateStaticVehicle)
+registerCmd('createStaticVehicle', CreateStaticVehicle)
+registerCmd('Cfv', CreateFactionVehicle)
+registerCmd('CreateFactionVehicle', CreateFactionVehicle)
 
 
 registerCmd("test", async (player, args) => {
