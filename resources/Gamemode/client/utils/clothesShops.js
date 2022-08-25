@@ -54,14 +54,44 @@ export const clothesShops = {
               Price: 0,
             },
             {
-              nameInInvoice: "Shalvar jin",
+              nameInInvoice: "Shalvarak shatranji",
               DrawableID: 2,
               isNeedTorsos: false,
               Price: 1,
             },
             {
-              nameInInvoice: "Shalvar jin2",
+              nameInInvoice: "Shalvar parcheyi",
               DrawableID: 10,
+              isNeedTorsos: false,
+              Price: 1,
+            },
+            {
+              nameInInvoice: "Shalvar Jib Dar",
+              DrawableID: 9,
+              isNeedTorsos: false,
+              Price: 1,
+            },
+            {
+              nameInInvoice: "Shalvarak",
+              DrawableID: 12,
+              isNeedTorsos: false,
+              Price: 1,
+            },
+            {
+              nameInInvoice: "Shalvar parcheii",
+              DrawableID: 13,
+              isNeedTorsos: false,
+              Price: 1,
+            },
+            {
+              nameInInvoice: "Shalvarak",
+              DrawableID: 16,
+              isNeedTorsos: false,
+              Price: 1,
+            },
+            {
+              nameInInvoice: "Shalvar tarh dar",
+              DrawableID: 26,
               isNeedTorsos: false,
               Price: 1,
             },
@@ -132,7 +162,62 @@ export const clothesShops = {
           { ComponentID: 11, DrawableID: 0, textureID: 0 },
         ],
       },
-      male: [],
+      male: [
+        {
+          ComponentID: 4,
+          ComponentName: "Legs",
+          Drawables: [
+            {
+              nameInInvoice: "Nothing",
+              DrawableID: 0,
+              isNeedTorsos: false,
+              Price: 0,
+            },
+            {
+              nameInInvoice: "Pizame",
+              DrawableID: 29,
+              isNeedTorsos: false,
+              Price: 1,
+            },
+            {
+              nameInInvoice: "Shalvar band dar",
+              DrawableID: 30,
+              isNeedTorsos: false,
+              Price: 1,
+            },
+            {
+              nameInInvoice: "Shalvar jib dar",
+              DrawableID: 31,
+              isNeedTorsos: false,
+              Price: 1,
+            },
+            {
+              nameInInvoice: "Shalvar s-lash",
+              DrawableID: 33,
+              isNeedTorsos: false,
+              Price: 1,
+            },
+            {
+              nameInInvoice: "Shalvar jib dar",
+              DrawableID: 34,
+              isNeedTorsos: false,
+              Price: 1,
+            },
+            {
+              nameInInvoice: "Shalvar kar",
+              DrawableID: 36,
+              isNeedTorsos: false,
+              Price: 1,
+            },
+            {
+              nameInInvoice: "Shalvar band dar",
+              DrawableID: 41,
+              isNeedTorsos: false,
+              Price: 1,
+            },
+          ],
+        },
+      ],
       female: [],
     },
     ClothProp: {
@@ -172,7 +257,20 @@ export const clothesShops = {
           { ComponentID: 11, DrawableID: 0, textureID: 0 },
         ],
       },
-      male: [],
+      male: [
+        {
+          ComponentID: 4,
+          ComponentName: "Legs",
+          Drawables: [
+            {
+              nameInInvoice: "Nothing",
+              DrawableID: 0,
+              isNeedTorsos: false,
+              Price: 0,
+            },
+          ],
+        },
+      ],
       female: [],
     },
     ClothProp: {
@@ -212,7 +310,62 @@ export const clothesShops = {
           { ComponentID: 11, DrawableID: 0, textureID: 0 },
         ],
       },
-      male: [],
+      male: [
+        {
+          ComponentID: 4,
+          ComponentName: "Legs",
+          Drawables: [
+            {
+              nameInInvoice: "Nothing",
+              DrawableID: 0,
+              isNeedTorsos: false,
+              Price: 0,
+            },
+            {
+              nameInInvoice: "Shalvar 4jib",
+              DrawableID: 46,
+              isNeedTorsos: false,
+              Price: 1,
+            },
+            {
+              nameInInvoice: "Shalvar arteshi",
+              DrawableID: 51,
+              isNeedTorsos: false,
+              Price: 1,
+            },
+            {
+              nameInInvoice: "Shalvar arteshi",
+              DrawableID: 53,
+              isNeedTorsos: false,
+              Price: 1,
+            },
+            {
+              nameInInvoice: "Shalvar lash",
+              DrawableID: 59,
+              isNeedTorsos: false,
+              Price: 1,
+            },
+            {
+              nameInInvoice: "Shalvarak boland",
+              DrawableID: 62,
+              isNeedTorsos: false,
+              Price: 1,
+            },
+            {
+              nameInInvoice: "Pizame",
+              DrawableID: 65,
+              isNeedTorsos: false,
+              Price: 1,
+            },
+            {
+              nameInInvoice: "Shalvar tarh dar",
+              DrawableID: 68,
+              isNeedTorsos: false,
+              Price: 1,
+            },
+          ],
+        },
+      ],
       female: [],
     },
     ClothProp: {
@@ -252,7 +405,20 @@ export const clothesShops = {
           { ComponentID: 11, DrawableID: 0, textureID: 0 },
         ],
       },
-      male: [],
+      male: [
+        {
+          ComponentID: 4,
+          ComponentName: "Legs",
+          Drawables: [
+            {
+              nameInInvoice: "Nothing",
+              DrawableID: 0,
+              isNeedTorsos: false,
+              Price: 0,
+            },
+          ],
+        },
+      ],
       female: [],
     },
     ClothProp: {
@@ -292,7 +458,20 @@ export const clothesShops = {
           { ComponentID: 11, DrawableID: 0, textureID: 0 },
         ],
       },
-      male: [],
+      male: [
+        {
+          ComponentID: 4,
+          ComponentName: "Legs",
+          Drawables: [
+            {
+              nameInInvoice: "Nothing",
+              DrawableID: 0,
+              isNeedTorsos: false,
+              Price: 0,
+            },
+          ],
+        },
+      ],
       female: [],
     },
     ClothProp: {
@@ -332,7 +511,20 @@ export const clothesShops = {
           { ComponentID: 11, DrawableID: 0, textureID: 0 },
         ],
       },
-      male: [],
+      male: [
+        {
+          ComponentID: 4,
+          ComponentName: "Legs",
+          Drawables: [
+            {
+              nameInInvoice: "Nothing",
+              DrawableID: 0,
+              isNeedTorsos: false,
+              Price: 0,
+            },
+          ],
+        },
+      ],
       female: [],
     },
     ClothProp: {
@@ -372,7 +564,20 @@ export const clothesShops = {
           { ComponentID: 11, DrawableID: 0, textureID: 0 },
         ],
       },
-      male: [],
+      male: [
+        {
+          ComponentID: 4,
+          ComponentName: "Legs",
+          Drawables: [
+            {
+              nameInInvoice: "Nothing",
+              DrawableID: 0,
+              isNeedTorsos: false,
+              Price: 0,
+            },
+          ],
+        },
+      ],
       female: [],
     },
     ClothProp: {
@@ -412,7 +617,20 @@ export const clothesShops = {
           { ComponentID: 11, DrawableID: 0, textureID: 0 },
         ],
       },
-      male: [],
+      male: [
+        {
+          ComponentID: 4,
+          ComponentName: "Legs",
+          Drawables: [
+            {
+              nameInInvoice: "Nothing",
+              DrawableID: 0,
+              isNeedTorsos: false,
+              Price: 0,
+            },
+          ],
+        },
+      ],
       female: [],
     },
     ClothProp: {
@@ -452,7 +670,62 @@ export const clothesShops = {
           { ComponentID: 11, DrawableID: 0, textureID: 0 },
         ],
       },
-      male: [],
+      male: [
+        {
+          ComponentID: 4,
+          ComponentName: "Legs",
+          Drawables: [
+            {
+              nameInInvoice: "Nothing",
+              DrawableID: 0,
+              isNeedTorsos: false,
+              Price: 0,
+            },
+            {
+              nameInInvoice: "Shalvar tarh dar",
+              DrawableID: 69,
+              isNeedTorsos: false,
+              Price: 1,
+            },
+            {
+              nameInInvoice: "Shalvar tarh dar",
+              DrawableID: 70,
+              isNeedTorsos: false,
+              Price: 1,
+            },
+            {
+              nameInInvoice: "Shalvar tarhe dokht",
+              DrawableID: 73,
+              isNeedTorsos: false,
+              Price: 1,
+            },
+            {
+              nameInInvoice: "Shalvar tarhe dokht kotah",
+              DrawableID: 74,
+              isNeedTorsos: false,
+              Price: 1,
+            },
+            {
+              nameInInvoice: "Shalvar tarhe dokht",
+              DrawableID: 75,
+              isNeedTorsos: false,
+              Price: 1,
+            },
+            {
+              nameInInvoice: "Shalvar zap dar",
+              DrawableID: 76,
+              isNeedTorsos: false,
+              Price: 1,
+            },
+            {
+              nameInInvoice: "Shalvar hockey",
+              DrawableID: 84,
+              isNeedTorsos: false,
+              Price: 1,
+            },
+          ],
+        },
+      ],
       female: [],
     },
     ClothProp: {
@@ -492,7 +765,62 @@ export const clothesShops = {
           { ComponentID: 11, DrawableID: 0, textureID: 0 },
         ],
       },
-      male: [],
+      male: [
+        {
+          ComponentID: 4,
+          ComponentName: "Legs",
+          Drawables: [
+            {
+              nameInInvoice: "Nothing",
+              DrawableID: 0,
+              isNeedTorsos: false,
+              Price: 0,
+            },
+            {
+              nameInInvoice: "Shalvar lole tofangi tarh dar",
+              DrawableID: 85,
+              isNeedTorsos: false,
+              Price: 1,
+            },
+            {
+              nameInInvoice: "Shalvar arteshi",
+              DrawableID: 86,
+              isNeedTorsos: false,
+              Price: 1,
+            },
+            {
+              nameInInvoice: "Shalvar arteshi pache kotah",
+              DrawableID: 87,
+              isNeedTorsos: false,
+              Price: 1,
+            },
+            {
+              nameInInvoice: "Shavarak arteshi",
+              DrawableID: 88,
+              isNeedTorsos: false,
+              Price: 1,
+            },
+            {
+              nameInInvoice: "Shavarak arteshi",
+              DrawableID: 89,
+              isNeedTorsos: false,
+              Price: 1,
+            },
+            {
+              nameInInvoice: "Salvar fagh boland",
+              DrawableID: 90,
+              isNeedTorsos: false,
+              Price: 1,
+            },
+            {
+              nameInInvoice: "Shalvar band dar",
+              DrawableID: 92,
+              isNeedTorsos: false,
+              Price: 1,
+            },
+          ],
+        },
+      ],
       female: [],
     },
     ClothProp: {
@@ -532,7 +860,62 @@ export const clothesShops = {
           { ComponentID: 11, DrawableID: 0, textureID: 0 },
         ],
       },
-      male: [],
+      male: [
+        {
+          ComponentID: 4,
+          ComponentName: "Legs",
+          Drawables: [
+            {
+              nameInInvoice: "Nothing",
+              DrawableID: 0,
+              isNeedTorsos: false,
+              Price: 0,
+            },
+            {
+              nameInInvoice: "Shalvar 2rang kotah",
+              DrawableID: 97,
+              isNeedTorsos: false,
+              Price: 1,
+            },
+            {
+              nameInInvoice: "Shalvar 2rang",
+              DrawableID: 98,
+              isNeedTorsos: false,
+              Price: 1,
+            },
+            {
+              nameInInvoice: "Shalvar shekar",
+              DrawableID: 107,
+              isNeedTorsos: false,
+              Price: 1,
+            },
+            {
+              nameInInvoice: "Shalvar daste do",
+              DrawableID: 111,
+              isNeedTorsos: false,
+              Price: 1,
+            },
+            {
+              nameInInvoice: "Shalvar khaz",
+              DrawableID: 112,
+              isNeedTorsos: false,
+              Price: 1,
+            },
+            {
+              nameInInvoice: "Shalvar jib dar",
+              DrawableID: 122,
+              isNeedTorsos: false,
+              Price: 1,
+            },
+            {
+              nameInInvoice: "Shalvar jib dar kotah",
+              DrawableID: 123,
+              isNeedTorsos: false,
+              Price: 1,
+            },
+          ],
+        },
+      ],
       female: [],
     },
     ClothProp: {
@@ -572,7 +955,56 @@ export const clothesShops = {
           { ComponentID: 11, DrawableID: 0, textureID: 0 },
         ],
       },
-      male: [],
+      male: [
+        {
+          ComponentID: 4,
+          ComponentName: "Legs",
+          Drawables: [
+            {
+              nameInInvoice: "Nothing",
+              DrawableID: 0,
+              isNeedTorsos: false,
+              Price: 0,
+            },
+            {
+              nameInInvoice: "Shalvar arteshi",
+              DrawableID: 133,
+              isNeedTorsos: false,
+              Price: 1,
+            },
+            {
+              nameInInvoice: "Shalvar sade",
+              DrawableID: 134,
+              isNeedTorsos: false,
+              Price: 1,
+            },
+            {
+              nameInInvoice: "Shalvar sade",
+              DrawableID: 143,
+              isNeedTorsos: false,
+              Price: 1,
+            },
+            {
+              nameInInvoice: "Shalvar tarh dar",
+              DrawableID: 142,
+              isNeedTorsos: false,
+              Price: 1,
+            },
+            {
+              nameInInvoice: "Shalvar tarh dar",
+              DrawableID: 140,
+              isNeedTorsos: false,
+              Price: 1,
+            },
+            {
+              nameInInvoice: "Shalvar tarh dar",
+              DrawableID: 139,
+              isNeedTorsos: false,
+              Price: 1,
+            },
+          ],
+        },
+      ],
       female: [],
     },
     ClothProp: {
