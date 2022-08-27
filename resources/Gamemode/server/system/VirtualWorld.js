@@ -1,6 +1,6 @@
 export class VirtualWorld {
-    static set(player, vmid) {
+    static async set(player, vmid) {
         player.dimension = vmid
-        player.setSyncedMeta("dimension", vmid)
+        await player.setSyncedMeta("dimension", vmid)
     }
 }
