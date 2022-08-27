@@ -360,6 +360,8 @@ export class VehicleClass {
         static: async (vehicle) => {
             let vehicleid = vehicle.id
             if (vehicles[vehicle.id]['type'] == 'static') {
+                var index = VehicleEngineON.indexOf(vehicle);
+                if (index != -1) VehicleEngineON.splice(index, 1)
                 await vehicle.destroy();
                 await sql(`delete from Vehicles where id="${vehicles[vehicleid]['sqlid']}"`)
                 delete vehicles[vehicleid]
@@ -370,6 +372,8 @@ export class VehicleClass {
         admin: async (vehicle) => {
             let vehicleid = vehicle.id
             if (vehicles[vehicle.id]['type'] == 'admin') {
+                var index = VehicleEngineON.indexOf(vehicle);
+                if (index != -1) VehicleEngineON.splice(index, 1)
                 await vehicle.destroy();
                 delete vehicles[vehicleid]
                 return true
@@ -379,6 +383,8 @@ export class VehicleClass {
         faction: async (vehicle) => {
             let vehicleid = vehicle.id
             if (vehicles[vehicle.id]['type'] == 'faction') {
+                var index = VehicleEngineON.indexOf(vehicle);
+                if (index != -1) VehicleEngineON.splice(index, 1)
                 await vehicle.destroy();
                 await sql(`delete from Vehicles where id="${vehicles[vehicleid]['sqlid']}"`)
                 delete vehicles[vehicleid]
