@@ -9,18 +9,18 @@ export class VG3DText {
   static #CheckObject(Object, isRemove = false) {
     if (Object.Department == undefined) return false;
     if (Object.id == undefined) return false;
-    if (!isRemove) {
-      if (Object.Text == undefined) return false;
-      if (Object.x == undefined) return false;
-      if (Object.y == undefined) return false;
-      if (Object.z == undefined) return false;
-    }
+    //edit kon
+    // if (!isRemove) {
+    //   if (Object.Text == undefined) return false;
+    //   if (Object.x == undefined) return false;
+    //   if (Object.y == undefined) return false;
+    //   if (Object.z == undefined) return false;
+    // }
 
     return true;
   }
   static Add(Details) {
     if (!VG3DText.#CheckObject(Details)) return false;
-
     All3DTextDetails.push(Details);
     return true;
   }
@@ -57,15 +57,15 @@ export class VG3DText {
         10
       );
       if (alt.Player.local.getSyncedMeta("dimension") == 0) {
-      if (distanceResult) {
-        drawText3d(
-          Details.Text,
-          Details.x,
-          Details.y,
-          Details.z,
-          1 - (0.8 * distanceResult) / 10
-        );
-      }
+        if (distanceResult) {
+          drawText3d(
+            Details.Text,
+            Details.x,
+            Details.y,
+            Details.z,
+            1 - (0.8 * distanceResult) / 10
+          );
+        }
       }
     });
   }
