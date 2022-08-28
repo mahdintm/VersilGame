@@ -25,8 +25,8 @@ let cmdHandlers = {};
  * @param {string} msg Your message
  *
  */
-export function sendchat(player, msg) {
-  alt.emitClient(player, EventNames.chat.server.Message, Date.now(), null, msg);
+export async function sendchat(player, msg) {
+  await alt.emitClient(player, EventNames.chat.server.Message, Date.now(), null, msg);
 }
 
 /**
