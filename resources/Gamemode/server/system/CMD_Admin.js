@@ -270,7 +270,7 @@ async function SetGold(player, args) {
     if (!(await StaffSystem.CheckObject.MakeAdmin(player) && await StaffSystem.CMD.Level.check(player, 'SetGold')))
         return await StaffSystem.Send_Auth(player)
     if (args[0] == undefined || args[1] == undefined)
-        return sendchat(player, 'SeteGold [PlayerName/PlayerID] [Ammount]');
+        return sendchat(player, 'SetGold [PlayerName/PlayerID] [Ammount]');
     let taraf = await FindPlayerForCMD(player, args[0])
     if (taraf == undefined) return
     //--------------------------------------------------
@@ -284,7 +284,7 @@ async function GiveGold(player, args) {
     if (!(await StaffSystem.CheckObject.MakeAdmin(player) && await StaffSystem.CMD.Level.check(player, 'GiveGold')))
         return await StaffSystem.Send_Auth(player)
     if (args[0] == undefined || args[1] == undefined)
-        return sendchat(player, 'TakeGold [PlayerName/PlayerID] [Ammount]');
+        return sendchat(player, 'GiveGold [PlayerName/PlayerID] [Ammount]');
     let taraf = await FindPlayerForCMD(player, args[0])
     if (taraf == undefined) return
     //--------------------------------------------------
@@ -306,6 +306,48 @@ async function TakeGold(player, args) {
     await StaffSystem.Warn.Admins("ADMIN_TAKED_GOLD_TO_PLAYER2", [await PlayerData.get(player, 'pName'), args[1], await PlayerData.get(taraf, 'pName')])
     await sendchat(player, await Language.GetValue(player.getSyncedMeta('Language'), "YOU_TAKE_GOLD_TO_PLAYER2", [args[1], await PlayerData.get(taraf, 'pName')]))
     await sendchat(taraf, await Language.GetValue(taraf.getSyncedMeta('Language'), "ADMIN_TAKEN_GOLD_TO_YOU", [await PlayerData.get(player, 'pName'), args[1]]))
+}
+async function SetRespect(player, args) {
+    if (!await StaffSystem.IsAdmin(player)) return await StaffSystem.Send_NotAdmin(player)
+    if (!(await StaffSystem.CheckObject.MakeAdmin(player) && await StaffSystem.CMD.Level.check(player, 'SetRespect')))
+        return await StaffSystem.Send_Auth(player)
+    if (args[0] == undefined || args[1] == undefined)
+        return sendchat(player, 'SetRespect [PlayerName/PlayerID] [Ammount]');
+    let taraf = await FindPlayerForCMD(player, args[0])
+    if (taraf == undefined) return
+    //--------------------------------------------------
+    await Money.take(player, args[1])
+    await StaffSystem.Warn.Admins("ADMIN_SETED_RESPECT_TO_PLAYER2", [await PlayerData.get(player, 'pName'), args[1], await PlayerData.get(taraf, 'pName')])
+    await sendchat(player, await Language.GetValue(player.getSyncedMeta('Language'), "YOU_SET_RESPECT_TO_PLAYER2", [args[1], await PlayerData.get(taraf, 'pName')]))
+    await sendchat(taraf, await Language.GetValue(taraf.getSyncedMeta('Language'), "ADMIN_SETEN_RESPECT_TO_YOU", [await PlayerData.get(player, 'pName'), args[1]]))
+}
+async function GiveRespect(player, args) {
+    if (!await StaffSystem.IsAdmin(player)) return await StaffSystem.Send_NotAdmin(player)
+    if (!(await StaffSystem.CheckObject.MakeAdmin(player) && await StaffSystem.CMD.Level.check(player, 'GiveRespect')))
+        return await StaffSystem.Send_Auth(player)
+    if (args[0] == undefined || args[1] == undefined)
+        return sendchat(player, 'GiveRespect [PlayerName/PlayerID] [Ammount]');
+    let taraf = await FindPlayerForCMD(player, args[0])
+    if (taraf == undefined) return
+    //--------------------------------------------------
+    await Money.give(player, args[1])
+    await StaffSystem.Warn.Admins("ADMIN_GIVED_RESPECT_TO_PLAYER2", [await PlayerData.get(player, 'pName'), args[1], await PlayerData.get(taraf, 'pName')])
+    await sendchat(player, await Language.GetValue(player.getSyncedMeta('Language'), "YOU_GAVE_RESPECT_TO_PLAYER2", [args[1], await PlayerData.get(taraf, 'pName')]))
+    await sendchat(taraf, await Language.GetValue(taraf.getSyncedMeta('Language'), "ADMIN_GIVEN_RESPECT_TO_YOU", [await PlayerData.get(player, 'pName'), args[1]]))
+}
+async function TakeRespect(player, args) {
+    if (!await StaffSystem.IsAdmin(player)) return await StaffSystem.Send_NotAdmin(player)
+    if (!(await StaffSystem.CheckObject.MakeAdmin(player) && await StaffSystem.CMD.Level.check(player, 'TakeRespect')))
+        return await StaffSystem.Send_Auth(player)
+    if (args[0] == undefined || args[1] == undefined)
+        return sendchat(player, 'TakeRespect [PlayerName/PlayerID] [Ammount]');
+    let taraf = await FindPlayerForCMD(player, args[0])
+    if (taraf == undefined) return
+    //--------------------------------------------------
+    await Money.take(player, args[1])
+    await StaffSystem.Warn.Admins("ADMIN_TAKED_RESPECT_TO_PLAYER2", [await PlayerData.get(player, 'pName'), args[1], await PlayerData.get(taraf, 'pName')])
+    await sendchat(player, await Language.GetValue(player.getSyncedMeta('Language'), "YOU_TAKE_RESPECT_TO_PLAYER2", [args[1], await PlayerData.get(taraf, 'pName')]))
+    await sendchat(taraf, await Language.GetValue(taraf.getSyncedMeta('Language'), "ADMIN_TAKEN_RESPECT_TO_YOU", [await PlayerData.get(player, 'pName'), args[1]]))
 }
 
 
@@ -337,6 +379,9 @@ registerCmd('setmoney', SetMoney)
 registerCmd('SetGold', SetGold)
 registerCmd('TakeGold', TakeGold)
 registerCmd('GiveGold', GiveGold)
+registerCmd('SetRespect', SetRespect)
+registerCmd('GiveRespect', GiveRespect)
+registerCmd('TakeRespect', TakeRespect)
 
 registerCmd('cb', async (player, args) => {
     let a = await sql(`insert into business (Owner,Pos) values ('-1','${JSON.stringify({ x: player.pos.x, y: player.pos.y, z: player.pos.z })}')`)
