@@ -242,7 +242,7 @@ async function TakeMoney(player, args) {
     if (!(await StaffSystem.CheckObject.MakeAdmin(player) && await StaffSystem.CMD.Level.check(player, 'TakeMoney')))
         return await StaffSystem.Send_Auth(player)
     if (args[0] == undefined || args[1] == undefined)
-        return sendchat(player, 'GiveMoney [PlayerName/PlayerID] [Ammount]');
+        return sendchat(player, 'TakeMoney [PlayerName/PlayerID] [Ammount]');
     let taraf = await FindPlayerForCMD(player, args[0])
     if (taraf == undefined) return
     //--------------------------------------------------
@@ -256,7 +256,7 @@ async function SetMoney(player, args) {
     if (!(await StaffSystem.CheckObject.MakeAdmin(player) && await StaffSystem.CMD.Level.check(player, 'SetMoney')))
         return await StaffSystem.Send_Auth(player)
     if (args[0] == undefined || args[1] == undefined)
-        return sendchat(player, 'GiveMoney [PlayerName/PlayerID] [Ammount]');
+        return sendchat(player, 'SetMoney [PlayerName/PlayerID] [Ammount]');
     let taraf = await FindPlayerForCMD(player, args[0])
     if (taraf == undefined) return
     //--------------------------------------------------
