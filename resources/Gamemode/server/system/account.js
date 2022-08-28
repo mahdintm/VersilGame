@@ -6,6 +6,7 @@ import { DiscordHook } from "../utils/discord-hook";
 import { sendchat } from "./chat";
 import { VirtualWorld } from "./virtual_world";
 import { Business } from "./business";
+import { Language } from "../utils/dialogs";
 var playersdata = {}
 var Idx = {}
 export class PlayerData {
@@ -241,9 +242,7 @@ export async function FindPlayerForCMD(player, value) {
             sendchat(player, text)
             return undefined;
         } else if (f[0] == "duplicate_Highest") {
-            sendchat(player, await Language.GetValue(
-                player.getSyncedMeta('Language'),
-                "YOU_DO_NOT_HAVE_SUFFICIENT_ACCESS_TO_DO_THIS"))
+            sendchat(player, await Language.GetValue(player.getSyncedMeta('Language'), "PLAYER_IS_OFFLINE", [value]))
             return undefined;
         } else {
             return f[1];
