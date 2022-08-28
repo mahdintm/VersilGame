@@ -1,5 +1,7 @@
+import { sql } from "../database/mysql";
 import { vehicleObject } from "../utils/VehicleList";
 import { FindPlayerAccount, FindPlayerForCMD, PlayerData } from "./account";
+import { Business } from "./business";
 import { registerCmd, sendchat } from "./chat";
 import { StaffPoint, StaffSystem } from "./staff";
 import { VehicleClass } from "./vehicles";
@@ -171,8 +173,29 @@ async function CreateFactionVehicle(player, args) {
     } else {
         return sendchat(player, `faqat az 400 ta 561`);
     }
-
 }
+async function GotoPlace(player, args) {
+    if (!await StaffSystem.IsAdmin(player)) return await StaffSystem.Send_NotAdmin(player)
+    if (!await StaffSystem.CMD.Level.check(player, 'GotoPlace'))
+        return await StaffSystem.Send_Auth(player)
+    if (args[0] == undefined && args[1] == undefined)
+        return sendchat(player, 'GotoPlace [Place Group] [ID]');
+    //--------------------------------------------------
+    switch (args[0].toLowerCase()) {
+        case 'business':
+            let pos = await Business.Data.get(args[1], 'Pos')
+            if (pos) {
+                player.pos = JSON.parse(pos)
+            }
+
+            break;
+
+        default:
+            break;
+    }
+}
+
+
 
 registerCmd('makeadmin', MakeAdmin)
 registerCmd('MA', MakeAdmin)
@@ -194,6 +217,12 @@ registerCmd('CSV', CreateStaticVehicle)
 registerCmd('createStaticVehicle', CreateStaticVehicle)
 registerCmd('Cfv', CreateFactionVehicle)
 registerCmd('CreateFactionVehicle', CreateFactionVehicle)
+registerCmd('Goto', GotoPlace)
+
+registerCmd('cb', async (player, args) => {
+    let a = await sql(`insert into business (Owner,Pos) values ('-1','${JSON.stringify({ x: player.pos.x, y: player.pos.y, z: player.pos.z })}')`)
+    console.log(a)
+})
 
 
 registerCmd("test", async (player, args) => {
