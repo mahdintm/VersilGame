@@ -9,6 +9,10 @@ export function SendObjectTitlesToManageEyeTracker(ObjectTitles) {
     case "OpenClothesUiBox":
       alt.emit(EventNames.clothes.localClient.ActiveClothes)
       break;
+    case "Fill_Gas":
+      //edit kon
+      alt.emitServer("Fill_GAS")
+      break;
     default:
       console.log(`Log From ${ObjectTitles.title} action`);
       break;

@@ -10,6 +10,7 @@ import { LoadedVehicels } from "./vehicles";
 import { playerDetails } from "../utils/playerDetails";
 import { EventNames } from "../utils/eventNames";
 import { sql } from "../database/mysql";
+import { GasStation } from "./GasStation";
 
 
 await sql('update Account set pOnline = "0"')
@@ -20,17 +21,20 @@ let ban_ip = "::ffff:192.168.90.100";
 alt.on("beforePlayerConnect", (player) => {
   player.setSyncedMeta("hasLogin", false);
 });
+
+alt.onClient('Fill_GAS', async (player) => {
+  await GasStation.Fill(player)
+})
 alt.on("connectionQueueAdd", (info, a, b) => {
   // console.log(info.discordUserID)
-  if (info.discordUserID == "")
-    return info.decline("Please open the Discord App then TryAgain.");
+  // if (info.discordUserID == "")
+  //   return info.decline("Please open the Discord App then TryAgain.");
   // if (!LoadedVehicels) return info.decline("Please Try Again then 1 Minutes.")
   info.accept();
 });
 
 alt.on("playerConnect", async (player) => {
   alt.emitClient(player, EventNames.player.server.PlayerDetails, playerDetails);
-
   player.spawn(-66.84395599365234, -802.20615234375, 44.2255859375);
   player.model = Object.values(character.skin)[0];
   player.setMeta("Gender", "male");

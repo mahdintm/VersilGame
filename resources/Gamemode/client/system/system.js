@@ -10,5 +10,6 @@ import "./peds";
 import "./manageStaticNPCs";
 import "./manageEyeTrackerFounded";
 import "./AFK";
-
+//edit kon
+import './load3DText'
 import "./functions";

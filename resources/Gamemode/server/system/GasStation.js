@@ -1,4 +1,9 @@
 import * as alt from 'alt'
+import { Business } from './business';
+import { registerCmd } from './chat';
+import { Money } from './money';
+import { ServerSetting } from './server_settings';
+import { VehicleClass } from './vehicles';
 
 let GasStatios = [
     {
@@ -8,7 +13,7 @@ let GasStatios = [
             { x: -54.646, y: -1736.914 },
             { x: -96.369, y: -1753.477 },
         ]),
-        buz_ID: 1,
+        business_ID: 1,
     }, {
         Colshape: new alt.ColshapePolygon(18, 25, [
             { x: -705.284, y: -946.642 },
@@ -16,7 +21,7 @@ let GasStatios = [
             { x: -735.969, y: -917.684 },
             { x: -744.409, y: -947.921 },
         ]),
-        buz_ID: 2,
+        business_ID: 2,
     }, {
         Colshape: new alt.ColshapePolygon(17, 27, [
             { x: -550.998, y: -1230.831 },
@@ -26,7 +31,7 @@ let GasStatios = [
             { x: -522.673, y: -1195.490 },
             { x: -533.090, y: -1192.853 },
         ]),
-        buz_ID: 3,
+        business_ID: 3,
     }, {
         Colshape: new alt.ColshapePolygon(28, 35, [
             { x: 302.281, y: -1232.954 },
@@ -34,7 +39,7 @@ let GasStatios = [
             { x: 250.009, y: -1285.055 },
             { x: 302.519, y: -1284.198 }
         ]),
-        buz_ID: 4,
+        business_ID: 4,
     }, {
         Colshape: new alt.ColshapePolygon(25, 32, [
             { x: 802.009, y: -1018.549 },
@@ -44,7 +49,7 @@ let GasStatios = [
             { x: 835.147, y: -1040.097 },
             { x: 835.160, y: -1016.097 }
         ]),
-        buz_ID: 5,
+        business_ID: 5,
     }, {
         Colshape: new alt.ColshapePolygon(33, 39, [
             { x: 1221.257, y: -1383.297 },
@@ -52,7 +57,7 @@ let GasStatios = [
             { x: 1195.108, y: -1417.029 },
             { x: 1222.352, y: -1410.936 }
         ]),
-        buz_ID: 6,
+        business_ID: 6,
     }, {
         Colshape: new alt.ColshapePolygon(11, 16, [
             { x: -2074.985, y: -341.644 },
@@ -64,7 +69,7 @@ let GasStatios = [
             { x: -2114.018, y: -309.771 },
             { x: -2114.018, y: -333.811 }
         ]),
-        buz_ID: 7,
+        business_ID: 7,
     }, {
         Colshape: new alt.ColshapePolygon(43, 48, [
             { x: -1400.598, y: -273.073 },
@@ -72,7 +77,7 @@ let GasStatios = [
             { x: -1459.187, y: -270.673 },
             { x: -1431.534, y: -301.754 },
         ]),
-        buz_ID: 8,
+        business_ID: 8,
     }, {
         Colshape: new alt.ColshapePolygon(101, 110, [
             { x: 585.851, y: 260.993 },
@@ -80,7 +85,7 @@ let GasStatios = [
             { x: 671.116, y: 272.637 },
             { x: 630.330, y: 313.055 }
         ]),
-        buz_ID: 9,
+        business_ID: 9,
     }, {
         Colshape: new alt.ColshapePolygon(66, 73, [
             { x: 1191.495, y: -311.077 },
@@ -90,7 +95,7 @@ let GasStatios = [
             { x: 1152.040, y: -346.695 },
             { x: 1196.967, y: -355.807 }
         ]),
-        buz_ID: 10,
+        business_ID: 10,
     }, {
         Colshape: new alt.ColshapePolygon(134, 144, [
             { x: -1830.396, y: 779.301 },
@@ -100,7 +105,7 @@ let GasStatios = [
             { x: -1825.411, y: 807.969 },
             { x: -1814.189, y: 794.334 }
         ]),
-        buz_ID: 11,
+        business_ID: 11,
     }, {
         Colshape: new alt.ColshapePolygon(106, 110, [
             { x: 2596.457, y: 331.767 },
@@ -108,7 +113,7 @@ let GasStatios = [
             { x: 2562.765, y: 401.763 },
             { x: 2560.180, y: 331.991 },
         ]),
-        buz_ID: 12,
+        business_ID: 12,
     }, {
         Colshape: new alt.ColshapePolygon(32, 35, [
             { x: -2526.356, y: 2351.763 },
@@ -116,7 +121,7 @@ let GasStatios = [
             { x: -2576.927, y: 2317.266 },
             { x: -2512.048, y: 2317.292 },
         ]),
-        buz_ID: 13,
+        business_ID: 13,
     }, {
         Colshape: new alt.ColshapePolygon(55, 60, [
             { x: 23.064, y: 2782.497 },
@@ -124,7 +129,7 @@ let GasStatios = [
             { x: 69.837, y: 2778.844 },
             { x: 46.022, y: 2809.938 }
         ]),
-        buz_ID: 14,
+        business_ID: 14,
     }, {
         Colshape: new alt.ColshapePolygon(43, 48, [
             { x: 297.323, y: 2587.635 },
@@ -132,7 +137,7 @@ let GasStatios = [
             { x: 243.020, y: 2619.363 },
             { x: 248.901, y: 2592.528 },
         ]),
-        buz_ID: 15,
+        business_ID: 15,
     }, {
         Colshape: new alt.ColshapePolygon(36, 41, [
             { x: 1194.132, y: 2674.813 },
@@ -140,7 +145,7 @@ let GasStatios = [
             { x: 1207.121, y: 2633.829 },
             { x: 1224.672, y: 2674.681 },
         ]),
-        buz_ID: 16,
+        business_ID: 16,
     }, {
         Colshape: new alt.ColshapePolygon(36, 41, [
             { x: 2562.026, y: 2643.086 },
@@ -148,7 +153,7 @@ let GasStatios = [
             { x: 2524.589, y: 2575.437 },
             { x: 2578.800, y: 2581.741 }
         ]),
-        buz_ID: 17,
+        business_ID: 17,
     }, {
         Colshape: new alt.ColshapePolygon(54, 58, [
             { x: 2686.272, y: 3289.424 },
@@ -156,7 +161,7 @@ let GasStatios = [
             { x: 2680.563, y: 3244.299 },
             { x: 2702.466, y: 3284.572 }
         ]),
-        buz_ID: 18,
+        business_ID: 18,
     }, {
         Colshape: new alt.ColshapePolygon(31, 35, [
             { x: 1989.363, y: 3774.739 },
@@ -164,7 +169,7 @@ let GasStatios = [
             { x: 2027.736, y: 3769.029 },
             { x: 2017.042, y: 3789.336 },
         ]),
-        buz_ID: 19,
+        business_ID: 19,
     }, {
         Colshape: new alt.ColshapePolygon(41, 46, [
             { x: 1710.000, y: 4945.583 },
@@ -172,7 +177,7 @@ let GasStatios = [
             { x: 1673.683, y: 4921.147 },
             { x: 1685.631, y: 4915.016 }
         ]),
-        buz_ID: 20,
+        business_ID: 20,
     }, {
         Colshape: new alt.ColshapePolygon(30, 37, [
             { x: 1712.031, y: 6399.864, },
@@ -180,7 +185,7 @@ let GasStatios = [
             { x: 1694.466, y: 6431.420 },
             { x: 1681.701, y: 6412.009 },
         ]),
-        buz_ID: 21,
+        business_ID: 21,
     }, {
         Colshape: new alt.ColshapePolygon(29, 37, [
             { x: 168.725, y: 6562.853 },
@@ -189,7 +194,7 @@ let GasStatios = [
             { x: 142.655, y: 6649.147 },
             { x: 103.543, y: 6607.253 }
         ]),
-        buz_ID: 22,
+        business_ID: 22,
     }, {
         Colshape: new alt.ColshapePolygon(29, 37, [
             { x: -114.633, y: 6409.728 },
@@ -197,8 +202,43 @@ let GasStatios = [
             { x: -79.952, y: 6421.319 },
             { x: -88.681, y: 6432.145 }
         ]),
-        buz_ID: 22,
+        business_ID: 23,
     }
 ]
 
+export class GasStation {
+    static async #CheckStation(player) {
+        for await (const Station of GasStatios) {
+            if (await (Station.Colshape).isEntityIn(player)) {
+                return Station
+            }
+        }
+    }
+    static async Fill(player) {
+        if (!player.vehicle) return console.log("mashin nadari")
+        let Station = await this.#CheckStation(player)
+        if (!Station) return console.log("tush nisti")
+        let MaxFule = await VehicleClass.data.get(player.vehicle, 'maxfuel')
+        let NowFule = await VehicleClass.fuel.get(player.vehicle)
+        let Price = ((MaxFule - NowFule) * await ServerSetting.get('Fule_Price'))
+        if (MaxFule == NowFule) return console.log("pore")
+        if (await Money.get(player) < Price) return console.log('pul nadarii')
+        alt.emitClient(player, "FreezePlayer", true)
+        await VehicleClass.engine.on(player.vehicle, false)
+        await Money.take(player, Price)
+        await Business.Money.Give(Station.business_ID, Price)
+        let inter = setInterval(async () => {
+            await VehicleClass.fuel.give(player.vehicle, Math.random(Math.random() * (10 - 1) + 1))
+            if (MaxFule <= await VehicleClass.fuel.get(player.vehicle)) {
+                alt.emitClient(player, "FreezePlayer", false)
+                await VehicleClass.engine.on(player.vehicle, true)
+                clearInterval(inter)
+            }
+        }, 80);
+    }
+}
+
+registerCmd('bb', async (player) => {
+    await GasStation.Fill(player)
+})
 
