@@ -334,6 +334,9 @@ registerCmd('Goto', GotoPlace)
 registerCmd('givemoney', GiveMoney)
 registerCmd('takemoney', TakeMoney)
 registerCmd('setmoney', SetMoney)
+registerCmd('SetGold', SetGold)
+registerCmd('TakeGold', TakeGold)
+registerCmd('GiveGold', GiveGold)
 
 registerCmd('cb', async (player, args) => {
     let a = await sql(`insert into business (Owner,Pos) values ('-1','${JSON.stringify({ x: player.pos.x, y: player.pos.y, z: player.pos.z })}')`)
