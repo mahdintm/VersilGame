@@ -52,6 +52,7 @@ export class PlayerData {
             playersdata[player.id] = DaTa;
             playersdata[player.id]['pName'] = obj.username;
             playersdata[player.id]['gameID'] = await playerIdGame.set(player);
+            playersdata[player.id]['altvID'] = player.id;
             await player.spawn(-66.84395599365234, -802.20615234375, 44.2255859375);
             await VirtualWorld.set(player, 0)
             await Business.Load_To_Players(player)
@@ -195,12 +196,12 @@ export class playerIdGame {
     };
 }
 export class FindPlayerAccount {
-    static Name(value) {
-        let id = (Object.entries(playersdata).filter((v, index, ar) => v[1].pName.toLowerCase().match(value.toLowerCase()) != undefined))
+    static async Name(value) {
+        let id = (Object.entries(playersdata).filter(async (v, index, ar) => await v[1].pName.toLowerCase().match(value.toLowerCase()) != undefined))
         if (id.length == undefined) {
             return ["undefined", null]
         } else if (id.length == 1) {
-            return ["finded", alt.Player.getByID(id[0][1].altvID)]
+            return ["finded", await alt.Player.getByID(id[0][1].altvID)]
         } else if (id.length > 1 && id.length <= 6) {
             let data = []
             for (let i = 0; i < id.length; i++) {
@@ -212,7 +213,7 @@ export class FindPlayerAccount {
         }
     }
     static GameID(ID) {
-        return alt.Player.getByID(Idx[player.getSyncedMeta('inServer')][ID])
+        return alt.Player.getByID(Idx[ID])
     }
 
     static async FromReferral(id) {
@@ -225,13 +226,13 @@ var reg = new RegExp('^[0-9]$');
 
 export async function FindPlayerForCMD(player, value) {
     if (reg.test(value)) {
-        if (GetPlayerIdAltv(value) != undefined) {
+        if (FindPlayerAccount.GameID(value) != undefined) {
             return FindPlayerAccount.GameID(value)
         } else {
             return undefined;
         }
     } else {
-        let f = FindPlayerAccount.Name(value)
+        let f = await FindPlayerAccount.Name(value)
         if (f[0] == undefined) {
             return undefined;
         } else if (f[0] == "duplicate") {
