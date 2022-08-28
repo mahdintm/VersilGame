@@ -1,12 +1,6 @@
 const licensess = ['driving', 'flying', 'sailing', 'weapon']
 import * as alt from 'alt';
 import { PlayerData } from './account';
-license = {
-    'driving': {}
-    , 'flying': {}
-    , 'sailing': {}
-    , 'weapon': {}
-}
 
 export class license {
     /**
