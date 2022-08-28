@@ -140,9 +140,9 @@ export class VehicleClass {
          * @param {number} factionid factionID
          * @returns {string} PlateNumber
          */
-        async faction(factionid) {
+        faction(factionid) {
             platefactionveh.i++;
-            platefactionveh[factionid].i++;
+            platefactionveh[factionid]['i']++;
             let plate = `${platefactionveh[factionid].prefix} ${platefactionveh[factionid].i}`;
             return plate;
         }
@@ -194,10 +194,10 @@ export class VehicleClass {
                 factionid: -1, // -1 for none faction
             }
         },
-        async faction(player, FactionNumber, Rank_Req, Model) {
+        async faction(player, Model, FactionNumber = 1, Rank_Req = 1) {
             let VehicleModel = Model;
             const NewVehicle = await new alt.Vehicle(VehicleModel, player.pos.x, player.pos.y, player.pos.z, player.rot.x, player.rot.y, player.rot.z);
-            let newsql = await sql(`INSERT INTO Vehicles (model,pos,type,statictype) VALUES (${VehicleModel},'${JSON.stringify({ x: player.pos.x, y: player.pos.y, z: player.pos.z, rx: player.rot.x, ry: player.rot.y, rz: player.rot.z })}',"faction","${sttype}")`)
+            let newsql = await sql(`INSERT INTO Vehicles (model,pos,type,factionid) VALUES ('${VehicleModel}','${JSON.stringify({ x: player.pos.x, y: player.pos.y, z: player.pos.z, rx: player.rot.x, ry: player.rot.y, rz: player.rot.z })}',"faction","${FactionNumber}")`)
             let vehdet = await VehicleClass.GetVehicleDetail(VehicleModel)
             NewVehicle.manualEngineControl = true
             vehicles[NewVehicle.id] = {
@@ -211,8 +211,8 @@ export class VehicleClass {
                     ry: player.rot.y,
                     rz: player.rot.z,
                 },
-                plate: NewVehicle.numberPlateText = VehicleClass.faction(FactionNumber),
-                gameid: await VehicleClass.id(NewVehicle.id),
+                plate: NewVehicle.numberPlateText = VehicleClass.plate.faction(FactionNumber),
+                gameid: await VehicleClass.gameid.newid(NewVehicle.id),
                 maxspeed: vehdet.MaxSpeed,
                 maxfuel: vehdet.MaxFuel,
                 fuel: vehdet.MaxFuel,
@@ -360,12 +360,15 @@ export class VehicleClass {
         static: async (vehicle) => {
             let vehicleid = vehicle.id
             if (vehicles[vehicle.id]['type'] == 'static') {
+                let plate = vehicles[vehicle.id]['plate']
+                let sqlid = vehicles[vehicle.id]['sqlid']
+                let pos = vehicles[vehicle.id]['pos']
                 var index = VehicleEngineON.indexOf(vehicle);
                 if (index != -1) VehicleEngineON.splice(index, 1)
-                await vehicle.destroy();
                 await sql(`delete from Vehicles where id="${vehicles[vehicleid]['sqlid']}"`)
+                await vehicle.destroy();
                 delete vehicles[vehicleid]
-                return true
+                return [sqlid, plate, pos]
             } else
                 return false
         },
@@ -383,12 +386,15 @@ export class VehicleClass {
         faction: async (vehicle) => {
             let vehicleid = vehicle.id
             if (vehicles[vehicle.id]['type'] == 'faction') {
+                let plate = vehicles[vehicle.id]['plate']
+                let sqlid = vehicles[vehicle.id]['sqlid']
+                let pos = vehicles[vehicle.id]['pos']
                 var index = VehicleEngineON.indexOf(vehicle);
                 if (index != -1) VehicleEngineON.splice(index, 1)
-                await vehicle.destroy();
                 await sql(`delete from Vehicles where id="${vehicles[vehicleid]['sqlid']}"`)
+                await vehicle.destroy();
                 delete vehicles[vehicleid]
-                return true
+                return [sqlid, plate, pos]
             } else
                 return false
         }
