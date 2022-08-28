@@ -9,6 +9,7 @@ import './CMD_Admin'
 import './CMD_Staff'
 import { Colors } from '../utils/colors';
 import { Hoster } from './hoster';
+import { DiscordHook } from '../utils/discord-hook';
 
 let SarONs = [],
     interval,
@@ -103,17 +104,12 @@ export class StaffSystem {
         Player: (player, msg) => {
             sendchat(player, `AdminBot: ${msg}`)
         },
-        Admins: async (msg) => {
+        Admins: async (Key, arr) => {
             let allPlayers = alt.Player.all
             for (let i = 0; i < allPlayers.length; i++) {
                 if (!StaffSystem.IsAdmin(allPlayers[i])) continue
-                sendchat(
-                    allPlayers[i],
-                    `{${await Colors.chat.AdminWarn}}` +
-                    await Language.GetValue(allPlayers[i].getSyncedMeta('Language'), "CHAT_ADMIN_WARN") +
-                    `{${Colors.chat.Default}} ` +
-                    msg
-                )
+                sendchat(allPlayers[i], `{${await Colors.chat.AdminWarn}}` + await Language.GetValue(allPlayers[i].getSyncedMeta('Language'), "CHAT_ADMIN_WARN") + `{${Colors.chat.Default}} ` + await Language.GetValue(allPlayers[i].getSyncedMeta('Language'), Key, arr))
+                await DiscordHook.newhook.adminwarn(await Language.GetValue(allPlayers[i].getSyncedMeta('Language'), Key, arr))
             }
         },
         Helpers: async (msg) => {
@@ -454,7 +450,7 @@ export class StaffPoint {
 
 
 StaffSystem.CMD.Load()
+StaffSystem.CreateInterval(await Time.GetNameDay())
 
 // StaffPoint.LoodAllStaff()
-// StaffPoint.CreateInterval(await Time.GetNameDay())
 // StaffSystem.calculatorSP()
