@@ -5,6 +5,7 @@ import { hashing } from "../utils/hash";
 import { DiscordHook } from "../utils/discord-hook";
 import { sendchat } from "./chat";
 import { VirtualWorld } from "./VirtualWorld";
+import { Business } from "./business";
 var playersdata = {}
 var Idx = {}
 export class PlayerData {
@@ -51,7 +52,8 @@ export class PlayerData {
             playersdata[player.id]['pName'] = obj.username;
             playersdata[player.id]['gameID'] = await playerIdGame.set(player);
             await player.spawn(-66.84395599365234, -802.20615234375, 44.2255859375);
-            VirtualWorld.set(player, 0)
+            await VirtualWorld.set(player, 0)
+            await Business.Load_To_Players(player)
             player.setSyncedMeta("hasLogin", true);
             //log system
             // await sql(`INSERT INTO login_log(rId, loginas, ip, timestamp, hwid, discordid, license) VALUES ("${DaTa.rId}","Server","${(player.ip).substr(7, 24)}","${time}","${player.hwidHash}","${player.getSyncedMeta('Discordid')}","${player.socialID}")`);
