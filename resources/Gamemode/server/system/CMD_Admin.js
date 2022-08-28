@@ -216,7 +216,7 @@ async function GotoPlace(player, args) {
             if (pos) {
                 player.pos = JSON.parse(pos)
                 player.setMeta("GoBack_Status", true);
-                player.setMeta("GoBack_Pos", taraf.pos);
+                player.setMeta("GoBack_Pos", player.pos);
                 return await StaffSystem.Warn.Admins("ADMIN_GOED_TO_PLACE", [await PlayerData.get(player, 'pName'), args[0].toLowerCase(), args[1]])
             }
             break;
@@ -363,7 +363,12 @@ async function GotoPlayer(player, args) {
     //--------------------------------------------------
     player.setMeta("GoBack_Status", true);
     player.setMeta("GoBack_Pos", player.pos);
-    player.pos = taraf.pos;
+    if (taraf.vehicle) {
+        player.vehicle.pos = taraf.pos;
+
+    } else {
+        player.pos = taraf.pos;
+    }
 }
 async function TeleportPlayer(player, args) {
     if (!await StaffSystem.IsAdmin(player)) return await StaffSystem.Send_NotAdmin(player)
@@ -374,9 +379,13 @@ async function TeleportPlayer(player, args) {
     let taraf = await FindPlayerForCMD(player, args[0])
     if (taraf == undefined) return
     //--------------------------------------------------
-    player.setMeta("GoBack_Status", true);
-    player.setMeta("GoBack_Pos", taraf.pos);
-    taraf.pos = player.pos;
+    taraf.setMeta("GoBack_Status", true);
+    taraf.setMeta("GoBack_Pos", taraf.pos);
+    if (taraf.vehicle) {
+        taraf.vehicle.pos = player.pos;
+    } else {
+        taraf.pos = player.pos;
+    }
 }
 async function GoBack(player, args) {
     if (!await StaffSystem.IsAdmin(player)) return await StaffSystem.Send_NotAdmin(player)
@@ -387,9 +396,13 @@ async function GoBack(player, args) {
     let taraf = await FindPlayerForCMD(player, args[0])
     if (taraf == undefined) return
     //--------------------------------------------------
-    if (player.getMeta("GoBack_Status") == true) {
-        taraf.pos = player.setMeta("GoBack_Pos");
-        player.setMeta("GoBack_Status", false);
+    if (taraf.getMeta("GoBack_Status") == true) {
+        if (taraf.vehicle) {
+            taraf.vehicle.pos = taraf.getMeta("GoBack_Pos");
+        } else {
+            taraf.pos = taraf.getMeta("GoBack_Pos");
+        }
+        taraf.setMeta("GoBack_Status", false);
     } else {
         sendchat(player, "nemishe")
     }
