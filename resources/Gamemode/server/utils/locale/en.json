@@ -27,5 +27,8 @@
     "ADMIN_DELETED_FACTION_VEHICLE": "Admin {0} deleted faction vehicle SQLid: {1} Plate: {2} Pos :{3}.",
     "ADMIN_CREATED_STATIC_VEHICLE": "Admin {0} created static vehicle Type: {1} Pos: {2}.",
     "ADMIN_CREATED_FACTION_VEHICLE": "Admin {0} created faction vehicle Model: {1} FactionID: {2} Rank: {3} Pos: {4}.",
-    "ADMIN_GOED_TO_PLACE": "Admin {0} goed to {1} ID: {2}"
+    "ADMIN_GOED_TO_PLACE": "Admin {0} goed to {1} ID: {2}",
+    "ADMIN_TAKED_MONEY_TO_PLAYER2": "Admin {0} taked {1}$ to player {2}.",
+    "YOU_TAKE_MONEY_TO_PLAYER2": "You take {0}$ to player {1}.",
+    "ADMIN_TAKEN_MONEY_TO_YOU": "Admin {0} taken {1}$ to you."
 }

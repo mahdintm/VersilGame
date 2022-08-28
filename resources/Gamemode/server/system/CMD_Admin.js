@@ -237,6 +237,20 @@ async function GiveMoney(player, args) {
     await sendchat(player, await Language.GetValue(player.getSyncedMeta('Language'), "YOU_GAVE_MONEY_TO_PLAYER2", [args[1], await PlayerData.get(taraf, 'pName')]))
     await sendchat(taraf, await Language.GetValue(taraf.getSyncedMeta('Language'), "ADMIN_GIVEN_MONEY_TO_YOU", [await PlayerData.get(player, 'pName'), args[1]]))
 }
+async function TakeMoney(player, args) {
+    if (!await StaffSystem.IsAdmin(player)) return await StaffSystem.Send_NotAdmin(player)
+    if (!(await StaffSystem.CheckObject.MakeAdmin(player) && await StaffSystem.CMD.Level.check(player, 'TakeMoney')))
+        return await StaffSystem.Send_Auth(player)
+    if (args[0] == undefined || args[1] == undefined)
+        return sendchat(player, 'GiveMoney [PlayerName/PlayerID] [Ammount]');
+    let taraf = await FindPlayerForCMD(player, args[0])
+    if (taraf == undefined) return
+    //--------------------------------------------------
+    await Money.take(player, args[1])
+    await StaffSystem.Warn.Admins("ADMIN_TAKED_MONEY_TO_PLAYER2", [await PlayerData.get(player, 'pName'), args[1], await PlayerData.get(taraf, 'pName')])
+    await sendchat(player, await Language.GetValue(player.getSyncedMeta('Language'), "YOU_TAKE_MONEY_TO_PLAYER2", [args[1], await PlayerData.get(taraf, 'pName')]))
+    await sendchat(taraf, await Language.GetValue(taraf.getSyncedMeta('Language'), "ADMIN_TAKEN_MONEY_TO_YOU", [await PlayerData.get(player, 'pName'), args[1]]))
+}
 
 
 
@@ -262,6 +276,7 @@ registerCmd('Cfv', CreateFactionVehicle)
 registerCmd('CreateFactionVehicle', CreateFactionVehicle)
 registerCmd('Goto', GotoPlace)
 registerCmd('givemoney', GiveMoney)
+registerCmd('takemoney', TakeMoney)
 
 registerCmd('cb', async (player, args) => {
     let a = await sql(`insert into business (Owner,Pos) values ('-1','${JSON.stringify({ x: player.pos.x, y: player.pos.y, z: player.pos.z })}')`)
