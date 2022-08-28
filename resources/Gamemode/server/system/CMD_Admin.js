@@ -1,8 +1,10 @@
 import { sql } from "../database/mysql";
+import { Language } from "../utils/dialogs";
 import { vehicleObject } from "../utils/VehicleList";
 import { FindPlayerAccount, FindPlayerForCMD, PlayerData } from "./account";
 import { Business } from "./business";
 import { registerCmd, sendchat } from "./chat";
+import { Money } from "./money";
 import { StaffPoint, StaffSystem } from "./staff";
 import { VehicleClass } from "./vehicles";
 
@@ -17,6 +19,10 @@ async function MakeAdmin(player, args) {
     //--------------------------------------------------
     await PlayerData.set(taraf, 'pAdmin', args[1], true)
     await StaffSystem.CalculatorRole(player)
+    await StaffSystem.Warn.Admins("ADMIN_GIVED_ADMIN_TO_PLAYER2", [await PlayerData.get(player, 'pName'), args[1], await PlayerData.get(taraf, 'pName')])
+    await sendchat(player, await Language.GetValue(player.getSyncedMeta('Language'), "YOU_GAVE_ADMIN_PLAYER2", [args[1], await PlayerData.get(taraf, 'pName')]))
+    await sendchat(taraf, await Language.GetValue(taraf.getSyncedMeta('Language'), "ADMIN_GIVEN_ADMIN_YOU", [await PlayerData.get(player, 'pName'), args[1]]))
+
 }
 async function GiveStaffPoint(player, args) {
     if (!await StaffSystem.IsAdmin(player)) return await StaffSystem.Send_NotAdmin(player)
@@ -29,6 +35,9 @@ async function GiveStaffPoint(player, args) {
     //--------------------------------------------------
     await StaffPoint.give(taraf, parseInt(args[1]))
     await StaffSystem.CalculatorRole(player)
+    await StaffSystem.Warn.Admins("ADMIN_GIVED_STAFFPOINT_TO_PLAYER2", [await PlayerData.get(player, 'pName'), args[1], await PlayerData.get(taraf, 'pName')])
+    await sendchat(player, await Language.GetValue(player.getSyncedMeta('Language'), "YOU_GAVE_STAFFPOINT_PLAYER2", [args[1], await PlayerData.get(taraf, 'pName')]))
+    await sendchat(taraf, await Language.GetValue(taraf.getSyncedMeta('Language'), "ADMIN_GIVEN_STAFFPOINT_YOU", [await PlayerData.get(player, 'pName'), args[1]]))
 }
 async function TakeStaffPoint(player, args) {
     if (!await StaffSystem.IsAdmin(player)) return await StaffSystem.Send_NotAdmin(player)
@@ -41,6 +50,9 @@ async function TakeStaffPoint(player, args) {
     //--------------------------------------------------
     await StaffPoint.take(taraf, parseInt(args[1]))
     await StaffSystem.CalculatorRole(player)
+    await StaffSystem.Warn.Admins("ADMIN_TAKED_STAFFPOINT_TO_PLAYER2", [await PlayerData.get(player, 'pName'), args[1], await PlayerData.get(taraf, 'pName')])
+    await sendchat(player, await Language.GetValue(player.getSyncedMeta('Language'), "YOU_TAKE_STAFFPOINT_PLAYER2", [args[1], await PlayerData.get(taraf, 'pName')]))
+    await sendchat(taraf, await Language.GetValue(taraf.getSyncedMeta('Language'), "ADMIN_TAKEN_STAFFPOINT_YOU", [await PlayerData.get(player, 'pName'), args[1]]))
 }
 async function SetStaffPoint(player, args) {
     if (!await StaffSystem.IsAdmin(player)) return await StaffSystem.Send_NotAdmin(player)
@@ -53,6 +65,9 @@ async function SetStaffPoint(player, args) {
     //--------------------------------------------------
     await StaffPoint.set(taraf, parseInt(args[1]))
     await StaffSystem.CalculatorRole(player)
+    await StaffSystem.Warn.Admins("ADMIN_SETED_STAFFPOINT_TO_PLAYER2", [await PlayerData.get(player, 'pName'), args[1], await PlayerData.get(taraf, 'pName')])
+    await sendchat(player, await Language.GetValue(player.getSyncedMeta('Language'), "YOU_SET_STAFFPOINT_PLAYER2", [args[1], await PlayerData.get(taraf, 'pName')]))
+    await sendchat(taraf, await Language.GetValue(taraf.getSyncedMeta('Language'), "ADMIN_SETEN_STAFFPOINT_YOU", [await PlayerData.get(player, 'pName'), args[1]]))
 }
 async function CreateAdminVehicle(player, args) {
     if (!await StaffSystem.IsAdmin(player)) return await StaffSystem.Send_NotAdmin(player)
@@ -105,8 +120,12 @@ async function DeleteStaticVehicle(player) {
     //--------------------------------------------------
     if (!player.vehicle)
         return sendchat(player, 'AdminVehicle(veh) [Model]');
-    let a = await VehicleClass.delete.static(player.vehicle)
-    a == true ? console.log("deleted") : console.log("you can not delete this vehicle")
+    let vehicle_ = await VehicleClass.delete.static(player.vehicle)
+    if (vehicle_) {
+        return await StaffSystem.Warn.Admins("ADMIN_DELETED_STATIC_VEHICLE", [await PlayerData.get(player, 'pName'), vehicle_[0], vehicle_[1], JSON.stringify(vehicle_[2])])
+    } else {
+        await sendchat(player, await Language.GetValue(player.getSyncedMeta('Language'), "YOU_CAN_NOT_DELETE_THIS_VEHICLE"))
+    }
 }
 async function DeleteFactionVehicle(player) {
     if (!await StaffSystem.IsAdmin(player)) return await StaffSystem.Send_NotAdmin(player)
@@ -115,8 +134,12 @@ async function DeleteFactionVehicle(player) {
     //--------------------------------------------------
     if (!player.vehicle)
         return sendchat(player, 'AdminVehicle(veh) [Model]');
-    let a = await VehicleClass.delete.faction(player.vehicle)
-    a == true ? console.log("deleted") : console.log("you can not delete this vehicle")
+    let vehicle_ = await VehicleClass.delete.faction(player.vehicle)
+    if (vehicle_) {
+        return await StaffSystem.Warn.Admins("ADMIN_DELETED_FACTION_VEHICLE", [await PlayerData.get(player, 'pName'), vehicle_[0], vehicle_[1], JSON.stringify(vehicle_[2])])
+    } else {
+        await sendchat(player, await Language.GetValue(player.getSyncedMeta('Language'), "YOU_CAN_NOT_DELETE_THIS_VEHICLE"))
+    }
 }
 async function CreateStaticVehicle(player, args) {
     if (!await StaffSystem.IsAdmin(player)) return await StaffSystem.Send_NotAdmin(player)
@@ -127,31 +150,36 @@ async function CreateStaticVehicle(player, args) {
     //--------------------------------------------------
     switch (args[0]) {
         case 'driving':
-            return await VehicleClass.create.static(player, 'driving')
+            await VehicleClass.create.static(player, 'driving')
+            return await StaffSystem.Warn.Admins("ADMIN_CREATED_STATIC_VEHICLE", [await PlayerData.get(player, 'pName'), args[0], `x:${(player.pos.x).toFixed(3)} , y:${(player.pos.y).toFixed(3)} , z:${(player.pos.z).toFixed(3)}`])
         case 'sailing':
-            return await VehicleClass.create.static(player, 'sailing')
+            await VehicleClass.create.static(player, 'sailing')
+            return await StaffSystem.Warn.Admins("ADMIN_CREATED_STATIC_VEHICLE", [await PlayerData.get(player, 'pName'), args[0], `x:${(player.pos.x).toFixed(3)} , y:${(player.pos.y).toFixed(3)} , z:${(player.pos.z).toFixed(3)}`])
         case 'riding':
-            return await VehicleClass.create.static(player, 'riding')
+            await VehicleClass.create.static(player, 'riding')
+            return await StaffSystem.Warn.Admins("ADMIN_CREATED_STATIC_VEHICLE", [await PlayerData.get(player, 'pName'), args[0], `x:${(player.pos.x).toFixed(3)} , y:${(player.pos.y).toFixed(3)} , z:${(player.pos.z).toFixed(3)}`])
         case 'motor':
-            return await VehicleClass.create.static(player, 'motor')
+            await VehicleClass.create.static(player, 'motor')
+            return await StaffSystem.Warn.Admins("ADMIN_CREATED_STATIC_VEHICLE", [await PlayerData.get(player, 'pName'), args[0], `x:${(player.pos.x).toFixed(3)} , y:${(player.pos.y).toFixed(3)} , z:${(player.pos.z).toFixed(3)}`])
         case 'flying':
-            return await VehicleClass.create.static(player, 'flying')
+            await VehicleClass.create.static(player, 'flying')
+            return await StaffSystem.Warn.Admins("ADMIN_CREATED_STATIC_VEHICLE", [await PlayerData.get(player, 'pName'), args[0], `x:${(player.pos.x).toFixed(3)} , y:${(player.pos.y).toFixed(3)} , z:${(player.pos.z).toFixed(3)}`])
         default:
             return sendchat(player, 'StaticVehicle(csv) [Type]: driving | sailing | riding | motor | flying');
-
     }
 }
 async function CreateFactionVehicle(player, args) {
     if (!await StaffSystem.IsAdmin(player)) return await StaffSystem.Send_NotAdmin(player)
     if (!await StaffSystem.CMD.Level.check(player, 'CreateFactionVehicle'))
         return await StaffSystem.Send_Auth(player)
-    if (args[0] == undefined && args[1] == undefined)
-        return sendchat(player, 'AdminVehicle(veh) [Model]');
+    if (args[0] == undefined && args[1] == undefined && args[2] == undefined)
+        return sendchat(player, 'CreateFactionVehicle(cfv) [Model] [FactionID] [Rank]');
     //--------------------------------------------------
     if (isNaN(args[0]) && args !== undefined && args[0].length >= 3) {
         for (const [key, str] of Object.entries(vehicleObject)) {
             if (str.name.match(args[0].toLowerCase())) {
-                return await VehicleClass.create.faction(player, str.name)
+                await VehicleClass.create.faction(player, str.name)
+                return await StaffSystem.Warn.Admins("ADMIN_CREATED_FACTION_VEHICLE", [await PlayerData.get(player, 'pName'), args[0], args[1], args[2], player.pos])
             }
             if (str.name == "end") {
                 return sendchat(player, `esme veh eshtebas`);
@@ -161,7 +189,8 @@ async function CreateFactionVehicle(player, args) {
         for (const [key, str] of Object.entries(vehicleObject)) {
             if (args[0] >= 400 && args[0] <= 700) {
                 if (str.id == args[0]) {
-                    return await VehicleClass.create.faction(player, str.name)
+                    await VehicleClass.create.faction(player, str.name)
+                    return await StaffSystem.Warn.Admins("ADMIN_CREATED_FACTION_VEHICLE", [await PlayerData.get(player, 'pName'), `(ID:${args[0]})`, args[1], args[2], player.pos])
                 }
                 if (str.name == "end") {
                     return sendchat(player, `id veh eshtebas`);
@@ -186,13 +215,27 @@ async function GotoPlace(player, args) {
             let pos = await Business.Data.get(args[1], 'Pos')
             if (pos) {
                 player.pos = JSON.parse(pos)
+                return await StaffSystem.Warn.Admins("ADMIN_GOED_TO_PLACE", [await PlayerData.get(player, 'pName'), args[0].toLowerCase(), args[1]])
             }
-
             break;
 
         default:
             break;
     }
+}
+async function GiveMoney(player, args) {
+    if (!await StaffSystem.IsAdmin(player)) return await StaffSystem.Send_NotAdmin(player)
+    if (!(await StaffSystem.CheckObject.MakeAdmin(player) && await StaffSystem.CMD.Level.check(player, 'GiveMoney')))
+        return await StaffSystem.Send_Auth(player)
+    if (args[0] == undefined || args[1] == undefined)
+        return sendchat(player, 'GiveMoney [PlayerName/PlayerID] [Ammount]');
+    let taraf = await FindPlayerForCMD(player, args[0])
+    if (taraf == undefined) return
+    //--------------------------------------------------
+    await Money.give(player, args[1])
+    await StaffSystem.Warn.Admins("ADMIN_GIVED_MONEY_TO_PLAYER2", [await PlayerData.get(player, 'pName'), args[1], await PlayerData.get(taraf, 'pName')])
+    await sendchat(player, await Language.GetValue(player.getSyncedMeta('Language'), "YOU_GAVE_MONEY_TO_PLAYER2", [args[1], await PlayerData.get(taraf, 'pName')]))
+    await sendchat(taraf, await Language.GetValue(taraf.getSyncedMeta('Language'), "ADMIN_GIVEN_MONEY_TO_YOU", [await PlayerData.get(player, 'pName'), args[1]]))
 }
 
 
@@ -218,6 +261,7 @@ registerCmd('createStaticVehicle', CreateStaticVehicle)
 registerCmd('Cfv', CreateFactionVehicle)
 registerCmd('CreateFactionVehicle', CreateFactionVehicle)
 registerCmd('Goto', GotoPlace)
+registerCmd('givemoney', GiveMoney)
 
 registerCmd('cb', async (player, args) => {
     let a = await sql(`insert into business (Owner,Pos) values ('-1','${JSON.stringify({ x: player.pos.x, y: player.pos.y, z: player.pos.z })}')`)

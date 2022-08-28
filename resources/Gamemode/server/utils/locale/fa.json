@@ -6,5 +6,8 @@
     "CHAT_ADMIN_WARN": "[Admin Warn]:",
     "CHAT_HELPER_WARN": "[Helper Warn]:",
     "CHAT_LEADER_WARN": "[Leader Warn]:",
-    "CHAT_STAFF_WARN": "[Staff Warn]:"
+    "CHAT_STAFF_WARN": "[Staff Warn]:",
+    "ADMIN_GIVED_MONEY_TO_PLAYER2": "ادمین {0} به بازیکن {1} ${2} پول داد.",
+    "YOU_GAVE_MONEY_TO_PLAYER2": "شما به بازیکن {0} ${1} پول دادید.",
+    "ADMIN_GIVEN_MONEY_TO_YOU": "ادمین {0} ${1} به شما پول داد."
 }
