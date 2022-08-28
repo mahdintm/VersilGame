@@ -33,5 +33,14 @@
     "ADMIN_TAKEN_MONEY_TO_YOU": "Admin {0} taken {1}$ to you.",
     "ADMIN_SETED_MONEY_TO_PLAYER2": "Admin {0} seted {1}$ to player {2}.",
     "YOU_SET_MONEY_TO_PLAYER2": "You set {0}$ to player {1}.",
-    "ADMIN_SETEN_MONEY_TO_YOU": "Admin {0} seten {1}$ to you."
+    "ADMIN_SETEN_MONEY_TO_YOU": "Admin {0} seten {1}$ to you.",
+    "ADMIN_TAKED_GOLD_TO_PLAYER2": "Admin {0} taked {1} Gold to player {2}.",
+    "YOU_TAKE_GOLD_TO_PLAYER2": "You take {0} Gold to player {1}.",
+    "ADMIN_TAKEN_GOLD_TO_YOU": "Admin {0} taken {1} Gold to you.",
+    "ADMIN_SETED_GOLD_TO_PLAYER2": "Admin {0} seted {1} Gold to player {2}.",
+    "YOU_SET_GOLD_TO_PLAYER2": "You set {0} Gold to player {1}.",
+    "ADMIN_SETEN_GOLD_TO_YOU": "Admin {0} seten {1} Gold to you.",
+    "ADMIN_GIVED_GOLD_TO_PLAYER2": "Admin {0} gived {1} Gold to player {2}.",
+    "YOU_GAVE_GOLD_TO_PLAYER2": "You gave {0} Gold to player {1}.",
+    "ADMIN_GIVEN_GOLD_TO_YOU": "Admin {0} given {1} Gold to you."
 }

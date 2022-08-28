@@ -265,6 +265,48 @@ async function SetMoney(player, args) {
     await sendchat(player, await Language.GetValue(player.getSyncedMeta('Language'), "YOU_SET_MONEY_TO_PLAYER2", [args[1], await PlayerData.get(taraf, 'pName')]))
     await sendchat(taraf, await Language.GetValue(taraf.getSyncedMeta('Language'), "ADMIN_SETEN_MONEY_TO_YOU", [await PlayerData.get(player, 'pName'), args[1]]))
 }
+async function SetGold(player, args) {
+    if (!await StaffSystem.IsAdmin(player)) return await StaffSystem.Send_NotAdmin(player)
+    if (!(await StaffSystem.CheckObject.MakeAdmin(player) && await StaffSystem.CMD.Level.check(player, 'SetGold')))
+        return await StaffSystem.Send_Auth(player)
+    if (args[0] == undefined || args[1] == undefined)
+        return sendchat(player, 'SeteGold [PlayerName/PlayerID] [Ammount]');
+    let taraf = await FindPlayerForCMD(player, args[0])
+    if (taraf == undefined) return
+    //--------------------------------------------------
+    await Money.take(player, args[1])
+    await StaffSystem.Warn.Admins("ADMIN_SETED_GOLD_TO_PLAYER2", [await PlayerData.get(player, 'pName'), args[1], await PlayerData.get(taraf, 'pName')])
+    await sendchat(player, await Language.GetValue(player.getSyncedMeta('Language'), "YOU_SET_GOLD_TO_PLAYER2", [args[1], await PlayerData.get(taraf, 'pName')]))
+    await sendchat(taraf, await Language.GetValue(taraf.getSyncedMeta('Language'), "ADMIN_SETEN_GOLD_TO_YOU", [await PlayerData.get(player, 'pName'), args[1]]))
+}
+async function GiveGold(player, args) {
+    if (!await StaffSystem.IsAdmin(player)) return await StaffSystem.Send_NotAdmin(player)
+    if (!(await StaffSystem.CheckObject.MakeAdmin(player) && await StaffSystem.CMD.Level.check(player, 'GiveGold')))
+        return await StaffSystem.Send_Auth(player)
+    if (args[0] == undefined || args[1] == undefined)
+        return sendchat(player, 'TakeGold [PlayerName/PlayerID] [Ammount]');
+    let taraf = await FindPlayerForCMD(player, args[0])
+    if (taraf == undefined) return
+    //--------------------------------------------------
+    await Money.give(player, args[1])
+    await StaffSystem.Warn.Admins("ADMIN_GIVED_GOLD_TO_PLAYER2", [await PlayerData.get(player, 'pName'), args[1], await PlayerData.get(taraf, 'pName')])
+    await sendchat(player, await Language.GetValue(player.getSyncedMeta('Language'), "YOU_GAVE_GOLD_TO_PLAYER2", [args[1], await PlayerData.get(taraf, 'pName')]))
+    await sendchat(taraf, await Language.GetValue(taraf.getSyncedMeta('Language'), "ADMIN_GIVEN_GOLD_TO_YOU", [await PlayerData.get(player, 'pName'), args[1]]))
+}
+async function TakeGold(player, args) {
+    if (!await StaffSystem.IsAdmin(player)) return await StaffSystem.Send_NotAdmin(player)
+    if (!(await StaffSystem.CheckObject.MakeAdmin(player) && await StaffSystem.CMD.Level.check(player, 'TakeGold')))
+        return await StaffSystem.Send_Auth(player)
+    if (args[0] == undefined || args[1] == undefined)
+        return sendchat(player, 'GiveGold [PlayerName/PlayerID] [Ammount]');
+    let taraf = await FindPlayerForCMD(player, args[0])
+    if (taraf == undefined) return
+    //--------------------------------------------------
+    await Money.take(player, args[1])
+    await StaffSystem.Warn.Admins("ADMIN_TAKED_GOLD_TO_PLAYER2", [await PlayerData.get(player, 'pName'), args[1], await PlayerData.get(taraf, 'pName')])
+    await sendchat(player, await Language.GetValue(player.getSyncedMeta('Language'), "YOU_TAKE_GOLD_TO_PLAYER2", [args[1], await PlayerData.get(taraf, 'pName')]))
+    await sendchat(taraf, await Language.GetValue(taraf.getSyncedMeta('Language'), "ADMIN_TAKEN_GOLD_TO_YOU", [await PlayerData.get(player, 'pName'), args[1]]))
+}
 
 
 
