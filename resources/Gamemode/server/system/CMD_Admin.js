@@ -215,6 +215,8 @@ async function GotoPlace(player, args) {
             let pos = await Business.Data.get(args[1], 'Pos')
             if (pos) {
                 player.pos = JSON.parse(pos)
+                player.setMeta("GoBack_Status", true);
+                player.setMeta("GoBack_Pos", taraf.pos);
                 return await StaffSystem.Warn.Admins("ADMIN_GOED_TO_PLACE", [await PlayerData.get(player, 'pName'), args[0].toLowerCase(), args[1]])
             }
             break;
@@ -349,7 +351,49 @@ async function TakeRespect(player, args) {
     await sendchat(player, await Language.GetValue(player.getSyncedMeta('Language'), "YOU_TAKE_RESPECT_TO_PLAYER2", [args[1], await PlayerData.get(taraf, 'pName')]))
     await sendchat(taraf, await Language.GetValue(taraf.getSyncedMeta('Language'), "ADMIN_TAKEN_RESPECT_TO_YOU", [await PlayerData.get(player, 'pName'), args[1]]))
 }
-
+//no LOG
+async function GotoPlayer(player, args) {
+    if (!await StaffSystem.IsAdmin(player)) return await StaffSystem.Send_NotAdmin(player)
+    if (!(await StaffSystem.CheckObject.MakeAdmin(player) && await StaffSystem.CMD.Level.check(player, 'GotoPlayer')))
+        return await StaffSystem.Send_Auth(player)
+    if (args[0] == undefined || args[1] == undefined)
+        return sendchat(player, 'Goto [PlayerName/PlayerID]');
+    let taraf = await FindPlayerForCMD(player, args[0])
+    if (taraf == undefined) return
+    //--------------------------------------------------
+    player.setMeta("GoBack_Status", true);
+    player.setMeta("GoBack_Pos", player.pos);
+    player.pos = taraf.pos;
+}
+async function TeleportPlayer(player, args) {
+    if (!await StaffSystem.IsAdmin(player)) return await StaffSystem.Send_NotAdmin(player)
+    if (!(await StaffSystem.CheckObject.MakeAdmin(player) && await StaffSystem.CMD.Level.check(player, 'TeleportPlayer')))
+        return await StaffSystem.Send_Auth(player)
+    if (args[0] == undefined || args[1] == undefined)
+        return sendchat(player, 'TeleportPlayer(tp) [PlayerName/PlayerID]');
+    let taraf = await FindPlayerForCMD(player, args[0])
+    if (taraf == undefined) return
+    //--------------------------------------------------
+    player.setMeta("GoBack_Status", true);
+    player.setMeta("GoBack_Pos", taraf.pos);
+    taraf.pos = player.pos;
+}
+async function GoBack(player, args) {
+    if (!await StaffSystem.IsAdmin(player)) return await StaffSystem.Send_NotAdmin(player)
+    if (!(await StaffSystem.CheckObject.MakeAdmin(player) && await StaffSystem.CMD.Level.check(player, 'GoBack')))
+        return await StaffSystem.Send_Auth(player)
+    if (args[0] == undefined)
+        return sendchat(player, 'GoBack [PlayerName/PlayerID]');
+    let taraf = await FindPlayerForCMD(player, args[0])
+    if (taraf == undefined) return
+    //--------------------------------------------------
+    if (player.getMeta("GoBack_Status") == true) {
+        taraf.pos = player.setMeta("GoBack_Pos");
+        player.setMeta("GoBack_Status", false);
+    } else {
+        sendchat(player, "nemishe")
+    }
+}
 
 
 registerCmd('makeadmin', MakeAdmin)
@@ -372,7 +416,7 @@ registerCmd('CSV', CreateStaticVehicle)
 registerCmd('createStaticVehicle', CreateStaticVehicle)
 registerCmd('Cfv', CreateFactionVehicle)
 registerCmd('CreateFactionVehicle', CreateFactionVehicle)
-registerCmd('Goto', GotoPlace)
+registerCmd('GotoPlace', GotoPlace)
 registerCmd('GiveMoney', GiveMoney)
 registerCmd('TakeMoney', TakeMoney)
 registerCmd('SetMoney', SetMoney)
@@ -382,6 +426,9 @@ registerCmd('GiveGold', GiveGold)
 registerCmd('SetRespect', SetRespect)
 registerCmd('GiveRespect', GiveRespect)
 registerCmd('TakeRespect', TakeRespect)
+registerCmd('GotoPlayer', GotoPlayer)
+registerCmd('TeleportPlayer', TeleportPlayer)
+registerCmd('GoBack', GoBack)
 
 registerCmd('cb', async (player, args) => {
     let a = await sql(`insert into business (Owner,Pos) values ('-1','${JSON.stringify({ x: player.pos.x, y: player.pos.y, z: player.pos.z })}')`)
