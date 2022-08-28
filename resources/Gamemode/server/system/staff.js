@@ -186,7 +186,7 @@ export class StaffSystem {
         for (let i = 0; i < allPlayers.length; i++) {
             if (await allPlayers[i].getSyncedMeta('hasLogin') == false) continue
             if (!await StaffSystem.IsStaff(allPlayers[i])) continue
-            await PlayerData.set(player, allPlayers[i], 'pStaff_Point', await PlayerData.get(allPlayers[i], 'pStaff_Point'), true)
+            await PlayerData.set(allPlayers[i], 'pStaff_Point', await PlayerData.get(allPlayers[i], 'pStaff_Point'), true)
         }
     }
     static async CalculatorSPAll() {
