@@ -1,5 +1,10 @@
 {
     "YOU_ARE_NOT_ADMIN": "شما ادمین نیستید.",
     "YOU_DO_NOT_HAVE_SUFFICIENT_ACCESS_TO_DO_THIS": "شما دسترسی کافی برای انجام این کار ندارید.",
-    "MANY_USERS_WITH_THIS_NAME_WHERE_FOUND": "کاربران زیادی با این اسم پیدا شد."
+    "MANY_USERS_WITH_THIS_NAME_WHERE_FOUND": "کاربران زیادی با این اسم پیدا شد.",
+    "PLAYER_IS_OFFLINE": "کاربر {0} افلاین است",
+    "CHAT_ADMIN_WARN": "[Admin Warn]:",
+    "CHAT_HELPER_WARN": "[Helper Warn]:",
+    "CHAT_LEADER_WARN": "[Leader Warn]:",
+    "CHAT_STAFF_WARN": "[Staff Warn]:"
 }

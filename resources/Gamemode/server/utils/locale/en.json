@@ -2,6 +2,7 @@
     "YOU_ARE_NOT_ADMIN": "You are not admin.",
     "YOU_DO_NOT_HAVE_SUFFICIENT_ACCESS_TO_DO_THIS": "You do not have sufficient access to do this.",
     "MANY_USERS_WITH_THIS_NAME_WHERE_FOUND": "Many users with this name were found.",
+    "PLAYER_IS_OFFLINE": "Player {0} is offline",
     "CHAT_ADMIN_WARN": "[Admin Warn]:",
     "CHAT_HELPER_WARN": "[Helper Warn]:",
     "CHAT_LEADER_WARN": "[Leader Warn]:",
