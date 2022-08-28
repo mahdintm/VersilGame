@@ -10,7 +10,7 @@ import { LoadedVehicels } from "./vehicles";
 import { playerDetails } from "../utils/playerDetails";
 import { EventNames } from "../utils/eventNames";
 import { sql } from "../database/mysql";
-import { GasStation } from "./GasStation";
+import { GasStation } from "./gas_station";
 
 
 await sql('update Account set pOnline = "0"')

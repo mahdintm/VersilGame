@@ -1,4 +1,5 @@
-import { StaffPoint } from "../system/staff";
+import { PayDay } from "../system/payday";
+import { StaffSystem } from "../system/staff";
 
 setInterval(async () => {
     let timeNow = new Date();
@@ -9,14 +10,14 @@ setInterval(async () => {
     if (nowMinute < 1 && nowSecond < 1) {
         //rase har 24saat
         if (nowHoure == 24) {
-            // StaffPoint.updateDate()
+            StaffSystem.updateDate()
         }
         //rase har saat
-        // payday()
+        PayDay()
     }
     //rase har daqiqe
     if (nowSecond < 1) {
-        // StaffPoint.SyncToDB()
+        StaffSystem.SyncToDB()
     }
     //rase har sanie
 

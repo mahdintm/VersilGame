@@ -4,7 +4,7 @@ import { logger } from "./logger";
 import { hashing } from "../utils/hash";
 import { DiscordHook } from "../utils/discord-hook";
 import { sendchat } from "./chat";
-import { VirtualWorld } from "./VirtualWorld";
+import { VirtualWorld } from "./virtual_world";
 import { Business } from "./business";
 var playersdata = {}
 var Idx = {}

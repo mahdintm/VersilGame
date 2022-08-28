@@ -9,8 +9,8 @@ import "./clothes";
 import "./vehicles";
 import "./commandsTest";
 import "./staff";
-import "./ScoreBoard";
+import "./socre_board";
 import './business'
 // import "./testaction";
 import './ClothesShop'
-import './GasStation'
+import './gas_station'
