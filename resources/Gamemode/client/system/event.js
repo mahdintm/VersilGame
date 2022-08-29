@@ -32,11 +32,10 @@ async function ConnectionComplet(player) {
     native.renderScriptCams(true, false, 16, true, false, 0);
   }
   setTimeout(FisrtSetPlayerCamera, 10); // Agar in nabashad camera e'mal nemishavad
-  //edit kon
-  alt.onServer('FreezePlayer', (state) => {
-    alt.toggleGameControls(!state)
-  })
 
+  alt.onServer(EventNames.player.server.isFreezeGameControlPlayer, (state) => {
+    alt.toggleGameControls(!state);
+  });
 
   alt.on(EventNames.player.localClient.startScriptConnection, async () => {
     alt.emitServer("SyncData_LOCAL", {

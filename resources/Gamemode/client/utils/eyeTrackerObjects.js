@@ -14,7 +14,6 @@ export const eyeTrackerObjects = [
   },
   {
     name: "Gas_Pump",
-    //edit kon
     titles: [{ title: "Gas_Pump", action: "Fill_Gas" }],
     HashIDs: [
       1933174915, 2287735495, 1339433404, 1694452750, 3825272565, 3832150195,
