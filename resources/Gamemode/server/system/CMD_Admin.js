@@ -4,6 +4,7 @@ import { vehicleObject } from "../utils/VehicleList";
 import { FindPlayerAccount, FindPlayerForCMD, PlayerData } from "./account";
 import { Business } from "./business";
 import { registerCmd, sendchat } from "./chat";
+import { license } from "./license";
 import { Money } from "./money";
 import { StaffPoint, StaffSystem } from "./staff";
 import { VehicleClass } from "./vehicles";
@@ -423,7 +424,32 @@ async function SendBack(player, args) {
         sendchat(player, "nemishe")
     }
 }
-
+async function GiveLicense(player, args) {
+    if (!await StaffSystem.IsAdmin(player)) return await StaffSystem.Send_NotAdmin(player)
+    if (!(await StaffSystem.CheckObject.MakeAdmin(player) && await StaffSystem.CMD.Level.check(player, 'GiveLicense')))
+        return await StaffSystem.Send_Auth(player)
+    if (args[0] == undefined && args[1] == undefined)
+        return sendchat(player, 'GiveLicense [PlayerName/PlayerID] [License]');
+    let taraf = await FindPlayerForCMD(player, args[0])
+    if (taraf == undefined) return
+    //--------------------------------------------------
+    switch (args[1].toLowerCase()) {
+        case "driving":
+            await license.give(taraf, 'driving')
+            break;
+        case "flying":
+            await license.give(taraf, 'flying')
+            break;
+        case "weapon":
+            await license.give(taraf, 'weapon')
+            break;
+        case "sailing":
+            await license.give(taraf, 'sailing')
+            break;
+        default:
+            break;
+    }
+}
 
 registerCmd('makeadmin', MakeAdmin)
 registerCmd('MA', MakeAdmin)
@@ -459,6 +485,7 @@ registerCmd('GotoPlayer', GotoPlayer)
 registerCmd('TeleportPlayer', TeleportPlayer)
 registerCmd('GoBack', GoBack)
 registerCmd('SendBack', SendBack)
+registerCmd('GiveLicense', GiveLicense)
 
 registerCmd('cb', async (player, args) => {
     let a = await sql(`insert into business (Owner,Pos) values ('-1','${JSON.stringify({ x: player.pos.x, y: player.pos.y, z: player.pos.z })}')`)
