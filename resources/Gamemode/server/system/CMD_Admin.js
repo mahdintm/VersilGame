@@ -403,6 +403,26 @@ async function GoBack(player, args) {
         sendchat(player, "nemishe")
     }
 }
+async function SendBack(player, args) {
+    if (!await StaffSystem.IsAdmin(player)) return await StaffSystem.Send_NotAdmin(player)
+    if (!(await StaffSystem.CheckObject.MakeAdmin(player) && await StaffSystem.CMD.Level.check(player, 'SendBack')))
+        return await StaffSystem.Send_Auth(player)
+    if (args[0] == undefined)
+        return sendchat(player, 'SendBack [PlayerName/PlayerID]');
+    let taraf = await FindPlayerForCMD(player, args[0])
+    if (taraf == undefined) return
+    //--------------------------------------------------
+    if (taraf.getMeta("GoBack_Status") == true) {
+        if (taraf.vehicle) {
+            taraf.vehicle.pos = taraf.getMeta("GoBack_Pos");
+        } else {
+            taraf.pos = taraf.getMeta("GoBack_Pos");
+        }
+        taraf.setMeta("GoBack_Status", false);
+    } else {
+        sendchat(player, "nemishe")
+    }
+}
 
 
 registerCmd('makeadmin', MakeAdmin)
@@ -438,6 +458,7 @@ registerCmd('TakeRespect', TakeRespect)
 registerCmd('GotoPlayer', GotoPlayer)
 registerCmd('TeleportPlayer', TeleportPlayer)
 registerCmd('GoBack', GoBack)
+registerCmd('SendBack', SendBack)
 
 registerCmd('cb', async (player, args) => {
     let a = await sql(`insert into business (Owner,Pos) values ('-1','${JSON.stringify({ x: player.pos.x, y: player.pos.y, z: player.pos.z })}')`)
