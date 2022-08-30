@@ -1,8 +1,9 @@
 import * as alt from 'alt'
 import { findbadword } from '../utils/badword_detect';
 import { EventNames } from '../utils/eventNames';
-import { PlayerData } from './account';
+import { FindPlayerForCMD, PlayerData } from './account';
 import { CheckMute_Chat, registerCmd, sendchat } from "./chat";
+import { ServerSetting } from './server_settings';
 import { StaffSystem } from "./staff";
 
 class OtherChat {
@@ -42,11 +43,28 @@ class OtherChat {
             sendchat(player, "You are muted.")
         }
     }
+    static async Wissper(player, args) {
+        if (await CheckMute_Chat(player)) {
+            if (args[0] == undefined)
+                return sendchat(player, '(W)issper [PlayerName/PlayerID] [Your Message]');
+            let taraf = await FindPlayerForCMD(player, args[0])
+            if (taraf == undefined) return
+            if (player == taraf) return sendchat(player, 'You cannot whisper to yourself')
+            if (player.pos.distanceTo(taraf.pos) > await ServerSetting.get("Chat_Distance_Wissper")) return sendchat(player, `Player ${args[0]} not near you.`);
+            let msgfilltered = findbadword(args.slice(1).join(" ")).replace(/</g, "&lt;").replace(/'/g, "&#39").replace(/"/g, "&#34");
+            sendchat(taraf, `[Wissper] ${await PlayerData.get(player, 'pName')}: ${msgfilltered}`)
+            sendchat(player, `[Wissper] ${await PlayerData.get(player, 'pName')}: ${msgfilltered}`)
+        } else {
+            sendchat(player, "You are muted.")
+        }
+    }
 
 
 }
 
 registerCmd('helperchat', OtherChat.HelperChat)
-registerCmd('hc', OtherChat.HelperChat)
-registerCmd('ac', OtherChat.AdminChat)
+registerCmd('h', OtherChat.HelperChat)
+registerCmd('a', OtherChat.AdminChat)
 registerCmd('adminchat', OtherChat.AdminChat)
+registerCmd('Wissper', OtherChat.Wissper)
+registerCmd('w', OtherChat.Wissper)
