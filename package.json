@@ -28,10 +28,10 @@
         "sjcl": "^1.0.8"
     },
     "devDependencies": {
-        "@altv/types-client": "^2.3.1",
+        "@altv/types-client": "^2.3.2",
         "@altv/types-natives": "^1.4.5",
-        "@altv/types-server": "^2.4.5",
-        "@altv/types-shared": "^1.2.8",
+        "@altv/types-server": "^2.4.6",
+        "@altv/types-shared": "^1.2.9",
         "@altv/types-webview": "^1.0.4"
     }
 }
