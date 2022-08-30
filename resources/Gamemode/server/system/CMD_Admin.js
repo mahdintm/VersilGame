@@ -449,6 +449,43 @@ async function GiveLicense(player, args) {
             break;
     }
 }
+async function TakeLicense(player, args) {
+    if (!await StaffSystem.IsAdmin(player)) return await StaffSystem.Send_NotAdmin(player)
+    if (!(await StaffSystem.CheckObject.MakeAdmin(player) && await StaffSystem.CMD.Level.check(player, 'TakeLicense')))
+        return await StaffSystem.Send_Auth(player)
+    if (args[0] == undefined && args[1] == undefined)
+        return sendchat(player, 'TakeLicense [PlayerName/PlayerID] [License]');
+    let taraf = await FindPlayerForCMD(player, args[0])
+    if (taraf == undefined) return
+    //--------------------------------------------------
+    switch (args[1].toLowerCase()) {
+        case "driving":
+            await license.take(taraf, 'driving')
+            break;
+        case "flying":
+            await license.take(taraf, 'flying')
+            break;
+        case "weapon":
+            await license.take(taraf, 'weapon')
+            break;
+        case "sailing":
+            await license.take(taraf, 'sailing')
+            break;
+        default:
+            break;
+    }
+}
+async function GiveAllLicense(player, args) {
+    if (!await StaffSystem.IsAdmin(player)) return await StaffSystem.Send_NotAdmin(player)
+    if (!(await StaffSystem.CheckObject.MakeAdmin(player) && await StaffSystem.CMD.Level.check(player, 'GiveAllLicense')))
+        return await StaffSystem.Send_Auth(player)
+    if (args[0] == undefined && args[1] == undefined)
+        return sendchat(player, 'GiveAllLicense [PlayerName/PlayerID] ');
+    let taraf = await FindPlayerForCMD(player, args[0])
+    if (taraf == undefined) return
+    //--------------------------------------------------
+    await license.giveall(taraf)
+}
 
 registerCmd('makeadmin', MakeAdmin)
 registerCmd('MA', MakeAdmin)
