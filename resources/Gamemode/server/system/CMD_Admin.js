@@ -610,6 +610,51 @@ async function RespawnVehicle(player, args) {
     }
     await VehicleClass.respawn.avehicle(await VehicleClass.gameid.GetVehicleFromID(parseInt(args[0])), args[1], args[2])
 }
+async function GoFront(player, args) {
+    if (!await StaffSystem.IsAdmin(player)) return await StaffSystem.Send_NotAdmin(player)
+    if (!(await StaffSystem.CheckObject.MakeAdmin(player) && await StaffSystem.CMD.Level.check(player, 'GoFront')))
+        return await StaffSystem.Send_Auth(player)
+    if (args[0] == undefined && args[1] == undefined && args[2] == undefined)
+        return sendchat(player, 'Fornt [ammount]');
+    //--------------------------------------------------
+    const num = Math.abs(Math.cos(player.rot.x));
+    const posFront = {
+        x: player.pos.x + (-Math.sin(player.rot.z) * num * args[0]),
+        y: player.pos.y + (Math.cos(player.rot.z) * num * args[0]),
+        z: player.pos.z
+    };
+    return new alt.Vector3(posFront.x, posFront.y, posFront.z);
+}
+async function GoRight(player, args) {
+    if (!await StaffSystem.IsAdmin(player)) return await StaffSystem.Send_NotAdmin(player)
+    if (!(await StaffSystem.CheckObject.MakeAdmin(player) && await StaffSystem.CMD.Level.check(player, 'GoRight')))
+        return await StaffSystem.Send_Auth(player)
+    if (args[0] == undefined && args[1] == undefined && args[2] == undefined)
+        return sendchat(player, 'Right [ammount]');
+    //--------------------------------------------------
+    const num = Math.abs(Math.cos(player.rot.x));
+    const posFront = {
+        x: player.pos.x + (-Math.sin(player.rot.z - 90) * num * args[0]),
+        y: player.pos.y + (Math.cos(player.rot.z - 90) * num * args[0]),
+        z: player.pos.z
+    };
+    return new alt.Vector3(posFront.x, posFront.y, posFront.z);
+}
+async function GoLeft(player, args) {
+    if (!await StaffSystem.IsAdmin(player)) return await StaffSystem.Send_NotAdmin(player)
+    if (!(await StaffSystem.CheckObject.MakeAdmin(player) && await StaffSystem.CMD.Level.check(player, 'GoLeft')))
+        return await StaffSystem.Send_Auth(player)
+    if (args[0] == undefined && args[1] == undefined && args[2] == undefined)
+        return sendchat(player, 'Left [ammount]');
+    //--------------------------------------------------
+    const num = Math.abs(Math.cos(player.rot.x));
+    const posFront = {
+        x: player.pos.x + (-Math.sin(player.rot.z + 90) * num * args[0]),
+        y: player.pos.y + (Math.cos(player.rot.z + 90) * num * args[0]),
+        z: player.pos.z
+    };
+    return new alt.Vector3(posFront.x, posFront.y, posFront.z);
+}
 registerCmd('makeadmin', MakeAdmin)
 registerCmd('MA', MakeAdmin)
 registerCmd('GiveStaffPoint', GiveStaffPoint)
@@ -659,6 +704,7 @@ registerCmd('rafv', RespawnAllFactionVehicles)
 registerCmd('RespawnAllPersonalVehicles', RespawnAllPersonalVehicles)
 registerCmd('rapv', RespawnAllPersonalVehicles)
 registerCmd('RespawnVehicle', RespawnVehicle)
+registerCmd('GoFront', GoFront)
 
 
 registerCmd('cb', async (player, args) => {
