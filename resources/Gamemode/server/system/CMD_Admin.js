@@ -382,9 +382,9 @@ async function TeleportPlayer(player, args) {
     taraf.setMeta("GoBack_Status", true);
     taraf.setMeta("GoBack_Pos", taraf.pos);
     if (taraf.vehicle) {
-        taraf.vehicle.pos = player.pos;
+        taraf.vehicle.pos = { x: player.pos.x + 1, y: player.pos.y + 1, z: player.pos.z + 1 };
     } else {
-        taraf.pos = player.pos;
+        taraf.pos = { x: player.pos.x + 1, y: player.pos.y + 1, z: player.pos.z + 1 };
     }
 }
 async function GoBack(player, args) {
