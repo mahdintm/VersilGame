@@ -391,18 +391,14 @@ async function GoBack(player, args) {
     if (!await StaffSystem.IsAdmin(player)) return await StaffSystem.Send_NotAdmin(player)
     if (!(await StaffSystem.CheckObject.MakeAdmin(player) && await StaffSystem.CMD.Level.check(player, 'GoBack')))
         return await StaffSystem.Send_Auth(player)
-    if (args[0] == undefined)
-        return sendchat(player, 'GoBack [PlayerName/PlayerID]');
-    let taraf = await FindPlayerForCMD(player, args[0])
-    if (taraf == undefined) return
     //--------------------------------------------------
-    if (taraf.getMeta("GoBack_Status") == true) {
-        if (taraf.vehicle) {
-            taraf.vehicle.pos = taraf.getMeta("GoBack_Pos");
+    if (player.getMeta("GoBack_Status") == true) {
+        if (player.vehicle) {
+            player.vehicle.pos = player.getMeta("GoBack_Pos");
         } else {
-            taraf.pos = taraf.getMeta("GoBack_Pos");
+            player.pos = player.getMeta("GoBack_Pos");
         }
-        taraf.setMeta("GoBack_Status", false);
+        player.setMeta("GoBack_Status", false);
     } else {
         sendchat(player, "nemishe")
     }
