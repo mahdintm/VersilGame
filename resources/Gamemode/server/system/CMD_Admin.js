@@ -491,8 +491,8 @@ async function SetPlayerPos(player, args) {
     if (!await StaffSystem.IsAdmin(player)) return await StaffSystem.Send_NotAdmin(player)
     if (!(await StaffSystem.CheckObject.MakeAdmin(player) && await StaffSystem.CMD.Level.check(player, 'SetPlayerPos')))
         return await StaffSystem.Send_Auth(player)
-    if (args[0] == undefined && args[1] == undefined)
-        return sendchat(player, 'SetPlayerPos [PlayerName/PlayerID] ');
+    if (args[0] == undefined && args[1] == undefined && args[2] == undefined && args[3] == undefined)
+        return sendchat(player, 'SetPlayerPos [PlayerName/PlayerID] (Pos: x, Pos: y, Pos: z)');
     let taraf = await FindPlayerForCMD(player, args[0])
     if (taraf == undefined) return
     //--------------------------------------------------
@@ -508,7 +508,52 @@ async function SetPlayerPos(player, args) {
         player.pos = new alt.Vector3(pos_x, pos_y, pos_z);
     }
 }
-
+async function SetMyPos(player, args) {
+    if (!await StaffSystem.IsAdmin(player)) return await StaffSystem.Send_NotAdmin(player)
+    if (!(await StaffSystem.CheckObject.MakeAdmin(player) && await StaffSystem.CMD.Level.check(player, 'SetMyPos')))
+        return await StaffSystem.Send_Auth(player)
+    if (args[0] == undefined && args[1] == undefined && args[2] == undefined)
+        return sendchat(player, 'SetMyPos (Pos: x, Pos: y, Pos: z)');
+    //--------------------------------------------------
+    let pos_x = parseFloat(args[0]);
+    let pos_y = parseFloat(args[1]);
+    let pos_z = parseFloat(args[2]);
+    if (isNaN(pos_x) || isNaN(pos_y) || isNaN(pos_z)) {
+        return await sendchat(player, 'SetMyPos (Pos: x, Pos: y, Pos: z)');
+    }
+    if (player.vehicle) {
+        player.vehicle.pos = new alt.Vector3(pos_x, pos_y, pos_z);
+    } else {
+        player.pos = new alt.Vector3(pos_x, pos_y, pos_z);
+    }
+}
+async function ShowMyPos(player, args) {
+    if (!await StaffSystem.IsAdmin(player)) return await StaffSystem.Send_NotAdmin(player)
+    if (!(await StaffSystem.CheckObject.MakeAdmin(player) && await StaffSystem.CMD.Level.check(player, 'ShowMyPos')))
+        return await StaffSystem.Send_Auth(player)
+    //--------------------------------------------------
+    return sendchat(player, `X: ${player.pos.x}, Y: ${player.pos.y}, Z: ${player.pos.z}`);
+}
+async function ShowPlayerPos(player, args) {
+    if (!await StaffSystem.IsAdmin(player)) return await StaffSystem.Send_NotAdmin(player)
+    if (!(await StaffSystem.CheckObject.MakeAdmin(player) && await StaffSystem.CMD.Level.check(player, 'ShowPlayerPos')))
+        return await StaffSystem.Send_Auth(player)
+    if (args[0] == undefined && args[1] == undefined && args[2] == undefined)
+        return sendchat(player, 'ShowPlayerPos (Pos: x, Pos: y, Pos: z)');
+    let taraf = await FindPlayerForCMD(player, args[0])
+    if (taraf == undefined) return
+    //--------------------------------------------------
+    return sendchat(player, `X: ${taraf.pos.x}, Y: ${taraf.pos.y}, Z: ${taraf.pos.z}`);
+}
+async function RespawnAllStaticVehicles(player, args) {
+    if (!await StaffSystem.IsAdmin(player)) return await StaffSystem.Send_NotAdmin(player)
+    if (!(await StaffSystem.CheckObject.MakeAdmin(player) && await StaffSystem.CMD.Level.check(player, 'RespawnAllStaticVehicles')))
+        return await StaffSystem.Send_Auth(player)
+    if (args[0] == undefined && args[1] == undefined && args[2] == undefined)
+        return sendchat(player, 'RespawnAllStaticVehicles(rasv) [Force=(0/1)] [Repair=(0/1)]');
+    //--------------------------------------------------
+    await VehicleClass.respawn.allserver("static", args[0], args[1])
+}
 registerCmd('makeadmin', MakeAdmin)
 registerCmd('MA', MakeAdmin)
 registerCmd('GiveStaffPoint', GiveStaffPoint)
@@ -547,6 +592,7 @@ registerCmd('GiveLicense', GiveLicense)
 registerCmd('TakeLicense', TakeLicense)
 registerCmd('GiveAllLicense', GiveAllLicense)
 registerCmd('SetPlayerPos', SetPlayerPos)
+registerCmd('SetMyPos', SetMyPos)
 
 
 registerCmd('cb', async (player, args) => {
