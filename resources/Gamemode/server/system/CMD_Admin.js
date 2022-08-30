@@ -593,6 +593,7 @@ registerCmd('TakeLicense', TakeLicense)
 registerCmd('GiveAllLicense', GiveAllLicense)
 registerCmd('SetPlayerPos', SetPlayerPos)
 registerCmd('SetMyPos', SetMyPos)
+registerCmd('ShowMyPos', ShowMyPos)
 
 
 registerCmd('cb', async (player, args) => {
