@@ -572,7 +572,18 @@ async function RespawnAllPersonalVehicles(player, args) {
     //--------------------------------------------------
     await VehicleClass.respawn.allserver("personal", args[0], args[1])
 }
-
+async function RespawnVehicle(player, args) {
+    if (!await StaffSystem.IsAdmin(player)) return await StaffSystem.Send_NotAdmin(player)
+    if (!(await StaffSystem.CheckObject.MakeAdmin(player) && await StaffSystem.CMD.Level.check(player, 'RespawnVehicle')))
+        return await StaffSystem.Send_Auth(player)
+    if (args[0] == undefined && args[1] == undefined && args[2] == undefined)
+        return sendchat(player, 'RespawnVehicle [VehicleID] [Force=(0/1)] [Repair=(0/1)]');
+    //--------------------------------------------------
+    if (isNaN(parseInt(args[0]))) {
+        return await sendchat(player, 'RespawnVehicle [VehicleID] [Force=(0/1)] [Repair=(0/1)]');
+    }
+    await VehicleClass.respawn.avehicle(await VehicleClass.gameid.GetVehicleFromID(parseInt(args[0])), args[1], args[2])
+}
 registerCmd('makeadmin', MakeAdmin)
 registerCmd('MA', MakeAdmin)
 registerCmd('GiveStaffPoint', GiveStaffPoint)
@@ -620,6 +631,7 @@ registerCmd('RespawnAllFactionVehicles', RespawnAllFactionVehicles)
 registerCmd('rafv', RespawnAllFactionVehicles)
 registerCmd('RespawnAllPersonalVehicles', RespawnAllPersonalVehicles)
 registerCmd('rapv', RespawnAllPersonalVehicles)
+registerCmd('RespawnVehicle', RespawnVehicle)
 
 
 registerCmd('cb', async (player, args) => {
