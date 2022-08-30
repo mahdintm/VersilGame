@@ -3,6 +3,7 @@ import * as alt from "alt-server";
 import { findbadword } from "../utils/badword_detect";
 import { EventNames } from "../utils/eventNames";
 import { PlayerData } from "./account";
+import { ServerSetting } from "./server_settings";
 let cmdHandlers = {};
 
 export async function CheckMute_Chat(player) {
