@@ -364,11 +364,10 @@ async function GotoPlayer(player, args) {
     //--------------------------------------------------
     player.setMeta("GoBack_Status", true);
     player.setMeta("GoBack_Pos", player.pos);
-    if (taraf.vehicle) {
-        player.vehicle.pos = taraf.pos;
-
+    if (player.vehicle) {
+        player.vehicle.pos = { x: taraf.pos.x + 2, y: taraf.pos.y + 1, z: taraf.pos.z + 1 };
     } else {
-        player.pos = taraf.pos;
+        player.pos = { x: taraf.pos.x + 1, y: taraf.pos.y + 1, z: taraf.pos.z + 1 };
     }
 }
 async function TeleportPlayer(player, args) {
