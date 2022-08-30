@@ -197,7 +197,7 @@ export class playerIdGame {
 }
 export class FindPlayerAccount {
     static async Name(value) {
-        let id = (Object.entries(playersdata).filter(async (v, index, ar) => await v[1].pName.toLowerCase().match(value.toLowerCase()) != undefined))
+        let id = (Object.entries(playersdata).filter((v, index, ar) => v[1].pName.toLowerCase().match(value.toLowerCase()) != null))
         if (id.length == undefined) {
             return ["undefined", null]
         } else if (id.length == 1) {
