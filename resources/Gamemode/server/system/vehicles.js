@@ -57,8 +57,8 @@ export class VehicleClass {
         return vehicleObject.filter((v, i) => v.name == VehicleModel)[0]
     };
     static gameid = {
-        GetVehicleFromID(id) {
-            return GameID[id]
+        async GetVehicleFromID(id) {
+            return await GameID[id]
         },
         newid(vehicle) {
             const allvehs = alt.Vehicle.all
