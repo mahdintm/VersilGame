@@ -554,6 +554,16 @@ async function RespawnAllStaticVehicles(player, args) {
     //--------------------------------------------------
     await VehicleClass.respawn.allserver("static", args[0], args[1])
 }
+async function RespawnAllFactionVehicles(player, args) {
+    if (!await StaffSystem.IsAdmin(player)) return await StaffSystem.Send_NotAdmin(player)
+    if (!(await StaffSystem.CheckObject.MakeAdmin(player) && await StaffSystem.CMD.Level.check(player, 'RespawnAllFactionVehicles')))
+        return await StaffSystem.Send_Auth(player)
+    if (args[0] == undefined && args[1] == undefined && args[2] == undefined)
+        return sendchat(player, 'RespawnAllFactionVehicles(rasv) [Force=(0/1)] [Repair=(0/1)]');
+    //--------------------------------------------------
+    await VehicleClass.respawn.allserver("faction", args[0], args[1])
+}
+
 registerCmd('makeadmin', MakeAdmin)
 registerCmd('MA', MakeAdmin)
 registerCmd('GiveStaffPoint', GiveStaffPoint)
@@ -596,6 +606,7 @@ registerCmd('SetMyPos', SetMyPos)
 registerCmd('ShowMyPos', ShowMyPos)
 registerCmd('ShowPlayerPos', ShowPlayerPos)
 registerCmd('RespawnAllStaticVehicles', RespawnAllStaticVehicles)
+registerCmd('RespawnAllFactionVehicles', RespawnAllFactionVehicles)
 
 
 registerCmd('cb', async (player, args) => {
