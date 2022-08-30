@@ -58,7 +58,23 @@ class OtherChat {
             sendchat(player, "You are muted.")
         }
     }
-
+    static async Shout(player, args) {
+        if (await CheckMute_Chat(player)) {
+            if (args[0] == undefined)
+                return sendchat(player, '(S)hout [PlayerName/PlayerID] [Your Message]');
+            let msgfilltered = findbadword(args.join(" ")).replace(/</g, "&lt;").replace(/'/g, "&#39").replace(/"/g, "&#34");
+            let PlayerName = `[Shout] ${await PlayerData.get(player, 'pName')}`
+            const players = alt.Player.all;
+            for await (let player_ of players) {
+                if (!player_.getSyncedMeta('HasLogin')) continue;
+                if (player.pos.distanceTo(player_.pos) > await ServerSetting.get("Chat_Distance_Shout") || player == player_) continue;
+                alt.emitClient(player_, EventNames.chat.server.Message, Date.now(), PlayerName, msgfilltered);
+            }
+            alt.emitClient(player, EventNames.chat.server.Message, Date.now(), PlayerName, msgfilltered);
+        } else {
+            sendchat(player, "You are muted.")
+        }
+    }
 
 }
 
@@ -68,3 +84,5 @@ registerCmd('a', OtherChat.AdminChat)
 registerCmd('adminchat', OtherChat.AdminChat)
 registerCmd('Wissper', OtherChat.Wissper)
 registerCmd('w', OtherChat.Wissper)
+registerCmd('Shout', OtherChat.Shout)
+registerCmd('s', OtherChat.Shout)
