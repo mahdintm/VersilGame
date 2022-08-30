@@ -100,6 +100,17 @@ export class StaffSystem {
             return false
         }
     }
+    static async GetRankName(player) {
+        if (await StaffSystem.IsAdmin(player)) {
+            return await ServerSetting.get(`Rank_Admin_${await PlayerData.get(player, 'pAdmin')}`)
+        } else if (await StaffSystem.IsHelper(player)) {
+            return await ServerSetting.get(`Rank_Helper_${await PlayerData.get(player, 'pAdmin')}`)
+        } else if (await StaffSystem.IsLeader(player)) {
+            return 'Leader'
+        } else {
+            return 'No Rank'
+        }
+    }
     static Warn = {
         Player: (player, msg) => {
             sendchat(player, `AdminBot: ${msg}`)

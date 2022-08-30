@@ -716,7 +716,17 @@ registerCmd('cb', async (player, args) => {
 
 
 registerCmd("test", async (player, args) => {
-    await PlayerData.set(player, 'pAdmin', args[0], true)
+    // let a = { "driving": { "suspend": 0, "value": 0 }, "flying": { "suspend": 0, "value": 0 }, "sailing": { "suspend": 0, "value": 0 }, "weapon": { "suspend": 0, "value": 0 } }
+    // await sql(`update Account set pLicense='${JSON.stringify(a)}'`)
+    const players = alt.Player.all;
+    for (let i = 0; i < players.length; i++) {
+        if (players[i].getSyncedMeta('hasLogin')) {
+            let a = await PlayerData.get(players[i], "pLicense")
+            console.log(a)
+            console.log(JSON.parse(a))
+        }
+    }
+    // await PlayerData.set(player, 'pAdmin', args[0], true)
 });
 
 
