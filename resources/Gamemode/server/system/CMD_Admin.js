@@ -705,6 +705,8 @@ registerCmd('RespawnAllPersonalVehicles', RespawnAllPersonalVehicles)
 registerCmd('rapv', RespawnAllPersonalVehicles)
 registerCmd('RespawnVehicle', RespawnVehicle)
 registerCmd('GoFront', GoFront)
+registerCmd('GoRight', GoRight)
+registerCmd('GoLeft', GoLeft)
 
 
 registerCmd('cb', async (player, args) => {
