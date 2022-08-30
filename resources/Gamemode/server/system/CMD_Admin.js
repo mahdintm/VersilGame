@@ -27,7 +27,7 @@ async function MakeAdmin(player, args) {
 
 }
 async function GiveStaffPoint(player, args) {
-    if (!await StaffSystem.IsAdmin(player)) return await StaffSystem.Send_NotAdmin(player)
+    if (!await StaffSystem.IsStaff(player)) return await StaffSystem.Send_NotAdmin(player)
     if (!await StaffSystem.CMD.Level.check(player, 'GiveStaffPoint'))
         return await StaffSystem.Send_Auth(player)
     if (args[0] == undefined || args[1] == undefined)
@@ -42,7 +42,7 @@ async function GiveStaffPoint(player, args) {
     await sendchat(taraf, await Language.GetValue(taraf.getSyncedMeta('Language'), "ADMIN_GIVEN_STAFFPOINT_YOU", [await PlayerData.get(player, 'pName'), args[1]]))
 }
 async function TakeStaffPoint(player, args) {
-    if (!await StaffSystem.IsAdmin(player)) return await StaffSystem.Send_NotAdmin(player)
+    if (!await StaffSystem.IsStaff(player)) return await StaffSystem.Send_NotAdmin(player)
     if (!await StaffSystem.CMD.Level.check(player, 'TakeStaffPoint'))
         return await StaffSystem.Send_Auth(player)
     if (args[0] == undefined || args[1] == undefined)
@@ -57,7 +57,7 @@ async function TakeStaffPoint(player, args) {
     await sendchat(taraf, await Language.GetValue(taraf.getSyncedMeta('Language'), "ADMIN_TAKEN_STAFFPOINT_YOU", [await PlayerData.get(player, 'pName'), args[1]]))
 }
 async function SetStaffPoint(player, args) {
-    if (!await StaffSystem.IsAdmin(player)) return await StaffSystem.Send_NotAdmin(player)
+    if (!await StaffSystem.IsStaff(player)) return await StaffSystem.Send_NotAdmin(player)
     if (!await StaffSystem.CMD.Level.check(player, 'SetStaffPoint'))
         return await StaffSystem.Send_Auth(player)
     if (args[0] == undefined || args[1] == undefined)
@@ -72,7 +72,7 @@ async function SetStaffPoint(player, args) {
     await sendchat(taraf, await Language.GetValue(taraf.getSyncedMeta('Language'), "ADMIN_SETEN_STAFFPOINT_YOU", [await PlayerData.get(player, 'pName'), args[1]]))
 }
 async function CreateAdminVehicle(player, args) {
-    if (!await StaffSystem.IsAdmin(player)) return await StaffSystem.Send_NotAdmin(player)
+    if (!await StaffSystem.IsStaff(player)) return await StaffSystem.Send_NotAdmin(player)
     if (!await StaffSystem.CMD.Level.check(player, 'CreateAdminVehicle'))
         return await StaffSystem.Send_Auth(player)
     if (args[0] == undefined)
@@ -106,7 +106,7 @@ async function CreateAdminVehicle(player, args) {
 
 }
 async function DeleteAdminVehicle(player) {
-    if (!await StaffSystem.IsAdmin(player)) return await StaffSystem.Send_NotAdmin(player)
+    if (!await StaffSystem.IsStaff(player)) return await StaffSystem.Send_NotAdmin(player)
     if (!await StaffSystem.CMD.Level.check(player, 'DeleteAdminVehicle'))
         return await StaffSystem.Send_Auth(player)
     //--------------------------------------------------
@@ -116,7 +116,7 @@ async function DeleteAdminVehicle(player) {
     a == true ? console.log("deleted") : console.log("you can not delete this vehicle")
 }
 async function DeleteStaticVehicle(player) {
-    if (!await StaffSystem.IsAdmin(player)) return await StaffSystem.Send_NotAdmin(player)
+    if (!await StaffSystem.IsStaff(player)) return await StaffSystem.Send_NotAdmin(player)
     if (!await StaffSystem.CMD.Level.check(player, 'DeleteStaticVehicle'))
         return await StaffSystem.Send_Auth(player)
     //--------------------------------------------------
@@ -130,7 +130,7 @@ async function DeleteStaticVehicle(player) {
     }
 }
 async function DeleteFactionVehicle(player) {
-    if (!await StaffSystem.IsAdmin(player)) return await StaffSystem.Send_NotAdmin(player)
+    if (!await StaffSystem.IsStaff(player)) return await StaffSystem.Send_NotAdmin(player)
     if (!await StaffSystem.CMD.Level.check(player, 'DeleteFactionVehicle'))
         return await StaffSystem.Send_Auth(player)
     //--------------------------------------------------
@@ -144,7 +144,7 @@ async function DeleteFactionVehicle(player) {
     }
 }
 async function CreateStaticVehicle(player, args) {
-    if (!await StaffSystem.IsAdmin(player)) return await StaffSystem.Send_NotAdmin(player)
+    if (!await StaffSystem.IsStaff(player)) return await StaffSystem.Send_NotAdmin(player)
     if (!await StaffSystem.CMD.Level.check(player, 'CreateStaticVehicle'))
         return await StaffSystem.Send_Auth(player)
     if (args[0] == undefined)
@@ -171,7 +171,7 @@ async function CreateStaticVehicle(player, args) {
     }
 }
 async function CreateFactionVehicle(player, args) {
-    if (!await StaffSystem.IsAdmin(player)) return await StaffSystem.Send_NotAdmin(player)
+    if (!await StaffSystem.IsStaff(player)) return await StaffSystem.Send_NotAdmin(player)
     if (!await StaffSystem.CMD.Level.check(player, 'CreateFactionVehicle'))
         return await StaffSystem.Send_Auth(player)
     if (args[0] == undefined && args[1] == undefined && args[2] == undefined)
@@ -206,7 +206,7 @@ async function CreateFactionVehicle(player, args) {
     }
 }
 async function GotoPlace(player, args) {
-    if (!await StaffSystem.IsAdmin(player)) return await StaffSystem.Send_NotAdmin(player)
+    if (!await StaffSystem.IsStaff(player)) return await StaffSystem.Send_NotAdmin(player)
     if (!await StaffSystem.CMD.Level.check(player, 'GotoPlace'))
         return await StaffSystem.Send_Auth(player)
     if (args[0] == undefined && args[1] == undefined)
@@ -228,8 +228,8 @@ async function GotoPlace(player, args) {
     }
 }
 async function GiveMoney(player, args) {
-    if (!await StaffSystem.IsAdmin(player)) return await StaffSystem.Send_NotAdmin(player)
-    if (!(await StaffSystem.CheckObject.MakeAdmin(player) && await StaffSystem.CMD.Level.check(player, 'GiveMoney')))
+    if (!await StaffSystem.IsStaff(player)) return await StaffSystem.Send_NotAdmin(player)
+    if (!(await StaffSystem.CMD.Level.check(player, 'GiveMoney')))
         return await StaffSystem.Send_Auth(player)
     if (args[0] == undefined || args[1] == undefined)
         return sendchat(player, 'GiveMoney [PlayerName/PlayerID] [Ammount]');
@@ -242,8 +242,8 @@ async function GiveMoney(player, args) {
     await sendchat(taraf, await Language.GetValue(taraf.getSyncedMeta('Language'), "ADMIN_GIVEN_MONEY_TO_YOU", [await PlayerData.get(player, 'pName'), args[1]]))
 }
 async function TakeMoney(player, args) {
-    if (!await StaffSystem.IsAdmin(player)) return await StaffSystem.Send_NotAdmin(player)
-    if (!(await StaffSystem.CheckObject.MakeAdmin(player) && await StaffSystem.CMD.Level.check(player, 'TakeMoney')))
+    if (!await StaffSystem.IsStaff(player)) return await StaffSystem.Send_NotAdmin(player)
+    if (!(await StaffSystem.CMD.Level.check(player, 'TakeMoney')))
         return await StaffSystem.Send_Auth(player)
     if (args[0] == undefined || args[1] == undefined)
         return sendchat(player, 'TakeMoney [PlayerName/PlayerID] [Ammount]');
@@ -256,8 +256,8 @@ async function TakeMoney(player, args) {
     await sendchat(taraf, await Language.GetValue(taraf.getSyncedMeta('Language'), "ADMIN_TAKEN_MONEY_TO_YOU", [await PlayerData.get(player, 'pName'), args[1]]))
 }
 async function SetMoney(player, args) {
-    if (!await StaffSystem.IsAdmin(player)) return await StaffSystem.Send_NotAdmin(player)
-    if (!(await StaffSystem.CheckObject.MakeAdmin(player) && await StaffSystem.CMD.Level.check(player, 'SetMoney')))
+    if (!await StaffSystem.IsStaff(player)) return await StaffSystem.Send_NotAdmin(player)
+    if (!(await StaffSystem.CMD.Level.check(player, 'SetMoney')))
         return await StaffSystem.Send_Auth(player)
     if (args[0] == undefined || args[1] == undefined)
         return sendchat(player, 'SetMoney [PlayerName/PlayerID] [Ammount]');
@@ -270,8 +270,8 @@ async function SetMoney(player, args) {
     await sendchat(taraf, await Language.GetValue(taraf.getSyncedMeta('Language'), "ADMIN_SETEN_MONEY_TO_YOU", [await PlayerData.get(player, 'pName'), args[1]]))
 }
 async function SetGold(player, args) {
-    if (!await StaffSystem.IsAdmin(player)) return await StaffSystem.Send_NotAdmin(player)
-    if (!(await StaffSystem.CheckObject.MakeAdmin(player) && await StaffSystem.CMD.Level.check(player, 'SetGold')))
+    if (!await StaffSystem.IsStaff(player)) return await StaffSystem.Send_NotAdmin(player)
+    if (!(await StaffSystem.CMD.Level.check(player, 'SetGold')))
         return await StaffSystem.Send_Auth(player)
     if (args[0] == undefined || args[1] == undefined)
         return sendchat(player, 'SetGold [PlayerName/PlayerID] [Ammount]');
@@ -284,8 +284,8 @@ async function SetGold(player, args) {
     await sendchat(taraf, await Language.GetValue(taraf.getSyncedMeta('Language'), "ADMIN_SETEN_GOLD_TO_YOU", [await PlayerData.get(player, 'pName'), args[1]]))
 }
 async function GiveGold(player, args) {
-    if (!await StaffSystem.IsAdmin(player)) return await StaffSystem.Send_NotAdmin(player)
-    if (!(await StaffSystem.CheckObject.MakeAdmin(player) && await StaffSystem.CMD.Level.check(player, 'GiveGold')))
+    if (!await StaffSystem.IsStaff(player)) return await StaffSystem.Send_NotAdmin(player)
+    if (!(await StaffSystem.CMD.Level.check(player, 'GiveGold')))
         return await StaffSystem.Send_Auth(player)
     if (args[0] == undefined || args[1] == undefined)
         return sendchat(player, 'GiveGold [PlayerName/PlayerID] [Ammount]');
@@ -298,8 +298,8 @@ async function GiveGold(player, args) {
     await sendchat(taraf, await Language.GetValue(taraf.getSyncedMeta('Language'), "ADMIN_GIVEN_GOLD_TO_YOU", [await PlayerData.get(player, 'pName'), args[1]]))
 }
 async function TakeGold(player, args) {
-    if (!await StaffSystem.IsAdmin(player)) return await StaffSystem.Send_NotAdmin(player)
-    if (!(await StaffSystem.CheckObject.MakeAdmin(player) && await StaffSystem.CMD.Level.check(player, 'TakeGold')))
+    if (!await StaffSystem.IsStaff(player)) return await StaffSystem.Send_NotAdmin(player)
+    if (!(await StaffSystem.CMD.Level.check(player, 'TakeGold')))
         return await StaffSystem.Send_Auth(player)
     if (args[0] == undefined || args[1] == undefined)
         return sendchat(player, 'GiveGold [PlayerName/PlayerID] [Ammount]');
@@ -312,8 +312,8 @@ async function TakeGold(player, args) {
     await sendchat(taraf, await Language.GetValue(taraf.getSyncedMeta('Language'), "ADMIN_TAKEN_GOLD_TO_YOU", [await PlayerData.get(player, 'pName'), args[1]]))
 }
 async function SetRespect(player, args) {
-    if (!await StaffSystem.IsAdmin(player)) return await StaffSystem.Send_NotAdmin(player)
-    if (!(await StaffSystem.CheckObject.MakeAdmin(player) && await StaffSystem.CMD.Level.check(player, 'SetRespect')))
+    if (!await StaffSystem.IsStaff(player)) return await StaffSystem.Send_NotAdmin(player)
+    if (!(await StaffSystem.CMD.Level.check(player, 'SetRespect')))
         return await StaffSystem.Send_Auth(player)
     if (args[0] == undefined || args[1] == undefined)
         return sendchat(player, 'SetRespect [PlayerName/PlayerID] [Ammount]');
@@ -326,8 +326,8 @@ async function SetRespect(player, args) {
     await sendchat(taraf, await Language.GetValue(taraf.getSyncedMeta('Language'), "ADMIN_SETEN_RESPECT_TO_YOU", [await PlayerData.get(player, 'pName'), args[1]]))
 }
 async function GiveRespect(player, args) {
-    if (!await StaffSystem.IsAdmin(player)) return await StaffSystem.Send_NotAdmin(player)
-    if (!(await StaffSystem.CheckObject.MakeAdmin(player) && await StaffSystem.CMD.Level.check(player, 'GiveRespect')))
+    if (!await StaffSystem.IsStaff(player)) return await StaffSystem.Send_NotAdmin(player)
+    if (!(await StaffSystem.CMD.Level.check(player, 'GiveRespect')))
         return await StaffSystem.Send_Auth(player)
     if (args[0] == undefined || args[1] == undefined)
         return sendchat(player, 'GiveRespect [PlayerName/PlayerID] [Ammount]');
@@ -340,8 +340,8 @@ async function GiveRespect(player, args) {
     await sendchat(taraf, await Language.GetValue(taraf.getSyncedMeta('Language'), "ADMIN_GIVEN_RESPECT_TO_YOU", [await PlayerData.get(player, 'pName'), args[1]]))
 }
 async function TakeRespect(player, args) {
-    if (!await StaffSystem.IsAdmin(player)) return await StaffSystem.Send_NotAdmin(player)
-    if (!(await StaffSystem.CheckObject.MakeAdmin(player) && await StaffSystem.CMD.Level.check(player, 'TakeRespect')))
+    if (!await StaffSystem.IsStaff(player)) return await StaffSystem.Send_NotAdmin(player)
+    if (!(await StaffSystem.CMD.Level.check(player, 'TakeRespect')))
         return await StaffSystem.Send_Auth(player)
     if (args[0] == undefined || args[1] == undefined)
         return sendchat(player, 'TakeRespect [PlayerName/PlayerID] [Ammount]');
@@ -355,8 +355,8 @@ async function TakeRespect(player, args) {
 }
 //no LOG
 async function GotoPlayer(player, args) {
-    if (!await StaffSystem.IsAdmin(player)) return await StaffSystem.Send_NotAdmin(player)
-    if (!(await StaffSystem.CheckObject.MakeAdmin(player) && await StaffSystem.CMD.Level.check(player, 'GotoPlayer')))
+    if (!await StaffSystem.IsStaff(player)) return await StaffSystem.Send_NotAdmin(player)
+    if (!(await StaffSystem.CMD.Level.check(player, 'GotoPlayer')))
         return await StaffSystem.Send_Auth(player)
     if (args[0] == undefined || args[1] == undefined)
         return sendchat(player, 'Goto [PlayerName/PlayerID]');
@@ -372,8 +372,8 @@ async function GotoPlayer(player, args) {
     }
 }
 async function TeleportPlayer(player, args) {
-    if (!await StaffSystem.IsAdmin(player)) return await StaffSystem.Send_NotAdmin(player)
-    if (!(await StaffSystem.CheckObject.MakeAdmin(player) && await StaffSystem.CMD.Level.check(player, 'TeleportPlayer')))
+    if (!await StaffSystem.IsStaff(player)) return await StaffSystem.Send_NotAdmin(player)
+    if (!(await StaffSystem.CMD.Level.check(player, 'TeleportPlayer')))
         return await StaffSystem.Send_Auth(player)
     if (args[0] == undefined || args[1] == undefined)
         return sendchat(player, 'TeleportPlayer(tp) [PlayerName/PlayerID]');
@@ -389,8 +389,8 @@ async function TeleportPlayer(player, args) {
     }
 }
 async function GoBack(player, args) {
-    if (!await StaffSystem.IsAdmin(player)) return await StaffSystem.Send_NotAdmin(player)
-    if (!(await StaffSystem.CheckObject.MakeAdmin(player) && await StaffSystem.CMD.Level.check(player, 'GoBack')))
+    if (!await StaffSystem.IsStaff(player)) return await StaffSystem.Send_NotAdmin(player)
+    if (!(await StaffSystem.CMD.Level.check(player, 'GoBack')))
         return await StaffSystem.Send_Auth(player)
     //--------------------------------------------------
     if (player.getMeta("GoBack_Status") == true) {
@@ -405,8 +405,8 @@ async function GoBack(player, args) {
     }
 }
 async function SendBack(player, args) {
-    if (!await StaffSystem.IsAdmin(player)) return await StaffSystem.Send_NotAdmin(player)
-    if (!(await StaffSystem.CheckObject.MakeAdmin(player) && await StaffSystem.CMD.Level.check(player, 'SendBack')))
+    if (!await StaffSystem.IsStaff(player)) return await StaffSystem.Send_NotAdmin(player)
+    if (!(await StaffSystem.CMD.Level.check(player, 'SendBack')))
         return await StaffSystem.Send_Auth(player)
     if (args[0] == undefined)
         return sendchat(player, 'SendBack [PlayerName/PlayerID]');
@@ -425,8 +425,8 @@ async function SendBack(player, args) {
     }
 }
 async function GiveLicense(player, args) {
-    if (!await StaffSystem.IsAdmin(player)) return await StaffSystem.Send_NotAdmin(player)
-    if (!(await StaffSystem.CheckObject.MakeAdmin(player) && await StaffSystem.CMD.Level.check(player, 'GiveLicense')))
+    if (!await StaffSystem.IsStaff(player)) return await StaffSystem.Send_NotAdmin(player)
+    if (!(await StaffSystem.CMD.Level.check(player, 'GiveLicense')))
         return await StaffSystem.Send_Auth(player)
     if (args[0] == undefined && args[1] == undefined)
         return sendchat(player, 'GiveLicense [PlayerName/PlayerID] [License]');
@@ -451,8 +451,8 @@ async function GiveLicense(player, args) {
     }
 }
 async function TakeLicense(player, args) {
-    if (!await StaffSystem.IsAdmin(player)) return await StaffSystem.Send_NotAdmin(player)
-    if (!(await StaffSystem.CheckObject.MakeAdmin(player) && await StaffSystem.CMD.Level.check(player, 'TakeLicense')))
+    if (!await StaffSystem.IsStaff(player)) return await StaffSystem.Send_NotAdmin(player)
+    if (!(await StaffSystem.CMD.Level.check(player, 'TakeLicense')))
         return await StaffSystem.Send_Auth(player)
     if (args[0] == undefined && args[1] == undefined)
         return sendchat(player, 'TakeLicense [PlayerName/PlayerID] [License]');
@@ -477,8 +477,8 @@ async function TakeLicense(player, args) {
     }
 }
 async function SuspendLicense(player, args) {
-    if (!await StaffSystem.IsAdmin(player)) return await StaffSystem.Send_NotAdmin(player)
-    if (!(await StaffSystem.CheckObject.MakeAdmin(player) && await StaffSystem.CMD.Level.check(player, 'SuspendLicense')))
+    if (!await StaffSystem.IsStaff(player)) return await StaffSystem.Send_NotAdmin(player)
+    if (!(await StaffSystem.CMD.Level.check(player, 'SuspendLicense')))
         return await StaffSystem.Send_Auth(player)
     if (args[0] == undefined && args[1] == undefined)
         return sendchat(player, 'SuspendLicense [PlayerName/PlayerID] [License] [Time(min)]');
@@ -503,8 +503,8 @@ async function SuspendLicense(player, args) {
     }
 }
 async function GiveAllLicense(player, args) {
-    if (!await StaffSystem.IsAdmin(player)) return await StaffSystem.Send_NotAdmin(player)
-    if (!(await StaffSystem.CheckObject.MakeAdmin(player) && await StaffSystem.CMD.Level.check(player, 'GiveAllLicense')))
+    if (!await StaffSystem.IsStaff(player)) return await StaffSystem.Send_NotAdmin(player)
+    if (!(await StaffSystem.CMD.Level.check(player, 'GiveAllLicense')))
         return await StaffSystem.Send_Auth(player)
     if (args[0] == undefined && args[1] == undefined)
         return sendchat(player, 'GiveAllLicense [PlayerName/PlayerID] ');
@@ -514,8 +514,8 @@ async function GiveAllLicense(player, args) {
     await license.giveall(taraf)
 }
 async function SetPlayerPos(player, args) {
-    if (!await StaffSystem.IsAdmin(player)) return await StaffSystem.Send_NotAdmin(player)
-    if (!(await StaffSystem.CheckObject.MakeAdmin(player) && await StaffSystem.CMD.Level.check(player, 'SetPlayerPos')))
+    if (!await StaffSystem.IsStaff(player)) return await StaffSystem.Send_NotAdmin(player)
+    if (!(await StaffSystem.CMD.Level.check(player, 'SetPlayerPos')))
         return await StaffSystem.Send_Auth(player)
     if (args[0] == undefined && args[1] == undefined && args[2] == undefined && args[3] == undefined)
         return sendchat(player, 'SetPlayerPos [PlayerName/PlayerID] (Pos: x, Pos: y, Pos: z)');
@@ -535,8 +535,8 @@ async function SetPlayerPos(player, args) {
     }
 }
 async function SetMyPos(player, args) {
-    if (!await StaffSystem.IsAdmin(player)) return await StaffSystem.Send_NotAdmin(player)
-    if (!(await StaffSystem.CheckObject.MakeAdmin(player) && await StaffSystem.CMD.Level.check(player, 'SetMyPos')))
+    if (!await StaffSystem.IsStaff(player)) return await StaffSystem.Send_NotAdmin(player)
+    if (!(await StaffSystem.CMD.Level.check(player, 'SetMyPos')))
         return await StaffSystem.Send_Auth(player)
     if (args[0] == undefined && args[1] == undefined && args[2] == undefined)
         return sendchat(player, 'SetMyPos (Pos: x, Pos: y, Pos: z)');
@@ -554,15 +554,15 @@ async function SetMyPos(player, args) {
     }
 }
 async function ShowMyPos(player, args) {
-    if (!await StaffSystem.IsAdmin(player)) return await StaffSystem.Send_NotAdmin(player)
-    if (!(await StaffSystem.CheckObject.MakeAdmin(player) && await StaffSystem.CMD.Level.check(player, 'ShowMyPos')))
+    if (!await StaffSystem.IsStaff(player)) return await StaffSystem.Send_NotAdmin(player)
+    if (!(await StaffSystem.CMD.Level.check(player, 'ShowMyPos')))
         return await StaffSystem.Send_Auth(player)
     //--------------------------------------------------
     return sendchat(player, `X: ${player.pos.x}, Y: ${player.pos.y}, Z: ${player.pos.z}`);
 }
 async function ShowPlayerPos(player, args) {
-    if (!await StaffSystem.IsAdmin(player)) return await StaffSystem.Send_NotAdmin(player)
-    if (!(await StaffSystem.CheckObject.MakeAdmin(player) && await StaffSystem.CMD.Level.check(player, 'ShowPlayerPos')))
+    if (!await StaffSystem.IsStaff(player)) return await StaffSystem.Send_NotAdmin(player)
+    if (!(await StaffSystem.CMD.Level.check(player, 'ShowPlayerPos')))
         return await StaffSystem.Send_Auth(player)
     if (args[0] == undefined && args[1] == undefined && args[2] == undefined)
         return sendchat(player, 'ShowPlayerPos (Pos: x, Pos: y, Pos: z)');
@@ -572,8 +572,8 @@ async function ShowPlayerPos(player, args) {
     return sendchat(player, `X: ${taraf.pos.x}, Y: ${taraf.pos.y}, Z: ${taraf.pos.z}`);
 }
 async function RespawnAllStaticVehicles(player, args) {
-    if (!await StaffSystem.IsAdmin(player)) return await StaffSystem.Send_NotAdmin(player)
-    if (!(await StaffSystem.CheckObject.MakeAdmin(player) && await StaffSystem.CMD.Level.check(player, 'RespawnAllStaticVehicles')))
+    if (!await StaffSystem.IsStaff(player)) return await StaffSystem.Send_NotAdmin(player)
+    if (!(await StaffSystem.CMD.Level.check(player, 'RespawnAllStaticVehicles')))
         return await StaffSystem.Send_Auth(player)
     if (args[0] == undefined && args[1] == undefined && args[2] == undefined)
         return sendchat(player, 'RespawnAllStaticVehicles(rasv) [Force=(0/1)] [Repair=(0/1)]');
@@ -581,8 +581,8 @@ async function RespawnAllStaticVehicles(player, args) {
     await VehicleClass.respawn.allserver("static", args[0], args[1])
 }
 async function RespawnAllFactionVehicles(player, args) {
-    if (!await StaffSystem.IsAdmin(player)) return await StaffSystem.Send_NotAdmin(player)
-    if (!(await StaffSystem.CheckObject.MakeAdmin(player) && await StaffSystem.CMD.Level.check(player, 'RespawnAllFactionVehicles')))
+    if (!await StaffSystem.IsStaff(player)) return await StaffSystem.Send_NotAdmin(player)
+    if (!(await StaffSystem.CMD.Level.check(player, 'RespawnAllFactionVehicles')))
         return await StaffSystem.Send_Auth(player)
     if (args[0] == undefined && args[1] == undefined && args[2] == undefined)
         return sendchat(player, 'RespawnAllFactionVehicles(rafv) [Force=(0/1)] [Repair=(0/1)]');
@@ -590,8 +590,8 @@ async function RespawnAllFactionVehicles(player, args) {
     await VehicleClass.respawn.allserver("faction", args[0], args[1])
 }
 async function RespawnAllPersonalVehicles(player, args) {
-    if (!await StaffSystem.IsAdmin(player)) return await StaffSystem.Send_NotAdmin(player)
-    if (!(await StaffSystem.CheckObject.MakeAdmin(player) && await StaffSystem.CMD.Level.check(player, 'RespawnAllPersonalVehicles')))
+    if (!await StaffSystem.IsStaff(player)) return await StaffSystem.Send_NotAdmin(player)
+    if (!(await StaffSystem.CMD.Level.check(player, 'RespawnAllPersonalVehicles')))
         return await StaffSystem.Send_Auth(player)
     if (args[0] == undefined && args[1] == undefined && args[2] == undefined)
         return sendchat(player, 'RespawnAllPersonalVehicles(rapv) [Force=(0/1)] [Repair=(0/1)]');
@@ -599,8 +599,8 @@ async function RespawnAllPersonalVehicles(player, args) {
     await VehicleClass.respawn.allserver("personal", args[0], args[1])
 }
 async function RespawnVehicle(player, args) {
-    if (!await StaffSystem.IsAdmin(player)) return await StaffSystem.Send_NotAdmin(player)
-    if (!(await StaffSystem.CheckObject.MakeAdmin(player) && await StaffSystem.CMD.Level.check(player, 'RespawnVehicle')))
+    if (!await StaffSystem.IsStaff(player)) return await StaffSystem.Send_NotAdmin(player)
+    if (!(await StaffSystem.CMD.Level.check(player, 'RespawnVehicle')))
         return await StaffSystem.Send_Auth(player)
     if (args[0] == undefined && args[1] == undefined && args[2] == undefined)
         return sendchat(player, 'RespawnVehicle [VehicleID] [Force=(0/1)] [Repair=(0/1)]');
@@ -611,8 +611,8 @@ async function RespawnVehicle(player, args) {
     await VehicleClass.respawn.avehicle(await VehicleClass.gameid.GetVehicleFromID(parseInt(args[0])), args[1], args[2])
 }
 async function GoFront(player, args) {
-    if (!await StaffSystem.IsAdmin(player)) return await StaffSystem.Send_NotAdmin(player)
-    if (!(await StaffSystem.CheckObject.MakeAdmin(player) && await StaffSystem.CMD.Level.check(player, 'GoFront')))
+    if (!await StaffSystem.IsStaff(player)) return await StaffSystem.Send_NotAdmin(player)
+    if (!(await StaffSystem.CMD.Level.check(player, 'GoFront')))
         return await StaffSystem.Send_Auth(player)
     if (args[0] == undefined && args[1] == undefined && args[2] == undefined)
         return sendchat(player, 'Fornt [ammount]');
@@ -626,8 +626,8 @@ async function GoFront(player, args) {
     return new alt.Vector3(posFront.x, posFront.y, posFront.z);
 }
 async function GoRight(player, args) {
-    if (!await StaffSystem.IsAdmin(player)) return await StaffSystem.Send_NotAdmin(player)
-    if (!(await StaffSystem.CheckObject.MakeAdmin(player) && await StaffSystem.CMD.Level.check(player, 'GoRight')))
+    if (!await StaffSystem.IsStaff(player)) return await StaffSystem.Send_NotAdmin(player)
+    if (!(await StaffSystem.CMD.Level.check(player, 'GoRight')))
         return await StaffSystem.Send_Auth(player)
     if (args[0] == undefined && args[1] == undefined && args[2] == undefined)
         return sendchat(player, 'Right [ammount]');
@@ -641,8 +641,8 @@ async function GoRight(player, args) {
     return new alt.Vector3(posFront.x, posFront.y, posFront.z);
 }
 async function GoLeft(player, args) {
-    if (!await StaffSystem.IsAdmin(player)) return await StaffSystem.Send_NotAdmin(player)
-    if (!(await StaffSystem.CheckObject.MakeAdmin(player) && await StaffSystem.CMD.Level.check(player, 'GoLeft')))
+    if (!await StaffSystem.IsStaff(player)) return await StaffSystem.Send_NotAdmin(player)
+    if (!(await StaffSystem.CMD.Level.check(player, 'GoLeft')))
         return await StaffSystem.Send_Auth(player)
     if (args[0] == undefined && args[1] == undefined && args[2] == undefined)
         return sendchat(player, 'Left [ammount]');
