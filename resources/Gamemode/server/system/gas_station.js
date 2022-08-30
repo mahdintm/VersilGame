@@ -243,7 +243,7 @@ export class GasStation {
     if (!Station) return console.log("tush nisti");
     let MaxFule = await VehicleClass.data.get(player.vehicle, "maxfuel");
     let NowFule = await VehicleClass.fuel.get(player.vehicle);
-    let Price = (MaxFule - NowFule) * (await ServerSetting.get("Fule_Price"));
+    let Price = (MaxFule - NowFule) * (await ServerSetting.get("Fuel_Price"));
     if (MaxFule == NowFule) return console.log("pore");
     if ((await Money.get(player)) < Price) return console.log("pul nadarii");
     alt.emitClient(
