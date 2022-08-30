@@ -15,6 +15,7 @@ class OtherChat {
             let msgfilltered = findbadword(msg).replace(/</g, "&lt;").replace(/'/g, "&#39").replace(/"/g, "&#34");
             const players = alt.Player.all;
             for await (let player_ of players) {
+                if (!player_.getSyncedMeta('HasLogin')) continue;
                 if (await StaffSystem.IsAdmin(player_)) continue;
                 alt.emitClient(player_, EventNames.chat.server.Message, Date.now(), PlayerName, msgfilltered);
             }
@@ -32,6 +33,7 @@ class OtherChat {
             let msgfilltered = findbadword(msg).replace(/</g, "&lt;").replace(/'/g, "&#39").replace(/"/g, "&#34");
             const players = alt.Player.all;
             for await (let player_ of players) {
+                if (!player_.getSyncedMeta('HasLogin')) continue;
                 if (await StaffSystem.IsHelper(player_)) continue;
                 alt.emitClient(player_, EventNames.chat.server.Message, Date.now(), PlayerName, msgfilltered);
             }
