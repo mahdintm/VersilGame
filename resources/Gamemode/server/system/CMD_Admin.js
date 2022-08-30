@@ -476,6 +476,32 @@ async function TakeLicense(player, args) {
             break;
     }
 }
+async function SuspendLicense(player, args) {
+    if (!await StaffSystem.IsAdmin(player)) return await StaffSystem.Send_NotAdmin(player)
+    if (!(await StaffSystem.CheckObject.MakeAdmin(player) && await StaffSystem.CMD.Level.check(player, 'SuspendLicense')))
+        return await StaffSystem.Send_Auth(player)
+    if (args[0] == undefined && args[1] == undefined)
+        return sendchat(player, 'SuspendLicense [PlayerName/PlayerID] [License] [Time(min)]');
+    let taraf = await FindPlayerForCMD(player, args[0])
+    if (taraf == undefined) return
+    //--------------------------------------------------
+    switch (args[1].toLowerCase()) {
+        case "driving":
+            await license.suspend(taraf, 'driving', args[2])
+            break;
+        case "flying":
+            await license.take(taraf, 'flying', args[2])
+            break;
+        case "weapon":
+            await license.take(taraf, 'weapon', args[2])
+            break;
+        case "sailing":
+            await license.take(taraf, 'sailing', args[2])
+            break;
+        default:
+            break;
+    }
+}
 async function GiveAllLicense(player, args) {
     if (!await StaffSystem.IsAdmin(player)) return await StaffSystem.Send_NotAdmin(player)
     if (!(await StaffSystem.CheckObject.MakeAdmin(player) && await StaffSystem.CMD.Level.check(player, 'GiveAllLicense')))
@@ -620,6 +646,7 @@ registerCmd('GoBack', GoBack)
 registerCmd('SendBack', SendBack)
 registerCmd('GiveLicense', GiveLicense)
 registerCmd('TakeLicense', TakeLicense)
+registerCmd('SuspendLicense', SuspendLicense)
 registerCmd('GiveAllLicense', GiveAllLicense)
 registerCmd('SetPlayerPos', SetPlayerPos)
 registerCmd('SetMyPos', SetMyPos)
