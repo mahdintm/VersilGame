@@ -1,3 +1,4 @@
+import * as alt from 'alt'
 import { sql } from "../database/mysql";
 import { Language } from "../utils/dialogs";
 import { vehicleObject } from "../utils/VehicleList";
@@ -486,6 +487,27 @@ async function GiveAllLicense(player, args) {
     //--------------------------------------------------
     await license.giveall(taraf)
 }
+async function SetPlayerPos(player, args) {
+    if (!await StaffSystem.IsAdmin(player)) return await StaffSystem.Send_NotAdmin(player)
+    if (!(await StaffSystem.CheckObject.MakeAdmin(player) && await StaffSystem.CMD.Level.check(player, 'SetPlayerPos')))
+        return await StaffSystem.Send_Auth(player)
+    if (args[0] == undefined && args[1] == undefined)
+        return sendchat(player, 'SetPlayerPos [PlayerName/PlayerID] ');
+    let taraf = await FindPlayerForCMD(player, args[0])
+    if (taraf == undefined) return
+    //--------------------------------------------------
+    let pos_x = parseFloat(args[1]);
+    let pos_y = parseFloat(args[2]);
+    let pos_z = parseFloat(args[3]);
+    if (isNaN(pos_x) || isNaN(pos_y) || isNaN(pos_z)) {
+        return await sendchat(player, 'SetPlayerPos [PlayerName/PlayerID] (Pos: x, Pos: y, Pos: z)');
+    }
+    if (taraf.vehicle) {
+        taraf.vehicle.pos = new alt.Vector3(pos_x, pos_y, pos_z);
+    } else {
+        player.pos = new alt.Vector3(pos_x, pos_y, pos_z);
+    }
+}
 
 registerCmd('makeadmin', MakeAdmin)
 registerCmd('MA', MakeAdmin)
@@ -524,6 +546,8 @@ registerCmd('SendBack', SendBack)
 registerCmd('GiveLicense', GiveLicense)
 registerCmd('TakeLicense', TakeLicense)
 registerCmd('GiveAllLicense', GiveAllLicense)
+registerCmd('SetPlayerPos', SetPlayerPos)
+
 
 registerCmd('cb', async (player, args) => {
     let a = await sql(`insert into business (Owner,Pos) values ('-1','${JSON.stringify({ x: player.pos.x, y: player.pos.y, z: player.pos.z })}')`)
