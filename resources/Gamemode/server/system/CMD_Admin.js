@@ -595,6 +595,7 @@ registerCmd('SetPlayerPos', SetPlayerPos)
 registerCmd('SetMyPos', SetMyPos)
 registerCmd('ShowMyPos', ShowMyPos)
 registerCmd('ShowPlayerPos', ShowPlayerPos)
+registerCmd('RespawnAllStaticVehicles', RespawnAllStaticVehicles)
 
 
 registerCmd('cb', async (player, args) => {
