@@ -46,18 +46,21 @@ export class StaffSystem {
             set: (FunctionName, from, Level) => {
                 switch (from) {
                     case "Admin":
-                        return Admin_Commands[FunctionName]["aLevel"] = Level
+                        Admin_Commands[FunctionName]["aLevel"] = Level
+                        return await sql(`update Admin_Commands set aLevel="${Level}" from name="${FunctionName}"`)
                     case "Helper":
-                        return Admin_Commands[FunctionName]["hLevel"] = Level
+                        Admin_Commands[FunctionName]["hLevel"] = Level
+                        return await sql(`update Admin_Commands set hLevel="${Level}" from name="${FunctionName}"`)
                     case "Leader":
-                        return Admin_Commands[FunctionName]["lLevel"] = Level
+                        Admin_Commands[FunctionName]["lLevel"] = Level
+                        return await sql(`update Admin_Commands set lLevel="${Level}" from name="${FunctionName}"`)
                     default:
                         break;
                 }
             }
         },
         Load: async () => {
-            let data = await sql(`Select * from AdminCommands`)
+            let data = await sql(`Select * from Admin_Commands`)
             await data.forEach(async element => {
                 Admin_Commands[element.name] = element
             });
