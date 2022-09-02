@@ -66,6 +66,9 @@ export class VehicleClass {
                 if (GameID[i] == undefined) continue;
                 return GameID[i] = vehicle.id
             }
+        },
+        async setID(index, vehicle) {
+            GameID[index] = vehicle.id
         }
     };
     /**
@@ -123,6 +126,44 @@ export class VehicleClass {
                     return await vehicle.destroy()
                 }
             }
+        },
+        create: async (vehicle, data) => {
+            let Vehicle_Detail = await VehicleClass.GetVehicleDetail(data.model)
+            vehicles[vehicle.id] = {
+                model: data.model,
+                type: data.type,
+                StaticType: data.StaticType,
+                pos: {
+                    x: data.pos.x,
+                    y: data.pos.y,
+                    z: data.pos.z,
+                    rx: data.rot.x,
+                    ry: data.rot.y,
+                    rz: data.rot.z,
+                },
+                plate: vehicle.numberPlateText = VehicleClass.plate.static(),
+                gameid: await VehicleClass.gameid.newid(vehicle),
+                maxspeed: Vehicle_Detail.MaxSpeed,
+                maxfuel: Vehicle_Detail.MaxFuel,
+                fuel: Vehicle_Detail.MaxFuel,
+                consumptiongas: Vehicle_Detail.ConsumptionGas,
+                owner: data.owner, //-1 for server 
+                options: {
+                    mods: [],
+                    neon: {
+                        position: {}, // { left: Boolean, right: Boolean, front: Boolean, back: Boolean }
+                        neonColor: {} // { r: (0 - 255), g: (0 - 255), b: (0 - 255), a: (0.0 - 1.0) }
+                    },
+                    PrimaryColor: 0, // 0 - 159
+                    SecondaryColor: 0, // 0 - 159
+                    pearlColor: 0, // 0 - 159
+                    windowTint: 0,
+                    dirtLevel: 0,
+                },
+                engine: false, // Boolean
+                sqlid: data.sqlid,
+                factionid: data.factionid, // -1 for none faction
+            }
         }
     }
     static plate = {
@@ -162,6 +203,7 @@ export class VehicleClass {
             vehicles[NewVehicle.id] = {
                 model: VehicleModel,
                 type: "static",
+                StaticType: StaticType,
                 pos: {
                     x: player.pos.x,
                     y: player.pos.y,
@@ -366,6 +408,7 @@ export class VehicleClass {
                 var index = VehicleEngineON.indexOf(vehicle);
                 if (index != -1) VehicleEngineON.splice(index, 1)
                 await sql(`delete from Vehicles where id="${vehicles[vehicleid]['sqlid']}"`)
+                await VehicleClass.engine.on(vehicle, false)
                 await vehicle.destroy();
                 delete vehicles[vehicleid]
                 return [sqlid, plate, pos]
@@ -377,6 +420,7 @@ export class VehicleClass {
             if (vehicles[vehicle.id]['type'] == 'admin') {
                 var index = VehicleEngineON.indexOf(vehicle);
                 if (index != -1) VehicleEngineON.splice(index, 1)
+                await VehicleClass.engine.on(vehicle, false)
                 await vehicle.destroy();
                 delete vehicles[vehicleid]
                 return true
@@ -392,6 +436,7 @@ export class VehicleClass {
                 var index = VehicleEngineON.indexOf(vehicle);
                 if (index != -1) VehicleEngineON.splice(index, 1)
                 await sql(`delete from Vehicles where id="${vehicles[vehicleid]['sqlid']}"`)
+                await VehicleClass.engine.on(vehicle, false)
                 await vehicle.destroy();
                 delete vehicles[vehicleid]
                 return [sqlid, plate, pos]
@@ -400,9 +445,25 @@ export class VehicleClass {
         }
     }
     static respawn = {
+        async DestryedVehicle(vehicle) {
+            let vehicleID = await vehicle.id
+            if (vehicles[vehicleID]) {
+                let vehdata = await vehicles[vehicleID]
+                await VehicleClass.engine.on(vehicle, false)
+                await vehicle.destroy()
+                delete await vehicles[vehicleID]
+                const NewVehicle = await new alt.Vehicle(vehdata.model, vehdata.pos.x, vehdata.pos.y, vehdata.pos.z, vehdata.pos.rx, vehdata.pos.ry, vehdata.pos.rz);
+                NewVehicle.manualEngineControl = true
+                NewVehicle.numberPlateText = vehdata.plate
+                vehicles[NewVehicle.id] = vehdata
+                VehicleClass.gameid.setID(vehdata.gameid, NewVehicle)
+            } else {
+                await vehicle.destroy()
+            }
+        },
         async avehicle(vehicle, force = false, repair = false) {
             if (await vehicle.driver != null && force == false) return
-            if (repair == true) await vehicle.repair()
+            if (repair == true) vehicle.repair()
             vehicle.pos = await vehicles[vehicle.id]["pos"]
             vehicle.rot = { x: vehicles[vehicle.id]["pos"].rx, y: vehicles[vehicle.id]["pos"].ry, z: vehicles[vehicle.id]["pos"].rz }
         },
