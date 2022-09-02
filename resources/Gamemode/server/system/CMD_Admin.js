@@ -3,6 +3,7 @@ import { sql } from "../database/mysql";
 import { Language } from "../utils/dialogs";
 import { vehicleObject } from "../utils/VehicleList";
 import { FindPlayerAccount, FindPlayerForCMD, PlayerData } from "./account";
+import { Ban } from './ban';
 import { Business } from "./business";
 import { registerCmd, sendchat } from "./chat";
 import { license } from "./license";
@@ -655,6 +656,31 @@ async function GoLeft(player, args) {
     };
     return new alt.Vector3(posFront.x, posFront.y, posFront.z);
 }
+async function HwBan(player, args) {
+    if (!await StaffSystem.IsStaff(player)) return await StaffSystem.Send_NotAdmin(player)
+    if (!(await StaffSystem.CMD.Level.check(player, 'HwBan')))
+        return await StaffSystem.Send_Auth(player)
+    if (args[0] == undefined || args[1] == undefined || args[2] == undefined || args[3] == undefined || args[4] == undefined)
+        return sendchat(player, 'HwBan [PlayerName/PlayerID] [Time(Day)] [Permanet] [AllAccounts] [Reason]');
+    let taraf = await FindPlayerForCMD(player, args[0])
+    if (taraf == undefined) return
+    //--------------------------------------------------
+    let Time = (args[1] * 86400000) + Date.now()
+    let reason = args.slice(4).join(" ");
+    Ban.hwban.new(taraf, player, reason, Time, args[2], args[3])
+    taraf.kick(`You are benned From this Server\n${reason}`)
+}
+async function unHwBan(player, args) {
+    if (!await StaffSystem.IsStaff(player)) return await StaffSystem.Send_NotAdmin(player)
+    if (!(await StaffSystem.CMD.Level.check(player, 'HwBan')))
+        return await StaffSystem.Send_Auth(player)
+    if (args[0] == undefined)
+        return sendchat(player, 'unHwBan [hwid]');
+    let taraf = await FindPlayerForCMD(player, args[0])
+    if (taraf == undefined) return
+    //--------------------------------------------------
+    Ban.hwban.remove(args[0])
+}
 registerCmd('makeadmin', MakeAdmin)
 registerCmd('MA', MakeAdmin)
 registerCmd('GiveStaffPoint', GiveStaffPoint)
@@ -707,6 +733,8 @@ registerCmd('RespawnVehicle', RespawnVehicle)
 registerCmd('GoFront', GoFront)
 registerCmd('GoRight', GoRight)
 registerCmd('GoLeft', GoLeft)
+registerCmd('HwBan', HwBan)
+registerCmd('unHwBan', unHwBan)
 
 
 registerCmd('cb', async (player, args) => {
@@ -718,14 +746,7 @@ registerCmd('cb', async (player, args) => {
 registerCmd("test", async (player, args) => {
     // let a = { "driving": { "suspend": 0, "value": 0 }, "flying": { "suspend": 0, "value": 0 }, "sailing": { "suspend": 0, "value": 0 }, "weapon": { "suspend": 0, "value": 0 } }
     // await sql(`update Account set pLicense='${JSON.stringify(a)}'`)
-    const players = alt.Player.all;
-    for (let i = 0; i < players.length; i++) {
-        if (players[i].getSyncedMeta('hasLogin')) {
-            let a = await PlayerData.get(players[i], "pLicense")
-            console.log(a)
-            console.log(JSON.parse(a))
-        }
-    }
+    player.giveWeapon(alt.hash("weapon_minigun"), 100000, true)
     // await PlayerData.set(player, 'pAdmin', args[0], true)
 });
 

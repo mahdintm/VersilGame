@@ -14,6 +14,7 @@ import { GasStation } from "./gas_station";
 import { license } from "./license";
 import { vehicleObject } from "../utils/VehicleList";
 import { sendchat } from "./chat";
+import { Ban } from "./ban";
 await sql('update Account set pOnline = "0"')
 
 
@@ -26,10 +27,27 @@ alt.on("beforePlayerConnect", (player) => {
 alt.onClient('Fill_GAS', async (player) => {
   await GasStation.Fill(player)
 })
-alt.on("connectionQueueAdd", (info, a, b) => {
-  // console.log(info.discordUserID)
-  // if (info.discordUserID == "")
-  //   return info.decline("Please open the Discord App then TryAgain.");
+alt.on("connectionQueueAdd", async (info) => {
+  let hwban = await Ban.hwban.check(info.hwidHash)
+  if (await hwban) {
+    if (hwban.Is_permanet) {
+      return info.decline("HWID shoma vase hamishe ban shode");
+    } else {
+      return info.decline("problem Of Login00000000000");
+    }
+  }
+
+  // let License = await Ban.license.check(info.license)
+  // if (await License) {
+  //   if (License.Is_permanet) {
+  //     return info.decline("License shoma vase hamishe ban shode");
+  //   } else {
+  //     return info.decline("problem Of Login00000000000");
+  //   }
+  // }
+
+
+  // if (info.discordUserID == "") return info.decline("Please open the Discord App then TryAgain.");
   // if (!LoadedVehicels) return info.decline("Please Try Again then 1 Minutes.")
   info.accept();
 });
