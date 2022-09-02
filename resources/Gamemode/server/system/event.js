@@ -11,8 +11,9 @@ import { playerDetails } from "../utils/playerDetails";
 import { EventNames } from "../utils/eventNames";
 import { sql } from "../database/mysql";
 import { GasStation } from "./gas_station";
-
-
+import { license } from "./license";
+import { vehicleObject } from "../utils/VehicleList";
+import { sendchat } from "./chat";
 await sql('update Account set pOnline = "0"')
 
 
@@ -31,6 +32,19 @@ alt.on("connectionQueueAdd", (info, a, b) => {
   //   return info.decline("Please open the Discord App then TryAgain.");
   // if (!LoadedVehicels) return info.decline("Please Try Again then 1 Minutes.")
   info.accept();
+});
+alt.on('playerEnteringVehicle', async (player, vehicle, seat) => {
+  let datain_vehileObject = vehicleObject.filter(async (v, i) => v.name == await VehicleClass.data.get(vehicle, 'model'))[0];
+  switch (datain_vehileObject.type) {
+    case "driving":
+      if (await license.check(player, "driving") == false && seat == 1) {
+        sendchat(player, "govahiname nadari baba")
+        return player.pos = await player.pos;
+      }
+      break;
+    default:
+      break;
+  }
 });
 alt.on('vehicleDestroy', async (vehicle) => {
   switch (await VehicleClass.data.get(vehicle, 'type')) {
