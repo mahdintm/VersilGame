@@ -1,4 +1,4 @@
-import { sql } from "../database/mysql";
+import { sql, sql_log } from "../database/mysql";
 import * as alt from 'alt'
 import { logger } from "./logger";
 import { hashing } from "../utils/hash";
@@ -24,7 +24,7 @@ export class PlayerData {
                 ip: (player.ip).substr(7, 24),
                 license: player.socialID
             });
-            // await sql('log', `INSERT INTO register_log(rId, loginas, ip, timestamp, hwid, discordid, license) VALUES ("${dataMain.insertId}","Server","${(player.ip).substr(7, 24)}","${Date.now()}","${player.hwidHash}","${player.getSyncedMeta('Discordid')}","${player.socialID}")`);
+            await sql_log(`INSERT INTO register_log(rId, loginas, ip, timestamp, hwid, discordid, license) VALUES ("${dataMain.insertId}","Server","${(player.ip).substr(7, 24)}","${Date.now()}","${player.hwidHash}","${player.getSyncedMeta('Discordid')}","${player.socialID}")`);
         } catch (error) {
             await logger.addlog.server({
                 locatin: "Server->System->Account->Class Playerdata->register()",
@@ -58,7 +58,7 @@ export class PlayerData {
             await Business.Load_To_Players(player)
             player.setSyncedMeta("hasLogin", true);
             //log system
-            // await sql(`INSERT INTO login_log(rId, loginas, ip, timestamp, hwid, discordid, license) VALUES ("${DaTa.rId}","Server","${(player.ip).substr(7, 24)}","${time}","${player.hwidHash}","${player.getSyncedMeta('Discordid')}","${player.socialID}")`);
+            await sql_log(`INSERT INTO login_log(rId, loginas, ip, timestamp, hwid, discordid, license) VALUES ("${DaTa.pId}","Server","${(player.ip).substr(7, 24)}","${time}","${player.hwidHash}","${player.getSyncedMeta('Discordid')}","${player.socialID}")`);
             DiscordHook.newhook.login({ username: obj.username, sqlid: DaTa.pId, hwid: player.hwidHash, discordid: player.getSyncedMeta('Discordid'), ip: (player.ip).substr(7, 24), license: player.socialID });
             return alt.log(`~lc~ Player ${obj.username} With IP ${(player.ip).substr(7, 24)} at ${time} Logined.`);
 
