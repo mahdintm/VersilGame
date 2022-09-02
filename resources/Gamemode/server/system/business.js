@@ -9,7 +9,7 @@ export class Business {
             businessData[Business_Id][DataName] = Value
             console.log(Business_Id, DataName, Value)
             if (sql_) {
-                await sql(`Update business set ${DataName}='${parseInt(Value)}' where id = "${Business_Id}"`)
+                await sql(`Update Business set ${DataName}='${parseInt(Value)}' where id = "${Business_Id}"`)
             }
             return true
         },
@@ -47,7 +47,7 @@ export class Business {
 }
 
 setTimeout(async () => {
-    let Data_ = await sql('select * from business')
+    let Data_ = await sql('select * from Business')
     Data_.forEach(Data => {
         businessData[Data.id] = Data
     });

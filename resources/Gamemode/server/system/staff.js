@@ -43,7 +43,7 @@ export class StaffSystem {
                         break;
                 }
             },
-            set: (FunctionName, from, Level) => {
+            set: async (FunctionName, from, Level) => {
                 switch (from) {
                     case "Admin":
                         Admin_Commands[FunctionName]["aLevel"] = Level
