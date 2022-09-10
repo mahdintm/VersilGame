@@ -9,6 +9,7 @@ import { VGView } from "./webViewController";
 import { WebViewStatus } from "../utils/WebViewStatus";
 import { EventNames } from "../utils/eventNames";
 import { ClothesDetails } from "../utils/ClothesDetails";
+import { VG } from "../system/functions";
 
 let eyeTrackerFindStatus = false,
   eyeTrackerStatus = false,
@@ -182,7 +183,7 @@ export class VGEyeTracker {
     let [_, _hit, _endCoords, _surfaceNormal, _materialHash, _entityHit] =
       VGEyeTracker.#getRaycast();
     if (native.doesEntityHaveDrawable(_entityHit)) {
-      console.log("Object Hash ID:", native.getEntityModel(_entityHit));
+      VG.debugLog("Object Hash ID:", native.getEntityModel(_entityHit));
     }
   }
   static async eyeTracker() {
