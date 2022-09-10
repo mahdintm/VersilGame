@@ -1,5 +1,9 @@
 import * as alt from "alt";
 import * as native from "natives";
+import { EventNames } from "../utils/eventNames";
+
+let DebugMode = false;
+
 /**
  *
  * @param {object} vector1 object x y z of location
@@ -66,4 +70,16 @@ export function drawText3d(
   }
   native.endTextCommandDisplayText(0, 0, 0);
   native.clearDrawOrigin();
+}
+
+export class VG {
+  static debugLog(...args) {
+    if (DebugMode) console.log(...args);
+  }
+  static log(...args) {
+    console.log(...args);
+  }
+  static serverLog(...args) {
+    alt.emitServer(EventNames.player.client.ServerLog, ...args);
+  }
 }

@@ -20,7 +20,9 @@ export const EventNames = {
       Remove3DText: "Server:ManagePlayer:Remove3DText",
       Modify3DText: "Server:ManagePlayer:Modify3DText",
     },
-    client: {},
+    client: {
+      ServerLog: "Client:DebugMode:ConsoleLogInServer",
+    },
     clientWEB: {},
     WEBclient: {},
   },
@@ -148,5 +150,12 @@ export const EventNames = {
     WEBclient: {
       CloseScoreBoard: "WEBclient:ScoreBoard:CloseScoreBoard",
     },
+  },
+  HUD: {
+    clientWEB: {
+      SetPlayerCashDetails: "ClientWEB:HUD:SetPlayerCashDetails",
+      SetCarHUDDetails: "ClientWEB:HUD:SetCarHUDDetails",
+    },
+    WEBclient: {},
   },
 };

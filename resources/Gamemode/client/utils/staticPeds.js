@@ -9,7 +9,6 @@ export const staticPeds = {
           console.log(`{x: ${player.pos.x.toFixed(3)}, y:${player.pos.y.toFixed(3)}, z:${player.pos.z.toFixed(3) - 1}, heading:${player.rot.z * (180 / Math.PI)}}`);
           @param return This object
         */
-      { x: -63.64, y: -798.527, z: 43.226, heading: -39.68504173826947 }, // Tested
       { x: 73.78, y: -1392.58, z: 28.364, heading: -87.87401733285249 }, // Clothes Shop 1
       { x: -822.963, y: -1072.154, z: 10.318, heading: -144.56692336865447 }, // Clothes Shop 2
       { x: -1193.829, y: -766.958, z: 16.3, heading: -153.07087771553552 }, // Clothes Shop 3

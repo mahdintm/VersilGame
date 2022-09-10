@@ -116,6 +116,18 @@ export let WebViewStatus = {
       close: "ClientWEB:eyeTrackerWebView:close",
     },
   },
+  HUD: {
+    name: "HUD",
+    priority: 5,
+    isActive: false,
+    isOpen: false,
+    isMultiView: true,
+    isNeedGameControl: false,
+    EventNames: {
+      load: "ClientWEB:HUD:Load",
+      unLoad: "ClientWEB:HUD:unLoad",
+    },
+  },
   IntroVue: {
     EventNames: {
       load: "ClientWEB:IntroMusic:Load",

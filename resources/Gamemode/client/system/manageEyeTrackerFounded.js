@@ -3,6 +3,7 @@
 import * as alt from "alt-client";
 
 import { EventNames } from "../utils/eventNames";
+import { VG } from "./functions";
 
 export function SendObjectTitlesToManageEyeTracker(ObjectTitles) {
   switch (ObjectTitles.action) {
@@ -14,7 +15,7 @@ export function SendObjectTitlesToManageEyeTracker(ObjectTitles) {
       alt.emitServer("Fill_GAS")
       break;
     default:
-      console.log(`Log From ${ObjectTitles.title} action`);
+      VG.debugLog(`Log From ${ObjectTitles.title} action`);
       break;
   }
 }

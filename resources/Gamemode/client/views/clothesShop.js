@@ -10,12 +10,16 @@ import { ClothesDetails } from "../utils/ClothesDetails";
 import { clothesShops } from "../utils/clothesShops";
 import { EventNames } from "../utils/eventNames";
 import { WebViewStatus } from "../utils/WebViewStatus";
+import { VG } from "../system/functions";
 
 const PartsName = {
   ComponentsPart: "ClothComponent",
   PropsPart: "ClothProp",
   DLCsPart: "ClothDLC",
 };
+
+let ClothesItems = [],
+  PropsItems = [];
 
 class VGClothes {
   static #CheckClientVariableForCloth(Part, ClothesInteriorID, Gender) {
@@ -201,6 +205,11 @@ class VGClothes {
         FoundedComponentDrawableID,
         TextureID
       );
+      VGClothes.#SaveClothesItems(
+        FoundedComponentID,
+        FoundedComponentDrawableID,
+        TextureID
+      );
     } else if (FoundedPropID != undefined) {
       VGPeds.SetPropOnPedName(
         ClothesDetails.ClothesPreviewNPCs.name,
@@ -208,7 +217,38 @@ class VGClothes {
         FoundedPropDrawableID,
         TextureID
       );
+      VGClothes.#SavePropsItems(
+        FoundedPropID,
+        FoundedPropDrawableID,
+        TextureID
+      );
     }
+  }
+  static #SaveClothesItems(ComponentID, DrawableID, TextureID) {
+    ClothesItems.forEach((ClothesItem, index) => {
+      if (ClothesItem.ComponentID == ComponentID) {
+        ClothesItems.splice(index, 1);
+      }
+    });
+
+    ClothesItems.push({
+      ComponentID: ComponentID,
+      DrawableID: DrawableID,
+      TextureID: TextureID,
+    });
+  }
+  static #SavePropsItems(PropID, DrawableID, TextureID) {
+    PropsItems.forEach((PropsItem, index) => {
+      if (PropsItem.PropID == PropID) {
+        PropsItems.splice(index, 1);
+      }
+    });
+
+    PropsItems.push({
+      PropID: PropID,
+      DrawableID: DrawableID,
+      TextureID: TextureID,
+    });
   }
   static CreateClothesPed(Gender) {
     if (Gender == "male") {
@@ -234,6 +274,59 @@ class VGClothes {
         ].pos,
       });
     }
+    ClothesItems = [];
+    PropsItems = [];
+  }
+  static GetSelectItemsFromClient(Gender) {
+    Gender = Gender.toLowerCase();
+    let AllClothesSelected = [];
+    ClothesItems.forEach((ClothesItem) => {
+      clothesShops[
+        native.getInteriorFromEntity(alt.Player.local.scriptID)
+      ].ClothComponent[Gender].forEach((clothesShopsDetails) => {
+        if (clothesShopsDetails.ComponentID != ClothesItem.ComponentID) return;
+
+        clothesShopsDetails.Drawables.forEach((Drawable) => {
+          if (
+            Drawable.DrawableID == ClothesItem.DrawableID &&
+            Drawable.nameInInvoice != "Nothing"
+          )
+            AllClothesSelected.push({
+              ComponentID: ClothesItem.ComponentID,
+              TextureID: ClothesItem.TextureID,
+              nameInInvoice: Drawable.nameInInvoice,
+              DrawableID: Drawable.DrawableID,
+              Price: Drawable.Price,
+              isNeedTorsos: Drawable.isNeedTorsos,
+            });
+        });
+      });
+    });
+
+    PropsItems.forEach((PropsItem) => {
+      clothesShops[
+        native.getInteriorFromEntity(alt.Player.local.scriptID)
+      ].ClothProp[Gender].forEach((clothesShopsDetails) => {
+        if (clothesShopsDetails.PropID != PropsItem.PropID) return;
+
+        clothesShopsDetails.Drawables.forEach((Drawable) => {
+          if (
+            Drawable.DrawableID == PropsItem.DrawableID &&
+            Drawable.nameInInvoice != "Nothing"
+          )
+            AllClothesSelected.push({
+              PropID: PropsItem.PropID,
+              TextureID: PropsItem.TextureID,
+              nameInInvoice: Drawable.nameInInvoice,
+              DrawableID: Drawable.DrawableID,
+              Price: Drawable.Price,
+              isNeedTorsos: Drawable.isNeedTorsos,
+            });
+        });
+      });
+    });
+
+    return AllClothesSelected;
   }
 }
 
@@ -280,8 +373,12 @@ alt.on(EventNames.allVue.localClient.loadWebviews, async () => {
       await VGView.unload(WebViewStatus.clothes.name);
     }, 200);
   });
-  VGView.once(EventNames.clothes.WEBclient.OrderList, () => {
-    console.log("test test");
+  VGView.once(EventNames.clothes.WEBclient.OrderList, (Gender) => {
+    VG.serverLog(VGClothes.GetSelectItemsFromClient(Gender));
+    // alt.Player.local.setMeta(
+    //   "ClothesShopInvoice",
+    //   VGClothes.GetSelectItemsFromClient("male")
+    // );
   });
   VGView.once(
     EventNames.clothes.WEBclient.Suggestion,
