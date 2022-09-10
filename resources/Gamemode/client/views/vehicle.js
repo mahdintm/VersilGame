@@ -6,80 +6,67 @@ import { ChangeValueFromVariable } from "../system/everyTick";
 import { VGView } from "./webViewController";
 import { WebViewStatus } from "../utils/WebViewStatus";
 import { EventNames } from "../utils/eventNames";
+import { VGHUD } from "./HUD";
+import { VG } from "../system/functions";
 
-alt.on("enteredVehicle", async () => {
+alt.on("enteredVehicle", () => {
   let playerVehicle = alt.Player.local.vehicle;
   SpeedOmeter(native.getIsVehicleEngineRunning(playerVehicle));
-  VGView.load(WebViewStatus.speedOmeter.name);
-  await VGView.emit(
-    WebViewStatus.speedOmeter.name,
-    "ClientWEB:Vehicle:Information",
-    {
-      Status: true,
-      RPM: CalcVehicleRPM(0),
-      Speed: 0,
-      Fuel: 0,
-      Engine: false,
-      TransitionStatus: true,
-    }
-  );
 });
-alt.on("leftVehicle", async () => {
-  SpeedOmeter(false);
-  await VGView.emit(
-    WebViewStatus.speedOmeter.name,
-    "ClientWEB:Vehicle:Information",
-    {
-      Status: false,
-      RPM: CalcVehicleRPM(0),
-      Speed: 0,
-      Fuel: 0,
-      Engine: false,
-      TransitionStatus: true,
-    }
-  );
-  VGView.unload(WebViewStatus.speedOmeter.name);
+alt.on("leftVehicle", () => {
+  VGHUD.VehicleSpeedOmeter({ isActiveCarHud: false });
 });
 alt.on("Local:Vehicle:EngineStatus", (Status) => {
   SpeedOmeter(Status);
 });
-async function SpeedOmeter(Status) {
+function SpeedOmeter(Status) {
   if (!Status) {
-    await VGView.emit(
-      WebViewStatus.speedOmeter.name,
-      "ClientWEB:Vehicle:Information",
-      {
-        Status: true,
-        RPM: CalcVehicleRPM(0),
-        Speed: 0,
-        Fuel: GetVehicleFuel(),
-        Engine: false,
-        TransitionStatus: false,
-      }
-    );
+    VGHUD.VehicleSpeedOmeter({
+      isActiveCarHud: true,
+      RPM: 0,
+      Speed: 0,
+      Fuel: GetVehicleFuel(),
+      Engine: false,
+    });
+
     ChangeValueFromVariable("VehicleSpeedOmeterInterval", false);
     return;
   }
   ChangeValueFromVariable("VehicleSpeedOmeterInterval", true);
 }
+
+let isSeatBelt = true,
+  isCruse = false,
+  isLongLights = false,
+  isLights = false,
+  isHandBrake = false,
+  isLeftGuide = false,
+  isRightGuide = false,
+  isPairGuide = false;
+
 export async function VehicleSpeedOmeter() {
   let playerVehicle = alt.Player.local.vehicle;
   if (playerVehicle == null) {
     return ChangeValueFromVariable("VehicleSpeedOmeterInterval", false);
   }
   if (native.getIsVehicleEngineRunning(playerVehicle)) {
-    await VGView.emit(
-      WebViewStatus.speedOmeter.name,
-      "ClientWEB:Vehicle:Information",
-      {
-        Status: true,
-        RPM: CalcVehicleRPM(playerVehicle.rpm),
-        Speed: Math.floor(native.getEntitySpeed(playerVehicle) * 3.6),
-        Fuel: GetVehicleFuel(),
-        Engine: true,
-        TransitionStatus: true,
-      }
-    );
+    // VG.serverLog(playerVehicle.gear);
+    // console.log(playerVehicle.maxGear);
+    VGHUD.VehicleSpeedOmeter({
+      isActiveCarHud: true,
+      RPM: parseInt(playerVehicle.rpm * 370),
+      Speed: Math.floor(native.getEntitySpeed(playerVehicle) * 3.6),
+      Fuel: GetVehicleFuel(),
+      Engine: true,
+      isSeatBelt: isSeatBelt,
+      isCruse: isCruse,
+      isLongLights: isLongLights,
+      isLights: isLights,
+      isHandBrake: isHandBrake,
+      isLeftGuide: isLeftGuide,
+      isRightGuide: isRightGuide,
+      isPairGuide: isPairGuide,
+    });
   }
 }
 function GetVehicleFuel() {
@@ -88,31 +75,4 @@ function GetVehicleFuel() {
   } catch (error) {
     return 0;
   }
-}
-
-let LastRPM;
-function CalcVehicleRPM(rpm) {
-  rpm = parseInt(rpm * 100) * 3;
-  if (rpm == 300) {
-    if (LastRPM == 280) {
-      rpm = 275;
-    } else {
-      rpm = 280;
-    }
-  }
-  if (rpm < 10) rpm = 10;
-  if (rpm > 280) rpm = 280;
-  LastRPM = rpm;
-  return rpm;
-  //  0 -> 10
-  //  1 -> 38
-  //  2 -> 64
-  //  3 -> 90
-  //  4 -> 116
-  //  5 -> 142
-  //  6 -> 168
-  //  7 -> 198
-  //  8 -> 226
-  //  9 -> 252
-  //  10 -> 275 - 280
 }
