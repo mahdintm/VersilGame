@@ -19,7 +19,9 @@ export const EventNames = {
       Remove3DText: "Server:ManagePlayer:Remove3DText",
       Modify3DText: "Server:ManagePlayer:Modify3DText",
     },
-    client: {},
+    client: {
+      ServerLog: "Client:DebugMode:ConsoleLogInServer",
+    },
     clientWEB: {},
     WEBclient: {},
   },
