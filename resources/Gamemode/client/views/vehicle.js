@@ -35,7 +35,7 @@ function SpeedOmeter(Status) {
   ChangeValueFromVariable("VehicleSpeedOmeterInterval", true);
 }
 
-let isSeatBelt = true,
+let isSeatBelt = false,
   isCruse = false,
   isLongLights = false,
   isLights = false,
