@@ -15,6 +15,9 @@ export function EveryTickEvents() {
   native.hideHudComponentThisFrame(6); // For disable vehicle name
   native.hideHudComponentThisFrame(7); // For disable area name
   native.hideHudComponentThisFrame(9); // For disable street name
+  alt.beginScaleformMovieMethodMinimap("SETUP_HEALTH_ARMOUR"); // hiding health and armour bars without abusing everyTick
+  native.scaleformMovieMethodAddParamInt(3); // hiding health and armour bars without abusing everyTick
+  native.endScaleformMovieMethod(); // hiding health and armour bars without abusing everyTick
 }
 
 async function ConnectionComplet(player) {
@@ -44,9 +47,7 @@ async function ConnectionComplet(player) {
     });
     native.destroyCam(FisrtPlayerCamera, false);
     LoadLoginPage(); //for load web view login page
-    // alt.beginScaleformMovieMethodMinimap("SETUP_HEALTH_ARMOUR"); // hiding health and armour bars without abusing everyTick
-    // native.scaleformMovieMethodAddParamInt(3); // hiding health and armour bars without abusing everyTick
-    // native.endScaleformMovieMethod(); // hiding health and armour bars without abusing everyTick
+
     alt.setConfigFlag("DISABLE_IDLE_CAMERA", true); // For disable IDLE camera
     native.destroyAllCams(true);
     native.renderScriptCams(false, false, 0, false, false, 0);
