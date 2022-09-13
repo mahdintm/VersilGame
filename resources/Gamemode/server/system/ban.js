@@ -9,7 +9,7 @@ let bans = {
 }
 
 export class Ban {
-    static load = async () => {
+    static load = async() => {
         let data = await sql(`select * from Hw_Ban`)
         if (data.length > 0) {
             data.forEach(element => {
@@ -22,7 +22,7 @@ export class Ban {
         }
     }
     static hwban = {
-        new: async (player, admin, reason, expire, Is_permanet = false, Is_Accounts = false) => {
+        new: async(player, admin, reason, expire, Is_permanet = false, Is_Accounts = false) => {
             let data = await sql(`insert into Hw_Ban (Admin_id, Hwid, inTime, Expire, Is_permanet, Is_Accounts,Reason) values ("${await PlayerData.get(admin, 'pId')}","${player.hwidHash}","${Date.now()}","${expire}","${Is_permanet}","${Is_Accounts}","${reason}")`)
             return bans.hwban.push({
                 id: data.insertId,
@@ -35,7 +35,7 @@ export class Ban {
                 Reason: reason
             })
         },
-        check: async (hwid) => {
+        check: async(hwid) => {
             for await (const index of bans.hwban) {
                 if (index.Hwid == hwid) {
                     if (index.Expire < Date.now()) {
@@ -48,11 +48,12 @@ export class Ban {
             }
             return false
         },
-        remove: async (hwid) => {
-            for (let i = 0; i < bans.hwban.length; i++) {
-                if (bans.hwban[i]['Hwid'] == hwid) {
-                    await sql(`DELETE FROM Hw_Ban WHERE id="${bans.hwban[i]['id']}"`)
-                    bans.hwban.splice(i, 1)
+        remove: async(hwid) => {
+            let a = false
+            for await (const element of bans.hwban) {
+                if (element['Hwid'] == hwid) {
+                    await sql(`DELETE FROM Hw_Ban WHERE id="${element['id']}"`)
+                    bans.hwban.splice(element, 1)
                 }
             }
         }
