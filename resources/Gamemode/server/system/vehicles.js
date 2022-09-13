@@ -22,8 +22,8 @@ var staticcar = [],
     GameID = {}
 
 export let LoadedVehicels = false
-//GetStaticVehicleList
-vehicleObject.filter(function (v, i) {
+    //GetStaticVehicleList
+vehicleObject.filter(function(v, i) {
     vehicleObject[i]["hash"] = alt.hash(v.name);
     if (v.isFreeVehicle === true) {
         switch (v.type) {
@@ -99,7 +99,7 @@ export class VehicleClass {
          * @param {string} data 
          * @returns data
          */
-        get: async (vehicle, data) => {
+        get: async(vehicle, data) => {
             const allvehs = await alt.Vehicle.all;
             for (let i = 0; i < allvehs.length; i++) {
                 if (await vehicles[vehicle.id] != undefined) {
@@ -116,7 +116,7 @@ export class VehicleClass {
          * @param {value} value 
          * @returns 
          */
-        set: async (vehicle, data, value) => {
+        set: async(vehicle, data, value) => {
             const allvehs = await alt.Vehicle.all;
             for (let i = 0; i < allvehs.length; i++) {
                 if (await vehicles[vehicle.id] != undefined) {
@@ -127,7 +127,7 @@ export class VehicleClass {
                 }
             }
         },
-        create: async (vehicle, data) => {
+        create: async(vehicle, data) => {
             let Vehicle_Detail = await VehicleClass.GetVehicleDetail(data.model)
             vehicles[vehicle.id] = {
                 model: data.model,
@@ -399,14 +399,12 @@ export class VehicleClass {
         }
     };
     static delete = {
-        static: async (vehicle) => {
+        static: async(vehicle) => {
             let vehicleid = vehicle.id
             if (vehicles[vehicle.id]['type'] == 'static') {
                 let plate = vehicles[vehicle.id]['plate']
                 let sqlid = vehicles[vehicle.id]['sqlid']
                 let pos = vehicles[vehicle.id]['pos']
-                var index = VehicleEngineON.indexOf(vehicle);
-                if (index != -1) VehicleEngineON.splice(index, 1)
                 await sql(`delete from Vehicles where id="${vehicles[vehicleid]['sqlid']}"`)
                 await VehicleClass.engine.on(vehicle, false)
                 await vehicle.destroy();
@@ -415,11 +413,9 @@ export class VehicleClass {
             } else
                 return false
         },
-        admin: async (vehicle) => {
+        admin: async(vehicle) => {
             let vehicleid = vehicle.id
             if (vehicles[vehicle.id]['type'] == 'admin') {
-                var index = VehicleEngineON.indexOf(vehicle);
-                if (index != -1) VehicleEngineON.splice(index, 1)
                 await VehicleClass.engine.on(vehicle, false)
                 await vehicle.destroy();
                 delete vehicles[vehicleid]
@@ -427,14 +423,12 @@ export class VehicleClass {
             } else
                 return false
         },
-        faction: async (vehicle) => {
+        faction: async(vehicle) => {
             let vehicleid = vehicle.id
             if (vehicles[vehicle.id]['type'] == 'faction') {
                 let plate = vehicles[vehicle.id]['plate']
                 let sqlid = vehicles[vehicle.id]['sqlid']
                 let pos = vehicles[vehicle.id]['pos']
-                var index = VehicleEngineON.indexOf(vehicle);
-                if (index != -1) VehicleEngineON.splice(index, 1)
                 await sql(`delete from Vehicles where id="${vehicles[vehicleid]['sqlid']}"`)
                 await VehicleClass.engine.on(vehicle, false)
                 await vehicle.destroy();
@@ -483,7 +477,7 @@ export class VehicleClass {
         }
     }
     static engine = {
-        on: async (Vehicle, state) => {
+        on: async(Vehicle, state) => {
             if (state == true) {
                 if (await VehicleClass.fuel.get(Vehicle) <= 0) return console.log("fuel nadariiiii.")
                 VehicleEngineON.push(Vehicle)
@@ -516,20 +510,20 @@ export class VehicleClass {
         return Math.abs(Math.floor(Math.sqrt(x * x + y * y + z * z) * 3.6))
     }
     static fuel = {
-        get: async (vehicle) => {
+        get: async(vehicle) => {
             return await VehicleClass.data.get(vehicle, "fuel")
         },
-        set: async (vehicle, amount) => {
+        set: async(vehicle, amount) => {
             let fuel = await VehicleClass.data.set(vehicle, "fuel", amount)
             await vehicle.setSyncedMeta('fuel', Math.round(((fuel * 100) / await VehicleClass.data.get(vehicle, 'maxfuel'))));
             return fuel
         },
-        take: async (vehicle, amount) => {
+        take: async(vehicle, amount) => {
             let fuel = await VehicleClass.data.set(vehicle, "fuel", await VehicleClass.data.get(vehicle, "fuel") - amount)
             await vehicle.setSyncedMeta('fuel', Math.round(((fuel * 100) / await VehicleClass.data.get(vehicle, 'maxfuel'))));
             return fuel
         },
-        give: async (vehicle, amount) => {
+        give: async(vehicle, amount) => {
             let fuel = await VehicleClass.data.set(vehicle, "fuel", await VehicleClass.data.get(vehicle, "fuel") + amount)
             await vehicle.setSyncedMeta('fuel', Math.round(((fuel * 100) / await VehicleClass.data.get(vehicle, 'maxfuel'))));
             return fuel
@@ -537,7 +531,7 @@ export class VehicleClass {
     }
 }
 
-setTimeout(async () => {
+setTimeout(async() => {
     let VehicleData_ = await sql(`SELECT * FROM Vehicles`)
     for (let i = 0; i < VehicleData_.length; i++) {
         if (VehicleData_[i] == "") continue
@@ -553,8 +547,8 @@ setTimeout(async () => {
     }
 }, 1000);
 
-setInterval(async () => {
-    VehicleEngineON.filter(async (vehicle, i) => {
+setInterval(async() => {
+    VehicleEngineON.filter(async(vehicle, i) => {
         let speed = VehicleClass.getspeed(vehicle);
         let consumption
         if (speed == 0) {
