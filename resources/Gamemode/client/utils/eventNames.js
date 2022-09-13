@@ -9,6 +9,7 @@ export const EventNames = {
     localClient: {
       startScriptConnection: "Local:WebView:startScriptConnection",
       webViewCompleteLoaded: "Local:WebView:WebViewCompleteLoaded",
+      KeyManagment: "Local:Keys:KeyManagment",
     },
     localServer: {},
     server: {
@@ -19,6 +20,8 @@ export const EventNames = {
       Add3DText: "Server:ManagePlayer:Add3DText",
       Remove3DText: "Server:ManagePlayer:Remove3DText",
       Modify3DText: "Server:ManagePlayer:Modify3DText",
+      RequestIPL: "Server:ManagePlayer:RequestIPL",
+      RemoveIPL: "Server:ManagePlayer:RemoveIPL",
     },
     client: {
       ServerLog: "Client:DebugMode:ConsoleLogInServer",
@@ -155,6 +158,7 @@ export const EventNames = {
     clientWEB: {
       SetPlayerCashDetails: "ClientWEB:HUD:SetPlayerCashDetails",
       SetCarHUDDetails: "ClientWEB:HUD:SetCarHUDDetails",
+      SetVeniceHUDDetails: "ClientWEB:HUD:SetVeniceHUDDetails",
     },
     WEBclient: {},
   },
