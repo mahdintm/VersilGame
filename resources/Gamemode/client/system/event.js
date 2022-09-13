@@ -82,5 +82,8 @@ async function ConnectionComplet(player) {
     native.removeIpl("rc12b_default");
     native.removeIpl("rc12b_hospitalinterior_lod");
     native.removeIpl("rc12b_hospitalinterior");
+
+    const blip = new alt.PointBlip(5943.5679611650485, -6272.114833599767, 2);
+    blip.alpha = 0;
   });
 }
