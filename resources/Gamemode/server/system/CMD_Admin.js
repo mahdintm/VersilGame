@@ -676,10 +676,8 @@ async function unHwBan(player, args) {
         return await StaffSystem.Send_Auth(player)
     if (args[0] == undefined)
         return sendchat(player, 'unHwBan [hwid]');
-    let taraf = await FindPlayerForCMD(player, args[0])
-    if (taraf == undefined) return
     //--------------------------------------------------
-    Ban.hwban.remove(args[0])
+   let status=await Ban.hwban.remove(args[0])
 }
 registerCmd('makeadmin', MakeAdmin)
 registerCmd('MA', MakeAdmin)
