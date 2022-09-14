@@ -55,9 +55,15 @@ export const EventNames = {
     clientWEB: {
       SetDataWeb: "ClientWEB:Login:SetDataWeb",
       LoginSuccessfully: "ClientWEB:Login:LoginSuccessfully",
+      UsernameError: "ClientWEB:Login:UsernameError",
+      PasswordError: "ClientWEB:Login:PasswordError",
+      AccountOnline: "ClientWEB:Login:AccountOnline",
+      AnotherError: "ClientWEB:Login:AnotherError",
+      RegisterResult: "ClientWEB:Login:RegisterResult",
     },
     WEBclient: {
       LoginAccount: "WEBclient:Login:LoginAccount",
+      RegisterAccount: "WEBclient:Login:RegisterAccount",
     },
   },
   chat: {
