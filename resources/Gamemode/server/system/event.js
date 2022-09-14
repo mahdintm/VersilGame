@@ -15,8 +15,7 @@ import { license } from "./license";
 import { vehicleObject } from "../utils/VehicleList";
 import { sendchat } from "./chat";
 import { Ban } from "./ban";
-await sql('update Account set pOnline = "0"')
-
+await sql('update Account set pOnline = "0"');
 
 let ban_ip = "::ffff:192.168.90.100";
 
@@ -24,11 +23,11 @@ alt.on("beforePlayerConnect", (player) => {
   player.setSyncedMeta("hasLogin", false);
 });
 
-alt.onClient('Fill_GAS', async (player) => {
-  await GasStation.Fill(player)
-})
+alt.onClient("Fill_GAS", async (player) => {
+  await GasStation.Fill(player);
+});
 alt.on("connectionQueueAdd", async (info) => {
-  let hwban = await Ban.hwban.check(info.hwidHash)
+  let hwban = await Ban.hwban.check(info.hwidHash);
   if (await hwban) {
     if (hwban.Is_permanet) {
       return info.decline("HWID shoma vase hamishe ban shode");
@@ -46,39 +45,40 @@ alt.on("connectionQueueAdd", async (info) => {
   //   }
   // }
 
-
   // if (info.discordUserID == "") return info.decline("Please open the Discord App then TryAgain.");
   // if (!LoadedVehicels) return info.decline("Please Try Again then 1 Minutes.")
   info.accept();
 });
-alt.on('playerEnteringVehicle', async (player, vehicle, seat) => {
-  let datain_vehileObject = vehicleObject.filter(async (v, i) => v.name == await VehicleClass.data.get(vehicle, 'model'))[0];
+alt.on("playerEnteringVehicle", async (player, vehicle, seat) => {
+  let datain_vehileObject = vehicleObject.filter(
+    async (v, i) => v.name == (await VehicleClass.data.get(vehicle, "model"))
+  )[0];
   switch (datain_vehileObject.type) {
     case "driving":
-      if (await license.check(player, "driving") == false && seat == 1) {
-        sendchat(player, "govahiname nadari baba")
-        return player.pos = await player.pos;
+      if ((await license.check(player, "driving")) == false && seat == 1) {
+        sendchat(player, "govahiname nadari baba");
+        return (player.pos = await player.pos);
       }
       break;
     default:
       break;
   }
 });
-alt.on('vehicleDestroy', async (vehicle) => {
-  switch (await VehicleClass.data.get(vehicle, 'type')) {
-    case 'static':
+alt.on("vehicleDestroy", async (vehicle) => {
+  switch (await VehicleClass.data.get(vehicle, "type")) {
+    case "static":
       setTimeout(async () => {
-        await VehicleClass.respawn.DestryedVehicle(vehicle)
+        await VehicleClass.respawn.DestryedVehicle(vehicle);
       }, 10000);
       break;
-    case 'faction':
+    case "faction":
       setTimeout(async () => {
-        await VehicleClass.respawn.DestryedVehicle(vehicle)
+        await VehicleClass.respawn.DestryedVehicle(vehicle);
       }, 10000);
       break;
-    case 'admin':
+    case "admin":
       setTimeout(async () => {
-        await VehicleClass.delete.admin(vehicle)
+        await VehicleClass.delete.admin(vehicle);
       }, 10000);
       break;
     default:
@@ -145,13 +145,17 @@ await alt.on("playerDisconnect", async (player, reason) => {
     sqlid: await PlayerData.get(player, "pId"),
     username: await PlayerData.get(player, "pName"),
   });
-  PlayerData.set(player, 'pOnline', 0, true)
+  PlayerData.set(player, "pOnline", 0, true);
   StaffSystem.sarOFF(player);
   PlayerData.delete(player);
   playerIdGame.delete(player);
 });
 await alt.onClient("Login_Account_To_Server", PlayerData.login);
 await alt.onClient("Register_Account_To_Server", PlayerData.register);
+
+alt.onClient("Vehicle:IndicatorChange", (player, vehicle, key) => {
+  vehicle.setStreamSyncedMeta("Vehicle:Indicator", key);
+});
 
 setTimeout(() => {
   console.log(` 
