@@ -7,7 +7,7 @@ import { EventNames } from "../utils/eventNames";
 import { WebViewStatus } from "../utils/WebViewStatus";
 
 // let _defaultURL = `http://192.168.93.10:8080`, // For Debug mode if you run Vue.js you can import IP in this Variable
-  let _defaultURL = `http://assets/Webview/client/allVue/index.html`,
+let _defaultURL = `http://assets/Webview/client/allVue/index.html`,
   _loadingPageURL = `http://assets/Webview/client/loadingPageVue/index.html`,
   _PhoneURL = `http://assets/Webview/client/phoneVue/index.html`,
   _MusicURL = `http://assets/Webview/client/musicVue/index.html`,
@@ -516,6 +516,9 @@ export class VGView {
    */
   static async requestGameControls() {
     await VGView.#GameControls(true);
+  }
+  static isGameControls() {
+    return isGameControlsStatus;
   }
   /**
    * Manage loading page.
