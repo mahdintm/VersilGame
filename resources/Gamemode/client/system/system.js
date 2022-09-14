@@ -10,6 +10,7 @@ import "./peds";
 import "./manageStaticNPCs";
 import "./manageEyeTrackerFounded";
 import "./AFK";
-
-import './load3DText'
+import "./ServerTime";
+import "./load3DText";
 import "./functions";
+import './streamSyncedMeta'
