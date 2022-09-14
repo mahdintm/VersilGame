@@ -1,9 +1,9 @@
-// event clint be clinet "Local:"
-// event server be server "Local:"
-// event server be client "Server:"
-// event client be server "Client:"
-// event client be web "ClientWEB:"
-// event web to client "WEBClient:"
+// event clint be clinet "Local:
+// event server be server "Local:
+// event server be client "Server:
+// event client be server "Client:
+// event client be web "ClientWEB:
+// event web to client "WEBClient:
 export const EventNames = {
   player: {
     localClient: {
@@ -22,9 +22,13 @@ export const EventNames = {
       Modify3DText: "Server:ManagePlayer:Modify3DText",
       RequestIPL: "Server:ManagePlayer:RequestIPL",
       RemoveIPL: "Server:ManagePlayer:RemoveIPL",
+      SeatBelt: "Client:VehicleDetails:SeatBelt",
+      Cruse: "Client:VehicleDetails:Cruse",
     },
     client: {
       ServerLog: "Client:DebugMode:ConsoleLogInServer",
+      SeatBelt: "Client:VehicleDetails:SeatBelt",
+      Cruse: "Client:VehicleDetails:Cruse",
     },
     clientWEB: {},
     WEBclient: {},
@@ -41,7 +45,6 @@ export const EventNames = {
       mountedAndReady: "WEBclient:allVue:mountedAndReady",
     },
   },
-
   login: {
     localClient: {
       LoginStartCam: "Local:Login:LoginStartCam",
@@ -155,6 +158,13 @@ export const EventNames = {
     },
   },
   HUD: {
+    localClient: {
+      IndicatorLeft: "localClient:HUD:IndicatorLeft",
+      IndicatorRight: "localClient:HUD:IndicatorRight",
+      HandBrake: "localClient:HUD:HandBrake",
+      SeatBelt: "localClient:HUD:SeatBelt",
+      Cruse: "localClient:HUD:Cruse",
+    },
     clientWEB: {
       SetPlayerCashDetails: "ClientWEB:HUD:SetPlayerCashDetails",
       SetCarHUDDetails: "ClientWEB:HUD:SetCarHUDDetails",
