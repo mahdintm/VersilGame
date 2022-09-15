@@ -8,18 +8,18 @@ weekday[5] = "friday";
 weekday[6] = "saturday";
 
 export class Time {
-    static getDayMilisecond() {
-        let date = new Date()
-        date.setHours(0)
-        date.setMinutes(0)
-        date.setSeconds(0)
-        date.setMilliseconds(0)
-        return date.getTime()
-    }
-    static now() {
-        return new Date().getTime()
-    }
-    static GetNameDay() {
-        return weekday[new Date().getDay()]
-    }
+  static getDayMilisecond() {
+    let date = new Date();
+    date.setHours(0);
+    date.setMinutes(0);
+    date.setSeconds(0);
+    date.setMilliseconds(0);
+    return date.getTime();
+  }
+  static now() {
+    return new Date().getTime();
+  }
+  static GetNameDay() {
+    return weekday[new Date().getDay()];
+  }
 }

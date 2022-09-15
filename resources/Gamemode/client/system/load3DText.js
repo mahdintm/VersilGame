@@ -51,20 +51,10 @@ export class VG3DText {
   }
   static Load() {
     All3DTextDetails.forEach((Details) => {
-      let distanceResult = distance2d(
-        { x: Details.x, y: Details.y, z: Details.z },
-        alt.Player.local.pos,
-        10
-      );
+      let distanceResult = distance2d({ x: Details.x, y: Details.y, z: Details.z }, alt.Player.local.pos, 10);
       if (alt.Player.local.getSyncedMeta("dimension") == 0) {
         if (distanceResult) {
-          drawText3d(
-            Details.Text,
-            Details.x,
-            Details.y,
-            Details.z,
-            1 - (0.8 * distanceResult) / 10
-          );
+          drawText3d(Details.Text, Details.x, Details.y, Details.z, 1 - (0.8 * distanceResult) / 10);
         }
       }
     });

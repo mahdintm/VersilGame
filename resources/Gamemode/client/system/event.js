@@ -21,8 +21,7 @@ export function EveryTickEvents() {
 }
 
 async function ConnectionComplet(player) {
-  if (!(await LocalStorage.getPlayerDetails()))
-    await LocalStorage.set("PlayerDetails", defaultPlayerDetails);
+  if (!(await LocalStorage.getPlayerDetails())) await LocalStorage.set("PlayerDetails", defaultPlayerDetails);
   // await LocalStorage.Delete("PlayerDetails");
   let FisrtPlayerCamera;
   function FisrtSetPlayerCamera() {
@@ -57,18 +56,9 @@ async function ConnectionComplet(player) {
     native.startAudioScene(`CHARACTER_CHANGE_IN_SKY_SCENE`);
     native.startAudioScene("FBI_HEIST_H5_MUTE_AMBIENCE_SCENE"); // Used to stop police sound in town
     native.cancelCurrentPoliceReport(); // Used to stop default police radio around/In police vehicle
-    native.clearAmbientZoneState(
-      "AZ_COUNTRYSIDE_PRISON_01_ANNOUNCER_GENERAL",
-      false
-    ); // Turn off prison sound
-    native.clearAmbientZoneState(
-      "AZ_COUNTRYSIDE_PRISON_01_ANNOUNCER_WARNING",
-      false
-    ); // Turn off prison sound
-    native.clearAmbientZoneState(
-      "AZ_COUNTRYSIDE_PRISON_01_ANNOUNCER_ALARM",
-      false
-    ); // Turn off prison sound
+    native.clearAmbientZoneState("AZ_COUNTRYSIDE_PRISON_01_ANNOUNCER_GENERAL", false); // Turn off prison sound
+    native.clearAmbientZoneState("AZ_COUNTRYSIDE_PRISON_01_ANNOUNCER_WARNING", false); // Turn off prison sound
+    native.clearAmbientZoneState("AZ_COUNTRYSIDE_PRISON_01_ANNOUNCER_ALARM", false); // Turn off prison sound
     native.setAmbientZoneState("", false, false);
     native.clearAmbientZoneState("AZ_DISTANT_SASQUATCH", false);
     native.setAudioFlag("LoadMPData", true);

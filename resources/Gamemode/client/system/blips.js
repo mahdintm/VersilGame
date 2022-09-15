@@ -24,11 +24,7 @@ export class VGBlips {
     if (!blip.id) return;
     this.#CreateBlip(blip, true);
   }
-  static #DeleteBlip(
-    blipID = undefined,
-    UnicBlips = false,
-    StaticBlips = false
-  ) {
+  static #DeleteBlip(blipID = undefined, UnicBlips = false, StaticBlips = false) {
     if (blipID != undefined) {
       try {
         UnicBlipArr[blipID].destroy();
@@ -65,11 +61,7 @@ export class VGBlips {
   }
   static #ModifyBlip(NewBlip) {
     try {
-      UnicBlipArr[NewBlip.id].pos = new alt.Vector3(
-        NewBlip.pos.x,
-        NewBlip.pos.y,
-        NewBlip.pos.z
-      );
+      UnicBlipArr[NewBlip.id].pos = new alt.Vector3(NewBlip.pos.x, NewBlip.pos.y, NewBlip.pos.z);
       UnicBlipArr[NewBlip.id].sprite = NewBlip.sprite;
       UnicBlipArr[NewBlip.id].color = NewBlip.color;
       UnicBlipArr[NewBlip.id].scale = NewBlip.scale;

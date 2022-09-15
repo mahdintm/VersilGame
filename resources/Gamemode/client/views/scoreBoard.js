@@ -23,18 +23,12 @@ export class VGScoreBoard {
       await VGView.load(WebViewStatus.scoreBoard.name);
       alt.emitServer(EventNames.scoreBoard.client.GetScoreBoardDetails);
       ChangeValueFromVariable("ScoreBoardStatus", true);
-      return ChangeValueFromVariable(
-        "disableLeftClickControlFromScoreBoard",
-        true
-      );
+      return ChangeValueFromVariable("disableLeftClickControlFromScoreBoard", true);
     }
     ChangeValueFromVariable("ScoreBoardStatus", false);
     ChangeValueFromVariable("disableLeftClickControlFromScoreBoard", false);
     if (!(await VGView.close(WebViewStatus.scoreBoard.name))) {
-      await VGView.emit(
-        WebViewStatus.scoreBoard.name,
-        WebViewStatus.scoreBoard.EventNames.close
-      );
+      await VGView.emit(WebViewStatus.scoreBoard.name, WebViewStatus.scoreBoard.EventNames.close);
     }
     VGView.once(EventNames.scoreBoard.WEBclient.CloseScoreBoard, async () => {
       ChangeValueFromVariable("ScoreBoardStatus", false);
@@ -44,22 +38,9 @@ export class VGScoreBoard {
   }
 }
 alt.on(EventNames.allVue.localClient.loadWebviews, () => {
-  alt.on(
-    EventNames.scoreBoard.localClient.ActiveScoreBoard,
-    VGScoreBoard.ActiveScoreBoard
-  );
-  alt.on(
-    EventNames.scoreBoard.localClient.LeftClickMousePressed,
-    VGScoreBoard.LeftClickMousePressed
-  );
-  alt.onServer(
-    EventNames.scoreBoard.server.SetScoreBoardDetails,
-    async (ScoreBoardDetails) => {
-      await VGView.emit(
-        WebViewStatus.scoreBoard.name,
-        EventNames.scoreBoard.clientWEB.SetScoreBoardDetails,
-        ScoreBoardDetails
-      );
-    }
-  );
+  alt.on(EventNames.scoreBoard.localClient.ActiveScoreBoard, VGScoreBoard.ActiveScoreBoard);
+  alt.on(EventNames.scoreBoard.localClient.LeftClickMousePressed, VGScoreBoard.LeftClickMousePressed);
+  alt.onServer(EventNames.scoreBoard.server.SetScoreBoardDetails, async (ScoreBoardDetails) => {
+    await VGView.emit(WebViewStatus.scoreBoard.name, EventNames.scoreBoard.clientWEB.SetScoreBoardDetails, ScoreBoardDetails);
+  });
 });

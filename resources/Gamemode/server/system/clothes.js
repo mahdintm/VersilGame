@@ -15,20 +15,13 @@ export class clothes {
           if (char === char.toUpperCase()) char = " " + char;
           ComponentsName += char;
         });
-      ClothesUtils.push([
-        ComponentsName,
-        Object.values(character.Components)[i]["male"].length,
-        Object.values(character.Components)[i]["female"].length,
-      ]);
+      ClothesUtils.push([ComponentsName, Object.values(character.Components)[i]["male"].length, Object.values(character.Components)[i]["female"].length]);
     }
     return ClothesUtils;
   }
   static async SetClothes(player, ComponentID, Gender, Value) {
-    const drawable = Object.values(character.Components)[ComponentID][Gender][
-      Value
-    ];
-    const component = Object.values(character.Components)[ComponentID]
-      .ComponentID;
+    const drawable = Object.values(character.Components)[ComponentID][Gender][Value];
+    const component = Object.values(character.Components)[ComponentID].ComponentID;
     await player.setClothes(component, drawable, 0);
   }
 }
@@ -41,26 +34,12 @@ alt.onClient("SERVER:ChangeClothes", async (player, ID, Value) => {
 
 alt.onClient("SERVER:ChangeSex", (player, Sex) => {
   if (Sex == "male") {
-    alt.emitClient(
-      player,
-      "CLIENT:SexChanged",
-      "male",
-      clothes.GetClothesUtils()
-    );
+    alt.emitClient(player, "CLIENT:SexChanged", "male", clothes.GetClothesUtils());
     return;
   }
-  alt.emitClient(
-    player,
-    "CLIENT:SexChanged",
-    "female",
-    clothes.GetClothesUtils()
-  );
+  alt.emitClient(player, "CLIENT:SexChanged", "female", clothes.GetClothesUtils());
   return;
 });
 alt.onClient(EventNames.clothes.client.GetGender, (player) => {
-  alt.emitClient(
-    player,
-    EventNames.clothes.server.SendGender,
-    player.getMeta("Gender"),
-  );
+  alt.emitClient(player, EventNames.clothes.server.SendGender, player.getMeta("Gender"));
 });

@@ -12,9 +12,7 @@ let DebugMode = false;
  * @returns {boolean} true / false
  */
 export function distance2d(vector1, vector2, distance) {
-  let dist = Math.sqrt(
-    Math.pow(vector1.x - vector2.x, 2) + Math.pow(vector1.y - vector2.y, 2)
-  );
+  let dist = Math.sqrt(Math.pow(vector1.x - vector2.x, 2) + Math.pow(vector1.y - vector2.y, 2));
   if (dist < distance) {
     return dist;
   } else {
@@ -31,20 +29,7 @@ export function hexToRgb(hex) {
       }
     : null;
 }
-export function drawText3d(
-  msg,
-  x,
-  y,
-  z,
-  scale,
-  fontType = 4,
-  r = 255,
-  g = 255,
-  b = 255,
-  a = 255,
-  useOutline = true,
-  useDropShadow = true
-) {
+export function drawText3d(msg, x, y, z, scale, fontType = 4, r = 255, g = 255, b = 255, a = 255, useOutline = true, useDropShadow = true) {
   let hex = msg.match("{.*}");
   if (hex) {
     const rgb = hexToRgb(hex[0].replace("{", "").replace("}", ""));

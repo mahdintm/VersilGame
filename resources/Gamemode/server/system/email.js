@@ -1,16 +1,16 @@
-import mail from 'nodemailer';
-import { hashing } from '../utils/hash';
+import mail from "nodemailer";
+import { hashing } from "../utils/hash";
 export class send_email {
   /**
-   * for send code verify 
+   * for send code verify
    * @param {object} obj {firstname:"FirstName",lastname:"LastName",email:"Email",code:"Code"}
    */
   static async VerifyCode(obj) {
     try {
-      let FirstName = obj.firstname
-      let LastName = obj.lastname
-      let Email = obj.email
-      let Code = obj.code
+      let FirstName = obj.firstname;
+      let LastName = obj.lastname;
+      let Email = obj.email;
+      let Code = obj.code;
       let testAccount = await mail.createTestAccount();
       var transporter = mail.createTransport({
         host: "93.115.150.57",
@@ -22,15 +22,16 @@ export class send_email {
         },
         tls: {
           // do not fail on invalid certs
-          rejectUnauthorized: false
-        }
+          rejectUnauthorized: false,
+        },
       });
-      transporter.sendMail({
-        from: '"VersilGame" <noreply@versil.ir>',
-        to: Email,
-        subject: "Register",
-        text: "Register",
-        html: `<!DOCTYPE html>
+      transporter.sendMail(
+        {
+          from: '"VersilGame" <noreply@versil.ir>',
+          to: Email,
+          subject: "Register",
+          text: "Register",
+          html: `<!DOCTYPE html>
                     <html lang="en">
                     
                     <head>
@@ -163,12 +164,14 @@ export class send_email {
                           }
                         </script>
                       </body>
-                    </html>`
-      }, (err, res) => {
-        console.log(err, res)
-      });
+                    </html>`,
+        },
+        (err, res) => {
+          console.log(err, res);
+        }
+      );
     } catch (err) {
-      console.log(err)
+      console.log(err);
     }
   }
 }

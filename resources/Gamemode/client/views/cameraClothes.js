@@ -10,10 +10,7 @@ let camera,
 export class VGCameraClothes {
   static create() {
     if (!camera) {
-      const cameraPosition =
-        ClothesDetails.ClothesPreviewNPCs.Interior[
-          native.getInteriorFromEntity(alt.Player.local.scriptID)
-        ].camera;
+      const cameraPosition = ClothesDetails.ClothesPreviewNPCs.Interior[native.getInteriorFromEntity(alt.Player.local.scriptID)].camera;
       camera = native.createCamWithParams(
         "DEFAULT_SCRIPTED_CAMERA",
 
@@ -33,17 +30,11 @@ export class VGCameraClothes {
     }
   }
   static async #rotationToDirection(rot) {
-    return new alt.Vector3(
-      -Math.sin(rot.z) * Math.abs(Math.cos(rot.x)),
-      Math.cos(rot.z) * Math.abs(Math.cos(rot.x)),
-      Math.sin(rot.x)
-    );
+    return new alt.Vector3(-Math.sin(rot.z) * Math.abs(Math.cos(rot.x)), Math.cos(rot.z) * Math.abs(Math.cos(rot.x)), Math.sin(rot.x));
   }
   static async #ZoomCamera(Status) {
     const camRot = native.getCamRot(camera, 2);
-    const fw = await VGCameraClothes.#rotationToDirection(
-      camRot.mul(Math.PI / 180)
-    );
+    const fw = await VGCameraClothes.#rotationToDirection(camRot.mul(Math.PI / 180));
     const camCoord = native.getCamCoord(camera);
     let ZoomAmountDistance = 0;
     if (Status) {
@@ -70,12 +61,7 @@ export class VGCameraClothes {
       CountSetZupValue--;
     }
     const newCamCoord = native.getCamCoord(camera);
-    native.setCamCoord(
-      camera,
-      newCamCoord.x,
-      newCamCoord.y,
-      newCamCoord.z + zAmountValue
-    );
+    native.setCamCoord(camera, newCamCoord.x, newCamCoord.y, newCamCoord.z + zAmountValue);
   }
   static async GoUP(Status) {
     VGCameraClothes.#goUpCamera(Status);

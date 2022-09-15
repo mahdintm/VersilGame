@@ -1,9 +1,6 @@
 import * as alt from "alt";
 export const ClothesDetails = {
-  InteriorsID: [
-    198145, 171265, 169217, 137217, 166145, 165633, 235265, 140801, 176129,
-    175361, 202497, 183553, 179713,
-  ],
+  InteriorsID: [198145, 171265, 169217, 137217, 166145, 165633, 235265, 140801, 176129, 175361, 202497, 183553, 179713],
   ClothesPreviewNPCs: {
     name: "ClothesPreviewNPCs",
     MaleModelHash: alt.hash("MP_M_Freemode_01"),

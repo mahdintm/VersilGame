@@ -88,9 +88,7 @@ function GetVehicleFuel() {
 }
 function GetLightsStatus() {
   try {
-    if (
-      native.getVehicleLightsState(alt.Player.local.vehicle, true, true)[1] == 1
-    ) {
+    if (native.getVehicleLightsState(alt.Player.local.vehicle, true, true)[1] == 1) {
       return true;
     } else {
       return false;
@@ -101,9 +99,7 @@ function GetLightsStatus() {
 }
 function GetLongLightsStatus() {
   try {
-    if (
-      native.getVehicleLightsState(alt.Player.local.vehicle, true, true)[2] == 1
-    ) {
+    if (native.getVehicleLightsState(alt.Player.local.vehicle, true, true)[2] == 1) {
       return true;
     } else {
       return false;
@@ -155,19 +151,9 @@ function IndicatorManager(isLeftIndicator) {
 
 function GetGear() {
   const gear = alt.Player.local.vehicle.gear;
-  if (
-    GetVehicleRPM() >= 75 &&
-    Math.floor(native.getEntitySpeed(alt.Player.local.vehicle) * 3.6) == 0 &&
-    isHandBrake == true
-  )
-    return "N";
+  if (GetVehicleRPM() >= 75 && Math.floor(native.getEntitySpeed(alt.Player.local.vehicle) * 3.6) == 0 && isHandBrake == true) return "N";
 
-  if (
-    GetVehicleRPM() >= 75 &&
-    Math.floor(native.getEntitySpeed(alt.Player.local.vehicle) * 3.6) == 0 &&
-    isHandBrake == false
-  )
-    return 1;
+  if (GetVehicleRPM() >= 75 && Math.floor(native.getEntitySpeed(alt.Player.local.vehicle) * 3.6) == 0 && isHandBrake == false) return 1;
 
   if (Math.floor(native.getEntitySpeed(alt.Player.local.vehicle) * 3.6) == 0) {
     return "P";
@@ -232,17 +218,8 @@ function SeatBeltRequest() {
 function GetCruiseStatus() {
   if (alt.Player.local.vehicle == null) return;
   if (isCruse) {
-    if (
-      Math.floor(native.getEntitySpeed(alt.Player.local.vehicle) * 3.6) >=
-        Math.floor(VehicleCruiseSpeed * 3.6) - 2 &&
-      Math.floor(native.getEntitySpeed(alt.Player.local.vehicle) * 3.6) <=
-        Math.floor(VehicleCruiseSpeed * 3.6) + 2 &&
-      !isHandBrake
-    ) {
-      native.setVehicleForwardSpeed(
-        alt.Player.local.vehicle,
-        VehicleCruiseSpeed
-      );
+    if (Math.floor(native.getEntitySpeed(alt.Player.local.vehicle) * 3.6) >= Math.floor(VehicleCruiseSpeed * 3.6) - 2 && Math.floor(native.getEntitySpeed(alt.Player.local.vehicle) * 3.6) <= Math.floor(VehicleCruiseSpeed * 3.6) + 2 && !isHandBrake) {
+      native.setVehicleForwardSpeed(alt.Player.local.vehicle, VehicleCruiseSpeed);
     } else {
       isCruse = false;
     }
@@ -255,9 +232,7 @@ function CruseRequest() {
   if (alt.Player.local.vehicle == null) return;
   if (alt.Player.local.seat != 1) return;
 
-  VehicleCruiseSpeed = Math.floor(
-    native.getEntitySpeed(alt.Player.local.vehicle)
-  );
+  VehicleCruiseSpeed = Math.floor(native.getEntitySpeed(alt.Player.local.vehicle));
   isCruse = !isCruse;
 }
 

@@ -8,13 +8,7 @@ import { WebViewStatus } from "../utils/WebViewStatus";
 
 alt.on(EventNames.allVue.localClient.loadWebviews, async () => {
   VGView.load(WebViewStatus.chat.name);
-  await VGView.emit(
-    WebViewStatus.chat.name,
-    EventNames.chat.clientWEB.TimeStamp,
-    (
-      await LocalStorage.getPlayerDetails()
-    ).Chat_TimeStamp
-  );
+  await VGView.emit(WebViewStatus.chat.name, EventNames.chat.clientWEB.TimeStamp, (await LocalStorage.getPlayerDetails()).Chat_TimeStamp);
   alt.emitServer(EventNames.chat.client.Loaded);
   async function closechat() {
     VGView.close(WebViewStatus.chat.name);
@@ -22,19 +16,9 @@ alt.on(EventNames.allVue.localClient.loadWebviews, async () => {
 
   async function addMessage(TimeStamp, name, text) {
     if (name) {
-      await VGView.emit(
-        WebViewStatus.chat.name,
-        EventNames.chat.clientWEB.AddMessage,
-        TimeStamp,
-        `${name}: ${text}`
-      );
+      await VGView.emit(WebViewStatus.chat.name, EventNames.chat.clientWEB.AddMessage, TimeStamp, `${name}: ${text}`);
     } else {
-      await VGView.emit(
-        WebViewStatus.chat.name,
-        EventNames.chat.clientWEB.AddMessage,
-        TimeStamp,
-        text
-      );
+      await VGView.emit(WebViewStatus.chat.name, EventNames.chat.clientWEB.AddMessage, TimeStamp, text);
     }
   }
 
@@ -44,17 +28,8 @@ alt.on(EventNames.allVue.localClient.loadWebviews, async () => {
     closechat();
   });
   alt.onServer(EventNames.chat.server.TimeStamp, async () => {
-    await VGView.emit(
-      WebViewStatus.chat.name,
-      EventNames.chat.clientWEB.TimeStamp,
-      !(
-        await LocalStorage.getPlayerDetails()
-      ).Chat_TimeStamp
-    );
-    LocalStorage.setPlayerDetails(
-      "Chat_TimeStamp",
-      !(await LocalStorage.getPlayerDetails()).Chat_TimeStamp
-    );
+    await VGView.emit(WebViewStatus.chat.name, EventNames.chat.clientWEB.TimeStamp, !(await LocalStorage.getPlayerDetails()).Chat_TimeStamp);
+    LocalStorage.setPlayerDetails("Chat_TimeStamp", !(await LocalStorage.getPlayerDetails()).Chat_TimeStamp);
   });
 
   alt.onServer(EventNames.chat.server.Message, addMessage);
@@ -67,17 +42,9 @@ alt.on(EventNames.allVue.localClient.loadWebviews, async () => {
     await VGView.open(WebViewStatus.chat.name);
   });
   alt.on(EventNames.chat.localClient.KeyPageUpPressed, async () => {
-    await VGView.emit(
-      WebViewStatus.chat.name,
-      EventNames.chat.clientWEB.Scroll,
-      true
-    );
+    await VGView.emit(WebViewStatus.chat.name, EventNames.chat.clientWEB.Scroll, true);
   });
   alt.on(EventNames.chat.localClient.KeyPageDownPressed, async () => {
-    await VGView.emit(
-      WebViewStatus.chat.name,
-      EventNames.chat.clientWEB.Scroll,
-      false
-    );
+    await VGView.emit(WebViewStatus.chat.name, EventNames.chat.clientWEB.Scroll, false);
   });
 });

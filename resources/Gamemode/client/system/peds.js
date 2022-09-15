@@ -26,39 +26,14 @@ export class VGPeds {
   }
   static async #CreatePed(PedDetails) {
     await alt.Utils.requestModel(PedDetails.ModelHash);
-    const ped = native.createPed(
-      2,
-      PedDetails.ModelHash,
-      PedDetails.pos.x,
-      PedDetails.pos.y,
-      PedDetails.pos.z,
-      PedDetails.pos.heading,
-      PedDetails.isNetwork,
-      PedDetails.bScriptHostPed
-    );
+    const ped = native.createPed(2, PedDetails.ModelHash, PedDetails.pos.x, PedDetails.pos.y, PedDetails.pos.z, PedDetails.pos.heading, PedDetails.isNetwork, PedDetails.bScriptHostPed);
     if (PedDetails.isFreezed) this.#FreezePed(ped);
 
     peds.push(ped);
   }
   static async #CreateUnicPed(PedDetails) {
     await alt.Utils.requestModel(PedDetails.ModelHash);
-    const ped = native.createPed(
-      2,
-      PedDetails.ModelHash,
-      PedDetails.pos.x,
-      PedDetails.pos.y,
-      native.getGroundZFor3dCoord(
-        PedDetails.pos.x,
-        PedDetails.pos.y,
-        PedDetails.pos.z + 1,
-        1,
-        false,
-        false
-      )[1],
-      PedDetails.pos.heading,
-      PedDetails.isNetwork,
-      PedDetails.bScriptHostPed
-    );
+    const ped = native.createPed(2, PedDetails.ModelHash, PedDetails.pos.x, PedDetails.pos.y, native.getGroundZFor3dCoord(PedDetails.pos.x, PedDetails.pos.y, PedDetails.pos.z + 1, 1, false, false)[1], PedDetails.pos.heading, PedDetails.isNetwork, PedDetails.bScriptHostPed);
     if (PedDetails.isFreezed) this.#FreezePed(ped);
 
     unicPeds.push({
@@ -78,31 +53,14 @@ export class VGPeds {
     native.setEntityHeading(ped, heading);
   }
   static #SetPedOnFoot(ped) {
-    const pedPos = native.getEntityCoords(
-      ped,
-      !native.isEntityDead(ped, false)
-    );
-    native.getGroundZFor3dCoord(
-      pedPos.x,
-      pedPos.y,
-      pedPos.z + 1,
-      1,
-      false,
-      false
-    )[1];
+    const pedPos = native.getEntityCoords(ped, !native.isEntityDead(ped, false));
+    native.getGroundZFor3dCoord(pedPos.x, pedPos.y, pedPos.z + 1, 1, false, false)[1];
   }
   static #SetPropOnPed(ped, propId, drawableId, textureId) {
     native.setPedPropIndex(ped, propId, drawableId, textureId, true);
   }
   static #SetComponentOnPed(ped, componentId, drawableId, textureId) {
-    if (componentId == 11 && drawableId == 0)
-      return native.setPedComponentVariation(
-        ped,
-        componentId,
-        drawableId,
-        textureId,
-        0
-      );
+    if (componentId == 11 && drawableId == 0) return native.setPedComponentVariation(ped, componentId, drawableId, textureId, 0);
 
     native.setPedComponentVariation(ped, componentId, drawableId, textureId, 2);
   }
@@ -126,20 +84,10 @@ export class VGPeds {
   static DeleteUnicPed(PedName) {
     this.#RemoveUnicPed(PedName);
   }
-  static async SetComponentOnPedName(
-    pedName,
-    componentId,
-    drawableId,
-    textureId
-  ) {
+  static async SetComponentOnPedName(pedName, componentId, drawableId, textureId) {
     unicPeds.forEach((unicPed) => {
       if (unicPed.name == pedName) {
-        VGPeds.#SetComponentOnPed(
-          unicPed.ped,
-          componentId,
-          drawableId,
-          textureId
-        );
+        VGPeds.#SetComponentOnPed(unicPed.ped, componentId, drawableId, textureId);
         VGPeds.#SetPedOnFoot(unicPed.ped);
       }
     });
@@ -164,15 +112,9 @@ export class VGPeds {
     unicPeds.forEach((unicPed) => {
       if (unicPed.name == pedName) {
         if (Status) {
-          VGPeds.#SetHeadingOnPed(
-            unicPed.ped,
-            native.getEntityHeading(unicPed.ped) + 2
-          );
+          VGPeds.#SetHeadingOnPed(unicPed.ped, native.getEntityHeading(unicPed.ped) + 2);
         } else {
-          VGPeds.#SetHeadingOnPed(
-            unicPed.ped,
-            native.getEntityHeading(unicPed.ped) + -2
-          );
+          VGPeds.#SetHeadingOnPed(unicPed.ped, native.getEntityHeading(unicPed.ped) + -2);
         }
       }
     });

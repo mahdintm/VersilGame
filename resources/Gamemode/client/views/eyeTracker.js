@@ -19,37 +19,22 @@ let eyeTrackerFindStatus = false,
 
 export class VGEyeTracker {
   static async #distance2d(vector1, vector2, distance) {
-    let dist = Math.sqrt(
-      Math.pow(vector1.x - vector2.x, 2) + Math.pow(vector1.y - vector2.y, 2)
-    );
+    let dist = Math.sqrt(Math.pow(vector1.x - vector2.x, 2) + Math.pow(vector1.y - vector2.y, 2));
     if (dist < distance) {
       return dist;
     } else {
       return false;
     }
   }
-  static async #SendStatuseyeTrackerToWebView(
-    Status,
-    ObjectName = null,
-    ObjectTitles = null
-  ) {
+  static async #SendStatuseyeTrackerToWebView(Status, ObjectName = null, ObjectTitles = null) {
     if (Status) {
       if (!eyeTrackerFindStatus) {
-        VGView.emit(
-          WebViewStatus.eyeTracker.name,
-          EventNames.eyeTracker.clientWEB.Status,
-          true,
-          "#00ff00"
-        );
+        VGView.emit(WebViewStatus.eyeTracker.name, EventNames.eyeTracker.clientWEB.Status, true, "#00ff00");
         eyeTrackerFindStatus = true;
       }
     } else {
       if (eyeTrackerFindStatus) {
-        VGView.emit(
-          WebViewStatus.eyeTracker.name,
-          EventNames.eyeTracker.clientWEB.Status,
-          true
-        );
+        VGView.emit(WebViewStatus.eyeTracker.name, EventNames.eyeTracker.clientWEB.Status, true);
         eyeTrackerFindStatus = false;
       }
     }
@@ -57,10 +42,8 @@ export class VGEyeTracker {
     ObjectFoundedDetails.titles = ObjectTitles;
   }
   static #CheckObjectWithHashID(eyeTrackerObjectHashID) {
-    const [_, _hit, _endCoords, _surfaceNormal, _materialHash, _entityHit] =
-      VGEyeTracker.#getRaycast();
-    if (!VGEyeTracker.#distance2d(alt.Player.local.pos, _endCoords, 3))
-      return false;
+    const [_, _hit, _endCoords, _surfaceNormal, _materialHash, _entityHit] = VGEyeTracker.#getRaycast();
+    if (!VGEyeTracker.#distance2d(alt.Player.local.pos, _endCoords, 3)) return false;
 
     if (native.doesEntityHaveDrawable(_entityHit)) {
       if (native.getEntityModel(_entityHit) == eyeTrackerObjectHashID) {
@@ -69,18 +52,7 @@ export class VGEyeTracker {
         return false;
       }
     }
-    if (
-      native.getClosestObjectOfType(
-        _endCoords.x,
-        _endCoords.y,
-        _endCoords.z - 1.2,
-        0.4,
-        eyeTrackerObjectHashID,
-        false,
-        true,
-        true
-      )
-    ) {
+    if (native.getClosestObjectOfType(_endCoords.x, _endCoords.y, _endCoords.z - 1.2, 0.4, eyeTrackerObjectHashID, false, true, true)) {
       return true;
     } else {
       return false;
@@ -91,22 +63,8 @@ export class VGEyeTracker {
     let start = native.getFinalRenderedCamCoord();
     let rot = native.getFinalRenderedCamRot(2);
     let fvector = VGEyeTracker.#GetDirectionFromRotation(rot);
-    let frontOf = new alt.Vector3(
-      start.x + fvector.x * 10,
-      start.y + fvector.y * 10,
-      start.z + fvector.z * 10
-    );
-    let raycast = native.startExpensiveSynchronousShapeTestLosProbe(
-      start.x,
-      start.y,
-      start.z,
-      frontOf.x,
-      frontOf.y,
-      frontOf.z,
-      -1,
-      p,
-      4
-    );
+    let frontOf = new alt.Vector3(start.x + fvector.x * 10, start.y + fvector.y * 10, start.z + fvector.z * 10);
+    let raycast = native.startExpensiveSynchronousShapeTestLosProbe(start.x, start.y, start.z, frontOf.x, frontOf.y, frontOf.z, -1, p, 4);
     let getRaycast = native.getShapeTestResultIncludingMaterial(raycast);
     return getRaycast;
   }
@@ -140,8 +98,7 @@ export class VGEyeTracker {
     } else {
       if (!eyeTrackerMenuStatus && !isForceClosed) return;
       eyeTrackerMenuStatus = false;
-      if (!eyeTrackerStatus || isForceClosed)
-        VGEyeTracker.eyeTrackerManager(false);
+      if (!eyeTrackerStatus || isForceClosed) VGEyeTracker.eyeTrackerManager(false);
       await VGView.close(WebViewStatus.eyeTracker.name);
     }
   }
@@ -151,11 +108,7 @@ export class VGEyeTracker {
   static async eyeTrackerManager(Status) {
     if (Status) {
       VGView.load(WebViewStatus.eyeTracker.name);
-      await VGView.emit(
-        WebViewStatus.eyeTracker.name,
-        EventNames.eyeTracker.clientWEB.Status,
-        true
-      );
+      await VGView.emit(WebViewStatus.eyeTracker.name, EventNames.eyeTracker.clientWEB.Status, true);
       ChangeValueFromVariable("eyeTragerInterval", true);
       ChangeValueFromVariable("disableLeftClickControlAction", true);
       eyeTrackerStatus = true;
@@ -167,11 +120,7 @@ export class VGEyeTracker {
       eyeTrackerFindStatus = false;
       eyeTrackerStatus = false;
       if (!eyeTrackerMenuStatus && !eyeTrackerStatus) {
-        await VGView.emit(
-          WebViewStatus.eyeTracker.name,
-          EventNames.eyeTracker.clientWEB.Status,
-          false
-        );
+        await VGView.emit(WebViewStatus.eyeTracker.name, EventNames.eyeTracker.clientWEB.Status, false);
         VGView.close(WebViewStatus.eyeTracker.name);
         await VGView.unload(WebViewStatus.eyeTracker.name);
         VGEyeTracker.#LeftClickMousePressed(false);
@@ -180,8 +129,7 @@ export class VGEyeTracker {
     }
   }
   static GetObject() {
-    let [_, _hit, _endCoords, _surfaceNormal, _materialHash, _entityHit] =
-      VGEyeTracker.#getRaycast();
+    let [_, _hit, _endCoords, _surfaceNormal, _materialHash, _entityHit] = VGEyeTracker.#getRaycast();
     if (native.doesEntityHaveDrawable(_entityHit)) {
       VG.debugLog("Object Hash ID:", native.getEntityModel(_entityHit));
     }
@@ -189,37 +137,22 @@ export class VGEyeTracker {
   static async eyeTracker() {
     if (!alt.isGameFocused()) return VGEyeTracker.#PlayerUseAltTab();
 
-    let [_, _hit, _endCoords, _surfaceNormal, _materialHash, _entityHit] =
-      VGEyeTracker.#getRaycast();
+    let [_, _hit, _endCoords, _surfaceNormal, _materialHash, _entityHit] = VGEyeTracker.#getRaycast();
     if (!_hit) return;
     if (!VGEyeTracker.#distance2d(alt.Player.local.pos, _endCoords, 3)) return;
 
     for (let i = 0; i < eyeTrackerObjects.length; i++) {
-      Object.values(eyeTrackerObjects[i].HashIDs).forEach(
-        (eyeTrackerObjectHashID) => {
-          if (VGEyeTracker.#CheckObjectWithHashID(eyeTrackerObjectHashID)) {
-            if (eyeTrackerObjectHashID == 920595805) {
-              // Clothes SHOP
-              if (
-                ClothesDetails.InteriorsID.indexOf(
-                  native.getInteriorFromEntity(alt.Player.local.scriptID)
-                ) == -1
-              )
-                return;
-            }
-            VGEyeTracker.#SendStatuseyeTrackerToWebView(
-              true,
-              eyeTrackerObjects[i].name,
-              eyeTrackerObjects[i].titles
-            );
-            ChangeValueFromVariable("eyeTragerInterval", false);
-            ChangeValueFromVariable(
-              "eyeTragerInternalInterval",
-              eyeTrackerObjectHashID
-            );
+      Object.values(eyeTrackerObjects[i].HashIDs).forEach((eyeTrackerObjectHashID) => {
+        if (VGEyeTracker.#CheckObjectWithHashID(eyeTrackerObjectHashID)) {
+          if (eyeTrackerObjectHashID == 920595805) {
+            // Clothes SHOP
+            if (ClothesDetails.InteriorsID.indexOf(native.getInteriorFromEntity(alt.Player.local.scriptID)) == -1) return;
           }
+          VGEyeTracker.#SendStatuseyeTrackerToWebView(true, eyeTrackerObjects[i].name, eyeTrackerObjects[i].titles);
+          ChangeValueFromVariable("eyeTragerInterval", false);
+          ChangeValueFromVariable("eyeTragerInternalInterval", eyeTrackerObjectHashID);
         }
-      );
+      });
     }
   }
   static InternalEyeTrackerChecker(eyeTrackerObjectHashID) {
@@ -252,18 +185,12 @@ alt.on(EventNames.allVue.localClient.loadWebviews, async () => {
     VGEyeTracker.leftClickPressed(true);
   });
 
-  alt.on(
-    EventNames.eyeTracker.localClient.Manager,
-    VGEyeTracker.eyeTrackerManager
-  );
+  alt.on(EventNames.eyeTracker.localClient.Manager, VGEyeTracker.eyeTrackerManager);
 
   VGView.on(EventNames.eyeTracker.WEBclient.ButtonCloseMenuPressed, () => {
     VGEyeTracker.leftClickPressed(false);
   });
-  VGView.on(
-    EventNames.eyeTracker.WEBclient.ObjectSelectedFromPlayer,
-    (ObjectTitle) => {
-      VGEyeTracker.RunEyeTarget(ObjectTitle);
-    }
-  );
+  VGView.on(EventNames.eyeTracker.WEBclient.ObjectSelectedFromPlayer, (ObjectTitle) => {
+    VGEyeTracker.RunEyeTarget(ObjectTitle);
+  });
 });

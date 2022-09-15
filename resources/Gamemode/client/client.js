@@ -1,2 +1,2 @@
-import './system/system'
-import './views/views'
+import "./system/system";
+import "./views/views";

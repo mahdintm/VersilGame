@@ -13,4 +13,4 @@ import "./AFK";
 import "./ServerTime";
 import "./load3DText";
 import "./functions";
-import './streamSyncedMeta'
+import "./streamSyncedMeta";

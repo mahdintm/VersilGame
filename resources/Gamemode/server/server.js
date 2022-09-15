@@ -1,2 +1,2 @@
-import './system/system'
-import './utils/utils'
+import "./system/system";
+import "./utils/utils";

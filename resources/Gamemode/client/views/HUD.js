@@ -50,22 +50,12 @@ export class VGHUD {
       isChanged = true;
     }
 
-    if (isChanged)
-      VGView.emit(
-        WebViewStatus.HUD.name,
-        EventNames.HUD.clientWEB.SetPlayerCashDetails,
-        CashHUDDetails
-      );
+    if (isChanged) VGView.emit(WebViewStatus.HUD.name, EventNames.HUD.clientWEB.SetPlayerCashDetails, CashHUDDetails);
   }
   static RadarVeniceHUD(Details) {
     if (!Details.isActiveRadarVenice) {
-      if (Details.isActiveRadarVenice == undefined)
-        Details.isActiveRadarVenice = false;
-      return VGView.emit(
-        WebViewStatus.HUD.name,
-        EventNames.HUD.clientWEB.SetCarHUDDetails,
-        { isActiveRadarVenice: false }
-      );
+      if (Details.isActiveRadarVenice == undefined) Details.isActiveRadarVenice = false;
+      return VGView.emit(WebViewStatus.HUD.name, EventNames.HUD.clientWEB.SetCarHUDDetails, { isActiveRadarVenice: false });
     }
 
     // Check For current Format
@@ -115,22 +105,13 @@ export class VGHUD {
     Details.ArmorValue *= 1.6;
     Details.ThirstyValue *= 1.6;
 
-    if (isChanged)
-      VGView.emit(
-        WebViewStatus.HUD.name,
-        EventNames.HUD.clientWEB.SetVeniceHUDDetails,
-        Details
-      );
+    if (isChanged) VGView.emit(WebViewStatus.HUD.name, EventNames.HUD.clientWEB.SetVeniceHUDDetails, Details);
   }
   static VehicleSpeedOmeter(Details) {
     if (Details.isActiveCarHud == undefined) Details.isActiveCarHud = false;
 
     if (!Details.isActiveCarHud) {
-      return VGView.emit(
-        WebViewStatus.HUD.name,
-        EventNames.HUD.clientWEB.SetCarHUDDetails,
-        { isActiveCarHud: false }
-      );
+      return VGView.emit(WebViewStatus.HUD.name, EventNames.HUD.clientWEB.SetCarHUDDetails, { isActiveCarHud: false });
     }
 
     // Check For current Format
@@ -151,11 +132,7 @@ export class VGHUD {
     if (Details.GearValue == undefined) Details.GearValue = "P";
     if (Details.isGearUP == undefined) Details.isGearUP = false;
 
-    VGView.emit(
-      WebViewStatus.HUD.name,
-      EventNames.HUD.clientWEB.SetCarHUDDetails,
-      Details
-    );
+    VGView.emit(WebViewStatus.HUD.name, EventNames.HUD.clientWEB.SetCarHUDDetails, Details);
   }
 }
 

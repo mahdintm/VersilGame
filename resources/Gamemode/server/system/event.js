@@ -50,9 +50,7 @@ alt.on("connectionQueueAdd", async (info) => {
   info.accept();
 });
 alt.on("playerEnteringVehicle", async (player, vehicle, seat) => {
-  let datain_vehileObject = vehicleObject.filter(
-    async (v, i) => v.name == (await VehicleClass.data.get(vehicle, "model"))
-  )[0];
+  let datain_vehileObject = vehicleObject.filter(async (v, i) => v.name == (await VehicleClass.data.get(vehicle, "model")))[0];
   switch (datain_vehileObject.type) {
     case "driving":
       if ((await license.check(player, "driving")) == false && seat == 1) {
@@ -121,23 +119,10 @@ alt.onClient("RequestCodeValidation", async (player, data) => {
 alt.onClient("RequestCodeValidationEntered", (player, data) => {
   console.log("Send " + data);
   let playerdata = player.getMeta("ValidateCodes");
-  if (
-    data.PhoneCode == playerdata.PhoneCode &&
-    data.EmailCode == playerdata.EmailCode
-  ) {
-    return alt.emitClient(
-      player,
-      "CallBackRequestCodeValidationEntered",
-      true,
-      "WiaraServerIsBestServer"
-    );
+  if (data.PhoneCode == playerdata.PhoneCode && data.EmailCode == playerdata.EmailCode) {
+    return alt.emitClient(player, "CallBackRequestCodeValidationEntered", true, "WiaraServerIsBestServer");
   }
-  return alt.emitClient(
-    player,
-    "CallBackRequestCodeValidationEntered",
-    false,
-    ""
-  );
+  return alt.emitClient(player, "CallBackRequestCodeValidationEntered", false, "");
 });
 await alt.on("playerDisconnect", async (player, reason) => {
   if (!player.getSyncedMeta("hasLogin")) return;

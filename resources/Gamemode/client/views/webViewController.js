@@ -82,35 +82,27 @@ export class VGView {
       if (!_Loadingwebview) {
         _Loadingwebview = await VGView.#createWebView(_loadingPageURL);
         _Loadingwebview.focus();
-        _Loadingwebview.on(
-          `${WebViewStatus.loadingPage.EventNames.ready}`,
-          () => {
-            VG.debugLog("----- Loading Page Webview has been mounted -----");
+        _Loadingwebview.on(`${WebViewStatus.loadingPage.EventNames.ready}`, () => {
+          VG.debugLog("----- Loading Page Webview has been mounted -----");
 
-            _isReadyLoading = true;
-          }
-        );
+          _isReadyLoading = true;
+        });
       }
     } else {
       if (_Loadingwebview) {
-        await _Loadingwebview.emit(
-          `${WebViewStatus.loadingPage.EventNames.fullLoad}`
-        );
+        await _Loadingwebview.emit(`${WebViewStatus.loadingPage.EventNames.fullLoad}`);
 
-        _Loadingwebview.on(
-          `${WebViewStatus.loadingPage.EventNames.destroy}`,
-          async () => {
-            _Loadingwebview.unfocus();
-            if (!isLoadAllWebViewDoned) {
-              alt.emit(EventNames.player.localClient.webViewCompleteLoaded);
-            }
-            await _Loadingwebview.destroy();
-            _Loadingwebview = undefined;
-            _isReadyLoading = false;
-            isLoadAllWebViewDoned = true;
-            VG.debugLog("----- Loading Page Webview has been destroy -----");
+        _Loadingwebview.on(`${WebViewStatus.loadingPage.EventNames.destroy}`, async () => {
+          _Loadingwebview.unfocus();
+          if (!isLoadAllWebViewDoned) {
+            alt.emit(EventNames.player.localClient.webViewCompleteLoaded);
           }
-        );
+          await _Loadingwebview.destroy();
+          _Loadingwebview = undefined;
+          _isReadyLoading = false;
+          isLoadAllWebViewDoned = true;
+          VG.debugLog("----- Loading Page Webview has been destroy -----");
+        });
       }
     }
   }
@@ -156,16 +148,11 @@ export class VGView {
       if (!_Musicwebview) {
         _Musicwebview = await VGView.#createWebView(_MusicURL);
         if (PlayerDetails.isPlayIntroMusic) {
-          _Musicwebview.emit(
-            EventNames.introMusic.clientWEB.changeVolume,
-            PlayerDetails.IntroMusicVolume
-          );
+          _Musicwebview.emit(EventNames.introMusic.clientWEB.changeVolume, PlayerDetails.IntroMusicVolume);
           _Musicwebview.emit(WebViewStatus.IntroVue.EventNames.load);
         }
         _Musicwebview.on(`${WebViewStatus.musicVue.EventNames.ready}`, () => {
-          isRestart
-            ? VG.debugLog("MusicVue has been reseted, mounted & Ready to use!")
-            : VG.debugLog("MusicVue has been mounted & Ready to use!");
+          isRestart ? VG.debugLog("MusicVue has been reseted, mounted & Ready to use!") : VG.debugLog("MusicVue has been mounted & Ready to use!");
 
           _isReadyMusic = true;
           return true;
@@ -221,9 +208,7 @@ export class VGView {
     if (!_Phonewebview) {
       _Phonewebview = await VGView.#createWebView(_PhoneURL);
       _Phonewebview.on(`${WebViewStatus.phone.EventNames.ready}`, () => {
-        isRestart
-          ? VG.debugLog("Phone has been reseted, mounted & Ready to use!")
-          : VG.debugLog("Phone has been mounted & Ready to use!");
+        isRestart ? VG.debugLog("Phone has been reseted, mounted & Ready to use!") : VG.debugLog("Phone has been mounted & Ready to use!");
 
         _isReadyPhone = true;
         return true;
@@ -269,9 +254,7 @@ export class VGView {
     if (!_webview) {
       _webview = await VGView.#createWebView(_defaultURL);
       _webview.on(EventNames.allVue.WEBclient.mountedAndReady, () => {
-        isRestart
-          ? VG.debugLog("WebView has been reseted, mounted & Ready to use!")
-          : VG.debugLog("WebView has been mounted & Ready to use!");
+        isRestart ? VG.debugLog("WebView has been reseted, mounted & Ready to use!") : VG.debugLog("WebView has been mounted & Ready to use!");
 
         _isReady = true;
         return true;
@@ -305,18 +288,9 @@ export class VGView {
     });
   }
   static async #isAllComponentsLoaded() {
-    await _Loadingwebview.emit(
-      WebViewStatus.loadingPage.EventNames.ProcessText,
-      "Loading Game"
-    );
+    await _Loadingwebview.emit(WebViewStatus.loadingPage.EventNames.ProcessText, "Loading Game");
     return new Promise((resolve) => {
-      native.newLoadSceneStartSphere(
-        SpawnDetails.SpawnPos.x,
-        SpawnDetails.SpawnPos.y,
-        SpawnDetails.SpawnPos.z,
-        50.0,
-        0
-      );
+      native.newLoadSceneStartSphere(SpawnDetails.SpawnPos.x, SpawnDetails.SpawnPos.y, SpawnDetails.SpawnPos.z, 50.0, 0);
       const interval = alt.setInterval(() => {
         if (native.isNewLoadSceneLoaded()) {
           alt.clearInterval(interval);
@@ -361,8 +335,7 @@ export class VGView {
   static async #loadWebView(ViewName) {
     // Load Webview
     try {
-      if (!(await VGView.#checkViewPriority(WebViewStatus[ViewName].priority)))
-        return false;
+      if (!(await VGView.#checkViewPriority(WebViewStatus[ViewName].priority))) return false;
       const view = await VGView.#get();
       await view.emit(WebViewStatus[ViewName].EventNames.load);
       if (WebViewStatus[ViewName].isNeedGameControl) {
@@ -384,8 +357,7 @@ export class VGView {
       WebViewStatus[ViewName].isActive = false;
       WebViewStatus[ViewName].isOpen = false;
       await VGView.#GameControls(false);
-      if (ViewName == "login")
-        _Musicwebview.emit(WebViewStatus.IntroVue.EventNames.unLoad);
+      if (ViewName == "login") _Musicwebview.emit(WebViewStatus.IntroVue.EventNames.unLoad);
       return true;
     } catch (error) {
       return false;
@@ -419,10 +391,7 @@ export class VGView {
   static async #checkViewPriority(ViewPriority) {
     let UpperPriority = 0;
     Object.values(WebViewStatus).forEach((ViewStatus) => {
-      if (
-        (ViewStatus.isActive && !ViewStatus.isMultiView) ||
-        (ViewStatus.isActive && ViewStatus.isOpen)
-      ) {
+      if ((ViewStatus.isActive && !ViewStatus.isMultiView) || (ViewStatus.isActive && ViewStatus.isOpen)) {
         if (UpperPriority < ViewStatus.priority) {
           UpperPriority = ViewStatus.priority;
         }
@@ -551,33 +520,21 @@ export class VGView {
     try {
       if (!WebViewStatus[ViewName].isActive) return false;
       if (WebViewStatus[ViewName].isOpen) return false;
-      if (!(await VGView.#checkViewPriority(WebViewStatus[ViewName].priority)))
-        return false;
+      if (!(await VGView.#checkViewPriority(WebViewStatus[ViewName].priority))) return false;
 
       switch (ViewName) {
         case WebViewStatus.chat.name:
           if (object.isUseSlash) {
-            await VGView.emit(
-              WebViewStatus.chat.name,
-              EventNames.chat.clientWEB.InsertSlash
-            );
+            await VGView.emit(WebViewStatus.chat.name, EventNames.chat.clientWEB.InsertSlash);
           }
-          await VGView.emit(
-            WebViewStatus.chat.name,
-            EventNames.chat.clientWEB.OpenChat
-          );
+          await VGView.emit(WebViewStatus.chat.name, EventNames.chat.clientWEB.OpenChat);
           await VGView.#GameControls(true);
           WebViewStatus.chat.isOpen = true;
           break;
         case WebViewStatus.eyeTracker.name:
           if (!object.Status) return;
           if (!object.ObjectFoundedDetails) return;
-          await VGView.emit(
-            WebViewStatus.eyeTracker.name,
-            "ClientWEB:eyeTracker:MenuStatus",
-            object.Status,
-            object.ObjectFoundedDetails
-          );
+          await VGView.emit(WebViewStatus.eyeTracker.name, "ClientWEB:eyeTracker:MenuStatus", object.Status, object.ObjectFoundedDetails);
           await VGView.#GameControls(true);
           WebViewStatus.eyeTracker.isOpen = true;
           break;
@@ -608,28 +565,17 @@ export class VGView {
 
       switch (ViewName) {
         case WebViewStatus.chat.name:
-          await VGView.emit(
-            WebViewStatus.chat.name,
-            EventNames.chat.clientWEB.CloseChat,
-            false
-          );
+          await VGView.emit(WebViewStatus.chat.name, EventNames.chat.clientWEB.CloseChat, false);
           WebViewStatus.chat.isOpen = false;
           await VGView.#GameControls(false);
           break;
         case WebViewStatus.eyeTracker.name:
-          await VGView.emit(
-            WebViewStatus.eyeTracker.name,
-            EventNames.eyeTracker.clientWEB.MenuStatus,
-            false
-          );
+          await VGView.emit(WebViewStatus.eyeTracker.name, EventNames.eyeTracker.clientWEB.MenuStatus, false);
           WebViewStatus.eyeTracker.isOpen = false;
           await VGView.#GameControls(false);
           break;
         case WebViewStatus.scoreBoard.name:
-          await VGView.emit(
-            WebViewStatus.scoreBoard.name,
-            WebViewStatus.scoreBoard.EventNames.close
-          );
+          await VGView.emit(WebViewStatus.scoreBoard.name, WebViewStatus.scoreBoard.EventNames.close);
           WebViewStatus.scoreBoard.isOpen = false;
           await VGView.#GameControls(false);
           break;
@@ -754,11 +700,7 @@ export class VGView {
       let TopViewName = await VGView.#checkPriorityForisOpenItems();
       if (TopViewName != null) {
         try {
-          await VGView.emit(
-            WebViewStatus[TopViewName].name,
-            EventNames[TopViewName].clientWEB.KeyRowLeftPressed,
-            StatusLeft
-          );
+          await VGView.emit(WebViewStatus[TopViewName].name, EventNames[TopViewName].clientWEB.KeyRowLeftPressed, StatusLeft);
         } catch (error) {}
       }
     } else if (await VGView.#isFirstTimeCompeleteLoaded()) {
@@ -766,11 +708,7 @@ export class VGView {
       let TopViewName = await VGView.#checkPriorityForisOpenItems();
       if (TopViewName != null) {
         try {
-          await VGView.emit(
-            WebViewStatus[TopViewName].name,
-            EventNames[TopViewName].clientWEB.KeyRowLeftPressed,
-            StatusLeft
-          );
+          await VGView.emit(WebViewStatus[TopViewName].name, EventNames[TopViewName].clientWEB.KeyRowLeftPressed, StatusLeft);
         } catch (error) {}
       }
     }
@@ -814,11 +752,7 @@ export class VGView {
       let TopViewName = await VGView.#checkPriorityForisOpenItems();
       if (TopViewName != null) {
         try {
-          await VGView.emit(
-            WebViewStatus[TopViewName].name,
-            EventNames[TopViewName].clientWEB.KeyRowUpPressed,
-            StatusUP
-          );
+          await VGView.emit(WebViewStatus[TopViewName].name, EventNames[TopViewName].clientWEB.KeyRowUpPressed, StatusUP);
         } catch (error) {}
       }
     } else if (await VGView.#isFirstTimeCompeleteLoaded()) {
@@ -826,11 +760,7 @@ export class VGView {
       let TopViewName = await VGView.#checkPriorityForisOpenItems();
       if (TopViewName != null) {
         try {
-          await VGView.emit(
-            WebViewStatus[TopViewName].name,
-            EventNames[TopViewName].clientWEB.KeyRowUpPressed,
-            StatusUP
-          );
+          await VGView.emit(WebViewStatus[TopViewName].name, EventNames[TopViewName].clientWEB.KeyRowUpPressed, StatusUP);
         } catch (error) {}
       }
     }

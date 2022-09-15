@@ -1,9 +1,9 @@
-import * as alt from 'alt'
+import * as alt from "alt";
 import { sql } from "../database/mysql";
 import { Language } from "../utils/dialogs";
 import { vehicleObject } from "../utils/VehicleList";
 import { FindPlayerAccount, FindPlayerForCMD, PlayerData } from "./account";
-import { Ban } from './ban';
+import { Ban } from "./ban";
 import { Business } from "./business";
 import { registerCmd, sendchat } from "./chat";
 import { license } from "./license";
@@ -12,747 +12,659 @@ import { StaffPoint, StaffSystem } from "./staff";
 import { VehicleClass } from "./vehicles";
 
 async function MakeAdmin(player, args) {
-    if (!await StaffSystem.IsAdmin(player)) return await StaffSystem.Send_NotAdmin(player)
-    if (!(await StaffSystem.CheckObject.MakeAdmin(player) && await StaffSystem.CMD.Level.check(player, 'MakeAdmin')))
-        return await StaffSystem.Send_Auth(player)
-    if (args[0] == undefined || args[1] == undefined)
-        return sendchat(player, 'makeadmin(ma) [PlayerName/PlayerID] [AdminLevel]');
-    let taraf = await FindPlayerForCMD(player, args[0])
-    if (taraf == undefined) return
-    //--------------------------------------------------
-    await PlayerData.set(taraf, 'pAdmin', args[1], true)
-    await StaffSystem.CalculatorRole(player)
-    await StaffSystem.Warn.Admins("ADMIN_GIVED_ADMIN_TO_PLAYER2", [await PlayerData.get(player, 'pName'), args[1], await PlayerData.get(taraf, 'pName')])
-    await sendchat(player, await Language.GetValue(player.getSyncedMeta('Language'), "YOU_GAVE_ADMIN_PLAYER2", [args[1], await PlayerData.get(taraf, 'pName')]))
-    await sendchat(taraf, await Language.GetValue(taraf.getSyncedMeta('Language'), "ADMIN_GIVEN_ADMIN_YOU", [await PlayerData.get(player, 'pName'), args[1]]))
-
+  if (!(await StaffSystem.IsAdmin(player))) return await StaffSystem.Send_NotAdmin(player);
+  if (!((await StaffSystem.CheckObject.MakeAdmin(player)) && (await StaffSystem.CMD.Level.check(player, "MakeAdmin")))) return await StaffSystem.Send_Auth(player);
+  if (args[0] == undefined || args[1] == undefined) return sendchat(player, "makeadmin(ma) [PlayerName/PlayerID] [AdminLevel]");
+  let taraf = await FindPlayerForCMD(player, args[0]);
+  if (taraf == undefined) return;
+  //--------------------------------------------------
+  await PlayerData.set(taraf, "pAdmin", args[1], true);
+  await StaffSystem.CalculatorRole(player);
+  await StaffSystem.Warn.Admins("ADMIN_GIVED_ADMIN_TO_PLAYER2", [await PlayerData.get(player, "pName"), args[1], await PlayerData.get(taraf, "pName")]);
+  await sendchat(player, await Language.GetValue(player.getSyncedMeta("Language"), "YOU_GAVE_ADMIN_PLAYER2", [args[1], await PlayerData.get(taraf, "pName")]));
+  await sendchat(taraf, await Language.GetValue(taraf.getSyncedMeta("Language"), "ADMIN_GIVEN_ADMIN_YOU", [await PlayerData.get(player, "pName"), args[1]]));
 }
 async function GiveStaffPoint(player, args) {
-    if (!await StaffSystem.IsStaff(player)) return await StaffSystem.Send_NotAdmin(player)
-    if (!await StaffSystem.CMD.Level.check(player, 'GiveStaffPoint'))
-        return await StaffSystem.Send_Auth(player)
-    if (args[0] == undefined || args[1] == undefined)
-        return sendchat(player, 'GiveStaffPoint(GiveSP) [PlayerName/PlayerID] [Amount]');
-    let taraf = await FindPlayerForCMD(player, args[0])
-    if (taraf == undefined) return
-    //--------------------------------------------------
-    await StaffPoint.give(taraf, parseInt(args[1]))
-    await StaffSystem.CalculatorRole(player)
-    await StaffSystem.Warn.Admins("ADMIN_GIVED_STAFFPOINT_TO_PLAYER2", [await PlayerData.get(player, 'pName'), args[1], await PlayerData.get(taraf, 'pName')])
-    await sendchat(player, await Language.GetValue(player.getSyncedMeta('Language'), "YOU_GAVE_STAFFPOINT_PLAYER2", [args[1], await PlayerData.get(taraf, 'pName')]))
-    await sendchat(taraf, await Language.GetValue(taraf.getSyncedMeta('Language'), "ADMIN_GIVEN_STAFFPOINT_YOU", [await PlayerData.get(player, 'pName'), args[1]]))
+  if (!(await StaffSystem.IsStaff(player))) return await StaffSystem.Send_NotAdmin(player);
+  if (!(await StaffSystem.CMD.Level.check(player, "GiveStaffPoint"))) return await StaffSystem.Send_Auth(player);
+  if (args[0] == undefined || args[1] == undefined) return sendchat(player, "GiveStaffPoint(GiveSP) [PlayerName/PlayerID] [Amount]");
+  let taraf = await FindPlayerForCMD(player, args[0]);
+  if (taraf == undefined) return;
+  //--------------------------------------------------
+  await StaffPoint.give(taraf, parseInt(args[1]));
+  await StaffSystem.CalculatorRole(player);
+  await StaffSystem.Warn.Admins("ADMIN_GIVED_STAFFPOINT_TO_PLAYER2", [await PlayerData.get(player, "pName"), args[1], await PlayerData.get(taraf, "pName")]);
+  await sendchat(player, await Language.GetValue(player.getSyncedMeta("Language"), "YOU_GAVE_STAFFPOINT_PLAYER2", [args[1], await PlayerData.get(taraf, "pName")]));
+  await sendchat(taraf, await Language.GetValue(taraf.getSyncedMeta("Language"), "ADMIN_GIVEN_STAFFPOINT_YOU", [await PlayerData.get(player, "pName"), args[1]]));
 }
 async function TakeStaffPoint(player, args) {
-    if (!await StaffSystem.IsStaff(player)) return await StaffSystem.Send_NotAdmin(player)
-    if (!await StaffSystem.CMD.Level.check(player, 'TakeStaffPoint'))
-        return await StaffSystem.Send_Auth(player)
-    if (args[0] == undefined || args[1] == undefined)
-        return sendchat(player, 'TakeStaffPoint(TakeSP) [PlayerName/PlayerID] [Amount]');
-    let taraf = await FindPlayerForCMD(player, args[0])
-    if (taraf == undefined) return
-    //--------------------------------------------------
-    await StaffPoint.take(taraf, parseInt(args[1]))
-    await StaffSystem.CalculatorRole(player)
-    await StaffSystem.Warn.Admins("ADMIN_TAKED_STAFFPOINT_TO_PLAYER2", [await PlayerData.get(player, 'pName'), args[1], await PlayerData.get(taraf, 'pName')])
-    await sendchat(player, await Language.GetValue(player.getSyncedMeta('Language'), "YOU_TAKE_STAFFPOINT_PLAYER2", [args[1], await PlayerData.get(taraf, 'pName')]))
-    await sendchat(taraf, await Language.GetValue(taraf.getSyncedMeta('Language'), "ADMIN_TAKEN_STAFFPOINT_YOU", [await PlayerData.get(player, 'pName'), args[1]]))
+  if (!(await StaffSystem.IsStaff(player))) return await StaffSystem.Send_NotAdmin(player);
+  if (!(await StaffSystem.CMD.Level.check(player, "TakeStaffPoint"))) return await StaffSystem.Send_Auth(player);
+  if (args[0] == undefined || args[1] == undefined) return sendchat(player, "TakeStaffPoint(TakeSP) [PlayerName/PlayerID] [Amount]");
+  let taraf = await FindPlayerForCMD(player, args[0]);
+  if (taraf == undefined) return;
+  //--------------------------------------------------
+  await StaffPoint.take(taraf, parseInt(args[1]));
+  await StaffSystem.CalculatorRole(player);
+  await StaffSystem.Warn.Admins("ADMIN_TAKED_STAFFPOINT_TO_PLAYER2", [await PlayerData.get(player, "pName"), args[1], await PlayerData.get(taraf, "pName")]);
+  await sendchat(player, await Language.GetValue(player.getSyncedMeta("Language"), "YOU_TAKE_STAFFPOINT_PLAYER2", [args[1], await PlayerData.get(taraf, "pName")]));
+  await sendchat(taraf, await Language.GetValue(taraf.getSyncedMeta("Language"), "ADMIN_TAKEN_STAFFPOINT_YOU", [await PlayerData.get(player, "pName"), args[1]]));
 }
 async function SetStaffPoint(player, args) {
-    if (!await StaffSystem.IsStaff(player)) return await StaffSystem.Send_NotAdmin(player)
-    if (!await StaffSystem.CMD.Level.check(player, 'SetStaffPoint'))
-        return await StaffSystem.Send_Auth(player)
-    if (args[0] == undefined || args[1] == undefined)
-        return sendchat(player, 'SetStaffPoint(SetSP) [PlayerName/PlayerID] [Amount]');
-    let taraf = await FindPlayerForCMD(player, args[0])
-    if (taraf == undefined) return
-    //--------------------------------------------------
-    await StaffPoint.set(taraf, parseInt(args[1]))
-    await StaffSystem.CalculatorRole(player)
-    await StaffSystem.Warn.Admins("ADMIN_SETED_STAFFPOINT_TO_PLAYER2", [await PlayerData.get(player, 'pName'), args[1], await PlayerData.get(taraf, 'pName')])
-    await sendchat(player, await Language.GetValue(player.getSyncedMeta('Language'), "YOU_SET_STAFFPOINT_PLAYER2", [args[1], await PlayerData.get(taraf, 'pName')]))
-    await sendchat(taraf, await Language.GetValue(taraf.getSyncedMeta('Language'), "ADMIN_SETEN_STAFFPOINT_YOU", [await PlayerData.get(player, 'pName'), args[1]]))
+  if (!(await StaffSystem.IsStaff(player))) return await StaffSystem.Send_NotAdmin(player);
+  if (!(await StaffSystem.CMD.Level.check(player, "SetStaffPoint"))) return await StaffSystem.Send_Auth(player);
+  if (args[0] == undefined || args[1] == undefined) return sendchat(player, "SetStaffPoint(SetSP) [PlayerName/PlayerID] [Amount]");
+  let taraf = await FindPlayerForCMD(player, args[0]);
+  if (taraf == undefined) return;
+  //--------------------------------------------------
+  await StaffPoint.set(taraf, parseInt(args[1]));
+  await StaffSystem.CalculatorRole(player);
+  await StaffSystem.Warn.Admins("ADMIN_SETED_STAFFPOINT_TO_PLAYER2", [await PlayerData.get(player, "pName"), args[1], await PlayerData.get(taraf, "pName")]);
+  await sendchat(player, await Language.GetValue(player.getSyncedMeta("Language"), "YOU_SET_STAFFPOINT_PLAYER2", [args[1], await PlayerData.get(taraf, "pName")]));
+  await sendchat(taraf, await Language.GetValue(taraf.getSyncedMeta("Language"), "ADMIN_SETEN_STAFFPOINT_YOU", [await PlayerData.get(player, "pName"), args[1]]));
 }
 async function CreateAdminVehicle(player, args) {
-    if (!await StaffSystem.IsStaff(player)) return await StaffSystem.Send_NotAdmin(player)
-    if (!await StaffSystem.CMD.Level.check(player, 'CreateAdminVehicle'))
-        return await StaffSystem.Send_Auth(player)
-    if (args[0] == undefined)
-        return sendchat(player, 'AdminVehicle(veh) [Model]');
-    //--------------------------------------------------
-    if (isNaN(args[0]) && args[0] != undefined && args[0].length >= 3) {
-        for (const [key, str] of Object.entries(vehicleObject)) {
-            if (str.name.match(args[0].toLowerCase())) {
-                return await VehicleClass.create.admin(player, str.name)
-            }
-            if (str.name == "end") {
-                return sendchat(player, `esme veh eshtebas`);
-            }
-        }
-    } else if (!isNaN(args[0]) && args[0] != undefined) {
-        for (const [key, str] of Object.entries(vehicleObject)) {
-            if (args[0] >= 400 && args[0] <= 700) {
-                if (str.id == args[0]) {
-                    return await VehicleClass.create.admin(player, str.name)
-                }
-                if (str.name == "end") {
-                    return sendchat(player, `id veh eshtebas`);
-                }
-            } else {
-                return sendchat(player, `faqat az 400 ta 561`);
-            }
-        }
-    } else {
-        return sendchat(player, `faqat az 400 ta 561`);
+  if (!(await StaffSystem.IsStaff(player))) return await StaffSystem.Send_NotAdmin(player);
+  if (!(await StaffSystem.CMD.Level.check(player, "CreateAdminVehicle"))) return await StaffSystem.Send_Auth(player);
+  if (args[0] == undefined) return sendchat(player, "AdminVehicle(veh) [Model]");
+  //--------------------------------------------------
+  if (isNaN(args[0]) && args[0] != undefined && args[0].length >= 3) {
+    for (const [key, str] of Object.entries(vehicleObject)) {
+      if (str.name.match(args[0].toLowerCase())) {
+        return await VehicleClass.create.admin(player, str.name);
+      }
+      if (str.name == "end") {
+        return sendchat(player, `esme veh eshtebas`);
+      }
     }
-
+  } else if (!isNaN(args[0]) && args[0] != undefined) {
+    for (const [key, str] of Object.entries(vehicleObject)) {
+      if (args[0] >= 400 && args[0] <= 700) {
+        if (str.id == args[0]) {
+          return await VehicleClass.create.admin(player, str.name);
+        }
+        if (str.name == "end") {
+          return sendchat(player, `id veh eshtebas`);
+        }
+      } else {
+        return sendchat(player, `faqat az 400 ta 561`);
+      }
+    }
+  } else {
+    return sendchat(player, `faqat az 400 ta 561`);
+  }
 }
 async function DeleteAdminVehicle(player) {
-    if (!await StaffSystem.IsStaff(player)) return await StaffSystem.Send_NotAdmin(player)
-    if (!await StaffSystem.CMD.Level.check(player, 'DeleteAdminVehicle'))
-        return await StaffSystem.Send_Auth(player)
-    //--------------------------------------------------
-    if (!player.vehicle)
-        return sendchat(player, 'AdminVehicle(veh) [Model]');
-    let a = await VehicleClass.delete.admin(player.vehicle)
-    a == true ? console.log("deleted") : console.log("you can not delete this vehicle")
+  if (!(await StaffSystem.IsStaff(player))) return await StaffSystem.Send_NotAdmin(player);
+  if (!(await StaffSystem.CMD.Level.check(player, "DeleteAdminVehicle"))) return await StaffSystem.Send_Auth(player);
+  //--------------------------------------------------
+  if (!player.vehicle) return sendchat(player, "AdminVehicle(veh) [Model]");
+  let a = await VehicleClass.delete.admin(player.vehicle);
+  a == true ? console.log("deleted") : console.log("you can not delete this vehicle");
 }
 async function DeleteStaticVehicle(player) {
-    if (!await StaffSystem.IsStaff(player)) return await StaffSystem.Send_NotAdmin(player)
-    if (!await StaffSystem.CMD.Level.check(player, 'DeleteStaticVehicle'))
-        return await StaffSystem.Send_Auth(player)
-    //--------------------------------------------------
-    if (!player.vehicle)
-        return sendchat(player, 'AdminVehicle(veh) [Model]');
-    let vehicle_ = await VehicleClass.delete.static(player.vehicle)
-    if (vehicle_) {
-        return await StaffSystem.Warn.Admins("ADMIN_DELETED_STATIC_VEHICLE", [await PlayerData.get(player, 'pName'), vehicle_[0], vehicle_[1], JSON.stringify(vehicle_[2])])
-    } else {
-        await sendchat(player, await Language.GetValue(player.getSyncedMeta('Language'), "YOU_CAN_NOT_DELETE_THIS_VEHICLE"))
-    }
+  if (!(await StaffSystem.IsStaff(player))) return await StaffSystem.Send_NotAdmin(player);
+  if (!(await StaffSystem.CMD.Level.check(player, "DeleteStaticVehicle"))) return await StaffSystem.Send_Auth(player);
+  //--------------------------------------------------
+  if (!player.vehicle) return sendchat(player, "AdminVehicle(veh) [Model]");
+  let vehicle_ = await VehicleClass.delete.static(player.vehicle);
+  if (vehicle_) {
+    return await StaffSystem.Warn.Admins("ADMIN_DELETED_STATIC_VEHICLE", [await PlayerData.get(player, "pName"), vehicle_[0], vehicle_[1], JSON.stringify(vehicle_[2])]);
+  } else {
+    await sendchat(player, await Language.GetValue(player.getSyncedMeta("Language"), "YOU_CAN_NOT_DELETE_THIS_VEHICLE"));
+  }
 }
 async function DeleteFactionVehicle(player) {
-    if (!await StaffSystem.IsStaff(player)) return await StaffSystem.Send_NotAdmin(player)
-    if (!await StaffSystem.CMD.Level.check(player, 'DeleteFactionVehicle'))
-        return await StaffSystem.Send_Auth(player)
-    //--------------------------------------------------
-    if (!player.vehicle)
-        return sendchat(player, 'AdminVehicle(veh) [Model]');
-    let vehicle_ = await VehicleClass.delete.faction(player.vehicle)
-    if (vehicle_) {
-        return await StaffSystem.Warn.Admins("ADMIN_DELETED_FACTION_VEHICLE", [await PlayerData.get(player, 'pName'), vehicle_[0], vehicle_[1], JSON.stringify(vehicle_[2])])
-    } else {
-        await sendchat(player, await Language.GetValue(player.getSyncedMeta('Language'), "YOU_CAN_NOT_DELETE_THIS_VEHICLE"))
-    }
+  if (!(await StaffSystem.IsStaff(player))) return await StaffSystem.Send_NotAdmin(player);
+  if (!(await StaffSystem.CMD.Level.check(player, "DeleteFactionVehicle"))) return await StaffSystem.Send_Auth(player);
+  //--------------------------------------------------
+  if (!player.vehicle) return sendchat(player, "AdminVehicle(veh) [Model]");
+  let vehicle_ = await VehicleClass.delete.faction(player.vehicle);
+  if (vehicle_) {
+    return await StaffSystem.Warn.Admins("ADMIN_DELETED_FACTION_VEHICLE", [await PlayerData.get(player, "pName"), vehicle_[0], vehicle_[1], JSON.stringify(vehicle_[2])]);
+  } else {
+    await sendchat(player, await Language.GetValue(player.getSyncedMeta("Language"), "YOU_CAN_NOT_DELETE_THIS_VEHICLE"));
+  }
 }
 async function CreateStaticVehicle(player, args) {
-    if (!await StaffSystem.IsStaff(player)) return await StaffSystem.Send_NotAdmin(player)
-    if (!await StaffSystem.CMD.Level.check(player, 'CreateStaticVehicle'))
-        return await StaffSystem.Send_Auth(player)
-    if (args[0] == undefined)
-        return sendchat(player, 'StaticVehicle(csv) [Type]');
-    //--------------------------------------------------
-    switch (args[0]) {
-        case 'driving':
-            await VehicleClass.create.static(player, 'driving')
-            return await StaffSystem.Warn.Admins("ADMIN_CREATED_STATIC_VEHICLE", [await PlayerData.get(player, 'pName'), args[0], `x:${(player.pos.x).toFixed(3)} , y:${(player.pos.y).toFixed(3)} , z:${(player.pos.z).toFixed(3)}`])
-        case 'sailing':
-            await VehicleClass.create.static(player, 'sailing')
-            return await StaffSystem.Warn.Admins("ADMIN_CREATED_STATIC_VEHICLE", [await PlayerData.get(player, 'pName'), args[0], `x:${(player.pos.x).toFixed(3)} , y:${(player.pos.y).toFixed(3)} , z:${(player.pos.z).toFixed(3)}`])
-        case 'riding':
-            await VehicleClass.create.static(player, 'riding')
-            return await StaffSystem.Warn.Admins("ADMIN_CREATED_STATIC_VEHICLE", [await PlayerData.get(player, 'pName'), args[0], `x:${(player.pos.x).toFixed(3)} , y:${(player.pos.y).toFixed(3)} , z:${(player.pos.z).toFixed(3)}`])
-        case 'motor':
-            await VehicleClass.create.static(player, 'motor')
-            return await StaffSystem.Warn.Admins("ADMIN_CREATED_STATIC_VEHICLE", [await PlayerData.get(player, 'pName'), args[0], `x:${(player.pos.x).toFixed(3)} , y:${(player.pos.y).toFixed(3)} , z:${(player.pos.z).toFixed(3)}`])
-        case 'flying':
-            await VehicleClass.create.static(player, 'flying')
-            return await StaffSystem.Warn.Admins("ADMIN_CREATED_STATIC_VEHICLE", [await PlayerData.get(player, 'pName'), args[0], `x:${(player.pos.x).toFixed(3)} , y:${(player.pos.y).toFixed(3)} , z:${(player.pos.z).toFixed(3)}`])
-        default:
-            return sendchat(player, 'StaticVehicle(csv) [Type]: driving | sailing | riding | motor | flying');
-    }
+  if (!(await StaffSystem.IsStaff(player))) return await StaffSystem.Send_NotAdmin(player);
+  if (!(await StaffSystem.CMD.Level.check(player, "CreateStaticVehicle"))) return await StaffSystem.Send_Auth(player);
+  if (args[0] == undefined) return sendchat(player, "StaticVehicle(csv) [Type]");
+  //--------------------------------------------------
+  switch (args[0]) {
+    case "driving":
+      await VehicleClass.create.static(player, "driving");
+      return await StaffSystem.Warn.Admins("ADMIN_CREATED_STATIC_VEHICLE", [await PlayerData.get(player, "pName"), args[0], `x:${player.pos.x.toFixed(3)} , y:${player.pos.y.toFixed(3)} , z:${player.pos.z.toFixed(3)}`]);
+    case "sailing":
+      await VehicleClass.create.static(player, "sailing");
+      return await StaffSystem.Warn.Admins("ADMIN_CREATED_STATIC_VEHICLE", [await PlayerData.get(player, "pName"), args[0], `x:${player.pos.x.toFixed(3)} , y:${player.pos.y.toFixed(3)} , z:${player.pos.z.toFixed(3)}`]);
+    case "riding":
+      await VehicleClass.create.static(player, "riding");
+      return await StaffSystem.Warn.Admins("ADMIN_CREATED_STATIC_VEHICLE", [await PlayerData.get(player, "pName"), args[0], `x:${player.pos.x.toFixed(3)} , y:${player.pos.y.toFixed(3)} , z:${player.pos.z.toFixed(3)}`]);
+    case "motor":
+      await VehicleClass.create.static(player, "motor");
+      return await StaffSystem.Warn.Admins("ADMIN_CREATED_STATIC_VEHICLE", [await PlayerData.get(player, "pName"), args[0], `x:${player.pos.x.toFixed(3)} , y:${player.pos.y.toFixed(3)} , z:${player.pos.z.toFixed(3)}`]);
+    case "flying":
+      await VehicleClass.create.static(player, "flying");
+      return await StaffSystem.Warn.Admins("ADMIN_CREATED_STATIC_VEHICLE", [await PlayerData.get(player, "pName"), args[0], `x:${player.pos.x.toFixed(3)} , y:${player.pos.y.toFixed(3)} , z:${player.pos.z.toFixed(3)}`]);
+    default:
+      return sendchat(player, "StaticVehicle(csv) [Type]: driving | sailing | riding | motor | flying");
+  }
 }
 async function CreateFactionVehicle(player, args) {
-    if (!await StaffSystem.IsStaff(player)) return await StaffSystem.Send_NotAdmin(player)
-    if (!await StaffSystem.CMD.Level.check(player, 'CreateFactionVehicle'))
-        return await StaffSystem.Send_Auth(player)
-    if (args[0] == undefined && args[1] == undefined && args[2] == undefined)
-        return sendchat(player, 'CreateFactionVehicle(cfv) [Model] [FactionID] [Rank]');
-    //--------------------------------------------------
-    if (isNaN(args[0]) && args !== undefined && args[0].length >= 3) {
-        for (const [key, str] of Object.entries(vehicleObject)) {
-            if (str.name.match(args[0].toLowerCase())) {
-                await VehicleClass.create.faction(player, str.name)
-                return await StaffSystem.Warn.Admins("ADMIN_CREATED_FACTION_VEHICLE", [await PlayerData.get(player, 'pName'), args[0], args[1], args[2], player.pos])
-            }
-            if (str.name == "end") {
-                return sendchat(player, `esme veh eshtebas`);
-            }
-        }
-    } else if (!isNaN(args[0]) && args[0] != undefined) {
-        for (const [key, str] of Object.entries(vehicleObject)) {
-            if (args[0] >= 400 && args[0] <= 700) {
-                if (str.id == args[0]) {
-                    await VehicleClass.create.faction(player, str.name)
-                    return await StaffSystem.Warn.Admins("ADMIN_CREATED_FACTION_VEHICLE", [await PlayerData.get(player, 'pName'), `(ID:${args[0]})`, args[1], args[2], player.pos])
-                }
-                if (str.name == "end") {
-                    return sendchat(player, `id veh eshtebas`);
-                }
-            } else {
-                return sendchat(player, `faqat az 400 ta 561`);
-            }
-        }
-    } else {
-        return sendchat(player, `faqat az 400 ta 561`);
+  if (!(await StaffSystem.IsStaff(player))) return await StaffSystem.Send_NotAdmin(player);
+  if (!(await StaffSystem.CMD.Level.check(player, "CreateFactionVehicle"))) return await StaffSystem.Send_Auth(player);
+  if (args[0] == undefined && args[1] == undefined && args[2] == undefined) return sendchat(player, "CreateFactionVehicle(cfv) [Model] [FactionID] [Rank]");
+  //--------------------------------------------------
+  if (isNaN(args[0]) && args !== undefined && args[0].length >= 3) {
+    for (const [key, str] of Object.entries(vehicleObject)) {
+      if (str.name.match(args[0].toLowerCase())) {
+        await VehicleClass.create.faction(player, str.name);
+        return await StaffSystem.Warn.Admins("ADMIN_CREATED_FACTION_VEHICLE", [await PlayerData.get(player, "pName"), args[0], args[1], args[2], player.pos]);
+      }
+      if (str.name == "end") {
+        return sendchat(player, `esme veh eshtebas`);
+      }
     }
+  } else if (!isNaN(args[0]) && args[0] != undefined) {
+    for (const [key, str] of Object.entries(vehicleObject)) {
+      if (args[0] >= 400 && args[0] <= 700) {
+        if (str.id == args[0]) {
+          await VehicleClass.create.faction(player, str.name);
+          return await StaffSystem.Warn.Admins("ADMIN_CREATED_FACTION_VEHICLE", [await PlayerData.get(player, "pName"), `(ID:${args[0]})`, args[1], args[2], player.pos]);
+        }
+        if (str.name == "end") {
+          return sendchat(player, `id veh eshtebas`);
+        }
+      } else {
+        return sendchat(player, `faqat az 400 ta 561`);
+      }
+    }
+  } else {
+    return sendchat(player, `faqat az 400 ta 561`);
+  }
 }
 async function GotoPlace(player, args) {
-    if (!await StaffSystem.IsStaff(player)) return await StaffSystem.Send_NotAdmin(player)
-    if (!await StaffSystem.CMD.Level.check(player, 'GotoPlace'))
-        return await StaffSystem.Send_Auth(player)
-    if (args[0] == undefined && args[1] == undefined)
-        return sendchat(player, 'GotoPlace [Place Group] [ID]');
-    //--------------------------------------------------
-    switch (args[0].toLowerCase()) {
-        case 'business':
-            let pos = await Business.Data.get(args[1], 'Pos')
-            if (pos) {
-                player.pos = JSON.parse(pos)
-                player.setMeta("GoBack_Status", true);
-                player.setMeta("GoBack_Pos", player.pos);
-                return await StaffSystem.Warn.Admins("ADMIN_GOED_TO_PLACE", [await PlayerData.get(player, 'pName'), args[0].toLowerCase(), args[1]])
-            }
-            break;
+  if (!(await StaffSystem.IsStaff(player))) return await StaffSystem.Send_NotAdmin(player);
+  if (!(await StaffSystem.CMD.Level.check(player, "GotoPlace"))) return await StaffSystem.Send_Auth(player);
+  if (args[0] == undefined && args[1] == undefined) return sendchat(player, "GotoPlace [Place Group] [ID]");
+  //--------------------------------------------------
+  switch (args[0].toLowerCase()) {
+    case "business":
+      let pos = await Business.Data.get(args[1], "Pos");
+      if (pos) {
+        player.pos = JSON.parse(pos);
+        player.setMeta("GoBack_Status", true);
+        player.setMeta("GoBack_Pos", player.pos);
+        return await StaffSystem.Warn.Admins("ADMIN_GOED_TO_PLACE", [await PlayerData.get(player, "pName"), args[0].toLowerCase(), args[1]]);
+      }
+      break;
 
-        default:
-            break;
-    }
+    default:
+      break;
+  }
 }
 async function GiveMoney(player, args) {
-    if (!await StaffSystem.IsStaff(player)) return await StaffSystem.Send_NotAdmin(player)
-    if (!(await StaffSystem.CMD.Level.check(player, 'GiveMoney')))
-        return await StaffSystem.Send_Auth(player)
-    if (args[0] == undefined || args[1] == undefined)
-        return sendchat(player, 'GiveMoney [PlayerName/PlayerID] [Ammount]');
-    let taraf = await FindPlayerForCMD(player, args[0])
-    if (taraf == undefined) return
-    //--------------------------------------------------
-    await Money.give(player, args[1])
-    await StaffSystem.Warn.Admins("ADMIN_GIVED_MONEY_TO_PLAYER2", [await PlayerData.get(player, 'pName'), args[1], await PlayerData.get(taraf, 'pName')])
-    await sendchat(player, await Language.GetValue(player.getSyncedMeta('Language'), "YOU_GAVE_MONEY_TO_PLAYER2", [args[1], await PlayerData.get(taraf, 'pName')]))
-    await sendchat(taraf, await Language.GetValue(taraf.getSyncedMeta('Language'), "ADMIN_GIVEN_MONEY_TO_YOU", [await PlayerData.get(player, 'pName'), args[1]]))
+  if (!(await StaffSystem.IsStaff(player))) return await StaffSystem.Send_NotAdmin(player);
+  if (!(await StaffSystem.CMD.Level.check(player, "GiveMoney"))) return await StaffSystem.Send_Auth(player);
+  if (args[0] == undefined || args[1] == undefined) return sendchat(player, "GiveMoney [PlayerName/PlayerID] [Ammount]");
+  let taraf = await FindPlayerForCMD(player, args[0]);
+  if (taraf == undefined) return;
+  //--------------------------------------------------
+  await Money.give(player, args[1]);
+  await StaffSystem.Warn.Admins("ADMIN_GIVED_MONEY_TO_PLAYER2", [await PlayerData.get(player, "pName"), args[1], await PlayerData.get(taraf, "pName")]);
+  await sendchat(player, await Language.GetValue(player.getSyncedMeta("Language"), "YOU_GAVE_MONEY_TO_PLAYER2", [args[1], await PlayerData.get(taraf, "pName")]));
+  await sendchat(taraf, await Language.GetValue(taraf.getSyncedMeta("Language"), "ADMIN_GIVEN_MONEY_TO_YOU", [await PlayerData.get(player, "pName"), args[1]]));
 }
 async function TakeMoney(player, args) {
-    if (!await StaffSystem.IsStaff(player)) return await StaffSystem.Send_NotAdmin(player)
-    if (!(await StaffSystem.CMD.Level.check(player, 'TakeMoney')))
-        return await StaffSystem.Send_Auth(player)
-    if (args[0] == undefined || args[1] == undefined)
-        return sendchat(player, 'TakeMoney [PlayerName/PlayerID] [Ammount]');
-    let taraf = await FindPlayerForCMD(player, args[0])
-    if (taraf == undefined) return
-    //--------------------------------------------------
-    await Money.take(player, args[1])
-    await StaffSystem.Warn.Admins("ADMIN_TAKED_MONEY_TO_PLAYER2", [await PlayerData.get(player, 'pName'), args[1], await PlayerData.get(taraf, 'pName')])
-    await sendchat(player, await Language.GetValue(player.getSyncedMeta('Language'), "YOU_TAKE_MONEY_TO_PLAYER2", [args[1], await PlayerData.get(taraf, 'pName')]))
-    await sendchat(taraf, await Language.GetValue(taraf.getSyncedMeta('Language'), "ADMIN_TAKEN_MONEY_TO_YOU", [await PlayerData.get(player, 'pName'), args[1]]))
+  if (!(await StaffSystem.IsStaff(player))) return await StaffSystem.Send_NotAdmin(player);
+  if (!(await StaffSystem.CMD.Level.check(player, "TakeMoney"))) return await StaffSystem.Send_Auth(player);
+  if (args[0] == undefined || args[1] == undefined) return sendchat(player, "TakeMoney [PlayerName/PlayerID] [Ammount]");
+  let taraf = await FindPlayerForCMD(player, args[0]);
+  if (taraf == undefined) return;
+  //--------------------------------------------------
+  await Money.take(player, args[1]);
+  await StaffSystem.Warn.Admins("ADMIN_TAKED_MONEY_TO_PLAYER2", [await PlayerData.get(player, "pName"), args[1], await PlayerData.get(taraf, "pName")]);
+  await sendchat(player, await Language.GetValue(player.getSyncedMeta("Language"), "YOU_TAKE_MONEY_TO_PLAYER2", [args[1], await PlayerData.get(taraf, "pName")]));
+  await sendchat(taraf, await Language.GetValue(taraf.getSyncedMeta("Language"), "ADMIN_TAKEN_MONEY_TO_YOU", [await PlayerData.get(player, "pName"), args[1]]));
 }
 async function SetMoney(player, args) {
-    if (!await StaffSystem.IsStaff(player)) return await StaffSystem.Send_NotAdmin(player)
-    if (!(await StaffSystem.CMD.Level.check(player, 'SetMoney')))
-        return await StaffSystem.Send_Auth(player)
-    if (args[0] == undefined || args[1] == undefined)
-        return sendchat(player, 'SetMoney [PlayerName/PlayerID] [Ammount]');
-    let taraf = await FindPlayerForCMD(player, args[0])
-    if (taraf == undefined) return
-    //--------------------------------------------------
-    await Money.take(player, args[1])
-    await StaffSystem.Warn.Admins("ADMIN_SETED_MONEY_TO_PLAYER2", [await PlayerData.get(player, 'pName'), args[1], await PlayerData.get(taraf, 'pName')])
-    await sendchat(player, await Language.GetValue(player.getSyncedMeta('Language'), "YOU_SET_MONEY_TO_PLAYER2", [args[1], await PlayerData.get(taraf, 'pName')]))
-    await sendchat(taraf, await Language.GetValue(taraf.getSyncedMeta('Language'), "ADMIN_SETEN_MONEY_TO_YOU", [await PlayerData.get(player, 'pName'), args[1]]))
+  if (!(await StaffSystem.IsStaff(player))) return await StaffSystem.Send_NotAdmin(player);
+  if (!(await StaffSystem.CMD.Level.check(player, "SetMoney"))) return await StaffSystem.Send_Auth(player);
+  if (args[0] == undefined || args[1] == undefined) return sendchat(player, "SetMoney [PlayerName/PlayerID] [Ammount]");
+  let taraf = await FindPlayerForCMD(player, args[0]);
+  if (taraf == undefined) return;
+  //--------------------------------------------------
+  await Money.take(player, args[1]);
+  await StaffSystem.Warn.Admins("ADMIN_SETED_MONEY_TO_PLAYER2", [await PlayerData.get(player, "pName"), args[1], await PlayerData.get(taraf, "pName")]);
+  await sendchat(player, await Language.GetValue(player.getSyncedMeta("Language"), "YOU_SET_MONEY_TO_PLAYER2", [args[1], await PlayerData.get(taraf, "pName")]));
+  await sendchat(taraf, await Language.GetValue(taraf.getSyncedMeta("Language"), "ADMIN_SETEN_MONEY_TO_YOU", [await PlayerData.get(player, "pName"), args[1]]));
 }
 async function SetGold(player, args) {
-    if (!await StaffSystem.IsStaff(player)) return await StaffSystem.Send_NotAdmin(player)
-    if (!(await StaffSystem.CMD.Level.check(player, 'SetGold')))
-        return await StaffSystem.Send_Auth(player)
-    if (args[0] == undefined || args[1] == undefined)
-        return sendchat(player, 'SetGold [PlayerName/PlayerID] [Ammount]');
-    let taraf = await FindPlayerForCMD(player, args[0])
-    if (taraf == undefined) return
-    //--------------------------------------------------
-    await Money.take(player, args[1])
-    await StaffSystem.Warn.Admins("ADMIN_SETED_GOLD_TO_PLAYER2", [await PlayerData.get(player, 'pName'), args[1], await PlayerData.get(taraf, 'pName')])
-    await sendchat(player, await Language.GetValue(player.getSyncedMeta('Language'), "YOU_SET_GOLD_TO_PLAYER2", [args[1], await PlayerData.get(taraf, 'pName')]))
-    await sendchat(taraf, await Language.GetValue(taraf.getSyncedMeta('Language'), "ADMIN_SETEN_GOLD_TO_YOU", [await PlayerData.get(player, 'pName'), args[1]]))
+  if (!(await StaffSystem.IsStaff(player))) return await StaffSystem.Send_NotAdmin(player);
+  if (!(await StaffSystem.CMD.Level.check(player, "SetGold"))) return await StaffSystem.Send_Auth(player);
+  if (args[0] == undefined || args[1] == undefined) return sendchat(player, "SetGold [PlayerName/PlayerID] [Ammount]");
+  let taraf = await FindPlayerForCMD(player, args[0]);
+  if (taraf == undefined) return;
+  //--------------------------------------------------
+  await Money.take(player, args[1]);
+  await StaffSystem.Warn.Admins("ADMIN_SETED_GOLD_TO_PLAYER2", [await PlayerData.get(player, "pName"), args[1], await PlayerData.get(taraf, "pName")]);
+  await sendchat(player, await Language.GetValue(player.getSyncedMeta("Language"), "YOU_SET_GOLD_TO_PLAYER2", [args[1], await PlayerData.get(taraf, "pName")]));
+  await sendchat(taraf, await Language.GetValue(taraf.getSyncedMeta("Language"), "ADMIN_SETEN_GOLD_TO_YOU", [await PlayerData.get(player, "pName"), args[1]]));
 }
 async function GiveGold(player, args) {
-    if (!await StaffSystem.IsStaff(player)) return await StaffSystem.Send_NotAdmin(player)
-    if (!(await StaffSystem.CMD.Level.check(player, 'GiveGold')))
-        return await StaffSystem.Send_Auth(player)
-    if (args[0] == undefined || args[1] == undefined)
-        return sendchat(player, 'GiveGold [PlayerName/PlayerID] [Ammount]');
-    let taraf = await FindPlayerForCMD(player, args[0])
-    if (taraf == undefined) return
-    //--------------------------------------------------
-    await Money.give(player, args[1])
-    await StaffSystem.Warn.Admins("ADMIN_GIVED_GOLD_TO_PLAYER2", [await PlayerData.get(player, 'pName'), args[1], await PlayerData.get(taraf, 'pName')])
-    await sendchat(player, await Language.GetValue(player.getSyncedMeta('Language'), "YOU_GAVE_GOLD_TO_PLAYER2", [args[1], await PlayerData.get(taraf, 'pName')]))
-    await sendchat(taraf, await Language.GetValue(taraf.getSyncedMeta('Language'), "ADMIN_GIVEN_GOLD_TO_YOU", [await PlayerData.get(player, 'pName'), args[1]]))
+  if (!(await StaffSystem.IsStaff(player))) return await StaffSystem.Send_NotAdmin(player);
+  if (!(await StaffSystem.CMD.Level.check(player, "GiveGold"))) return await StaffSystem.Send_Auth(player);
+  if (args[0] == undefined || args[1] == undefined) return sendchat(player, "GiveGold [PlayerName/PlayerID] [Ammount]");
+  let taraf = await FindPlayerForCMD(player, args[0]);
+  if (taraf == undefined) return;
+  //--------------------------------------------------
+  await Money.give(player, args[1]);
+  await StaffSystem.Warn.Admins("ADMIN_GIVED_GOLD_TO_PLAYER2", [await PlayerData.get(player, "pName"), args[1], await PlayerData.get(taraf, "pName")]);
+  await sendchat(player, await Language.GetValue(player.getSyncedMeta("Language"), "YOU_GAVE_GOLD_TO_PLAYER2", [args[1], await PlayerData.get(taraf, "pName")]));
+  await sendchat(taraf, await Language.GetValue(taraf.getSyncedMeta("Language"), "ADMIN_GIVEN_GOLD_TO_YOU", [await PlayerData.get(player, "pName"), args[1]]));
 }
 async function TakeGold(player, args) {
-    if (!await StaffSystem.IsStaff(player)) return await StaffSystem.Send_NotAdmin(player)
-    if (!(await StaffSystem.CMD.Level.check(player, 'TakeGold')))
-        return await StaffSystem.Send_Auth(player)
-    if (args[0] == undefined || args[1] == undefined)
-        return sendchat(player, 'GiveGold [PlayerName/PlayerID] [Ammount]');
-    let taraf = await FindPlayerForCMD(player, args[0])
-    if (taraf == undefined) return
-    //--------------------------------------------------
-    await Money.take(player, args[1])
-    await StaffSystem.Warn.Admins("ADMIN_TAKED_GOLD_TO_PLAYER2", [await PlayerData.get(player, 'pName'), args[1], await PlayerData.get(taraf, 'pName')])
-    await sendchat(player, await Language.GetValue(player.getSyncedMeta('Language'), "YOU_TAKE_GOLD_TO_PLAYER2", [args[1], await PlayerData.get(taraf, 'pName')]))
-    await sendchat(taraf, await Language.GetValue(taraf.getSyncedMeta('Language'), "ADMIN_TAKEN_GOLD_TO_YOU", [await PlayerData.get(player, 'pName'), args[1]]))
+  if (!(await StaffSystem.IsStaff(player))) return await StaffSystem.Send_NotAdmin(player);
+  if (!(await StaffSystem.CMD.Level.check(player, "TakeGold"))) return await StaffSystem.Send_Auth(player);
+  if (args[0] == undefined || args[1] == undefined) return sendchat(player, "GiveGold [PlayerName/PlayerID] [Ammount]");
+  let taraf = await FindPlayerForCMD(player, args[0]);
+  if (taraf == undefined) return;
+  //--------------------------------------------------
+  await Money.take(player, args[1]);
+  await StaffSystem.Warn.Admins("ADMIN_TAKED_GOLD_TO_PLAYER2", [await PlayerData.get(player, "pName"), args[1], await PlayerData.get(taraf, "pName")]);
+  await sendchat(player, await Language.GetValue(player.getSyncedMeta("Language"), "YOU_TAKE_GOLD_TO_PLAYER2", [args[1], await PlayerData.get(taraf, "pName")]));
+  await sendchat(taraf, await Language.GetValue(taraf.getSyncedMeta("Language"), "ADMIN_TAKEN_GOLD_TO_YOU", [await PlayerData.get(player, "pName"), args[1]]));
 }
 async function SetRespect(player, args) {
-    if (!await StaffSystem.IsStaff(player)) return await StaffSystem.Send_NotAdmin(player)
-    if (!(await StaffSystem.CMD.Level.check(player, 'SetRespect')))
-        return await StaffSystem.Send_Auth(player)
-    if (args[0] == undefined || args[1] == undefined)
-        return sendchat(player, 'SetRespect [PlayerName/PlayerID] [Ammount]');
-    let taraf = await FindPlayerForCMD(player, args[0])
-    if (taraf == undefined) return
-    //--------------------------------------------------
-    await Money.take(player, args[1])
-    await StaffSystem.Warn.Admins("ADMIN_SETED_RESPECT_TO_PLAYER2", [await PlayerData.get(player, 'pName'), args[1], await PlayerData.get(taraf, 'pName')])
-    await sendchat(player, await Language.GetValue(player.getSyncedMeta('Language'), "YOU_SET_RESPECT_TO_PLAYER2", [args[1], await PlayerData.get(taraf, 'pName')]))
-    await sendchat(taraf, await Language.GetValue(taraf.getSyncedMeta('Language'), "ADMIN_SETEN_RESPECT_TO_YOU", [await PlayerData.get(player, 'pName'), args[1]]))
+  if (!(await StaffSystem.IsStaff(player))) return await StaffSystem.Send_NotAdmin(player);
+  if (!(await StaffSystem.CMD.Level.check(player, "SetRespect"))) return await StaffSystem.Send_Auth(player);
+  if (args[0] == undefined || args[1] == undefined) return sendchat(player, "SetRespect [PlayerName/PlayerID] [Ammount]");
+  let taraf = await FindPlayerForCMD(player, args[0]);
+  if (taraf == undefined) return;
+  //--------------------------------------------------
+  await Money.take(player, args[1]);
+  await StaffSystem.Warn.Admins("ADMIN_SETED_RESPECT_TO_PLAYER2", [await PlayerData.get(player, "pName"), args[1], await PlayerData.get(taraf, "pName")]);
+  await sendchat(player, await Language.GetValue(player.getSyncedMeta("Language"), "YOU_SET_RESPECT_TO_PLAYER2", [args[1], await PlayerData.get(taraf, "pName")]));
+  await sendchat(taraf, await Language.GetValue(taraf.getSyncedMeta("Language"), "ADMIN_SETEN_RESPECT_TO_YOU", [await PlayerData.get(player, "pName"), args[1]]));
 }
 async function GiveRespect(player, args) {
-    if (!await StaffSystem.IsStaff(player)) return await StaffSystem.Send_NotAdmin(player)
-    if (!(await StaffSystem.CMD.Level.check(player, 'GiveRespect')))
-        return await StaffSystem.Send_Auth(player)
-    if (args[0] == undefined || args[1] == undefined)
-        return sendchat(player, 'GiveRespect [PlayerName/PlayerID] [Ammount]');
-    let taraf = await FindPlayerForCMD(player, args[0])
-    if (taraf == undefined) return
-    //--------------------------------------------------
-    await Money.give(player, args[1])
-    await StaffSystem.Warn.Admins("ADMIN_GIVED_RESPECT_TO_PLAYER2", [await PlayerData.get(player, 'pName'), args[1], await PlayerData.get(taraf, 'pName')])
-    await sendchat(player, await Language.GetValue(player.getSyncedMeta('Language'), "YOU_GAVE_RESPECT_TO_PLAYER2", [args[1], await PlayerData.get(taraf, 'pName')]))
-    await sendchat(taraf, await Language.GetValue(taraf.getSyncedMeta('Language'), "ADMIN_GIVEN_RESPECT_TO_YOU", [await PlayerData.get(player, 'pName'), args[1]]))
+  if (!(await StaffSystem.IsStaff(player))) return await StaffSystem.Send_NotAdmin(player);
+  if (!(await StaffSystem.CMD.Level.check(player, "GiveRespect"))) return await StaffSystem.Send_Auth(player);
+  if (args[0] == undefined || args[1] == undefined) return sendchat(player, "GiveRespect [PlayerName/PlayerID] [Ammount]");
+  let taraf = await FindPlayerForCMD(player, args[0]);
+  if (taraf == undefined) return;
+  //--------------------------------------------------
+  await Money.give(player, args[1]);
+  await StaffSystem.Warn.Admins("ADMIN_GIVED_RESPECT_TO_PLAYER2", [await PlayerData.get(player, "pName"), args[1], await PlayerData.get(taraf, "pName")]);
+  await sendchat(player, await Language.GetValue(player.getSyncedMeta("Language"), "YOU_GAVE_RESPECT_TO_PLAYER2", [args[1], await PlayerData.get(taraf, "pName")]));
+  await sendchat(taraf, await Language.GetValue(taraf.getSyncedMeta("Language"), "ADMIN_GIVEN_RESPECT_TO_YOU", [await PlayerData.get(player, "pName"), args[1]]));
 }
 async function TakeRespect(player, args) {
-    if (!await StaffSystem.IsStaff(player)) return await StaffSystem.Send_NotAdmin(player)
-    if (!(await StaffSystem.CMD.Level.check(player, 'TakeRespect')))
-        return await StaffSystem.Send_Auth(player)
-    if (args[0] == undefined || args[1] == undefined)
-        return sendchat(player, 'TakeRespect [PlayerName/PlayerID] [Ammount]');
-    let taraf = await FindPlayerForCMD(player, args[0])
-    if (taraf == undefined) return
-    //--------------------------------------------------
-    await Money.take(player, args[1])
-    await StaffSystem.Warn.Admins("ADMIN_TAKED_RESPECT_TO_PLAYER2", [await PlayerData.get(player, 'pName'), args[1], await PlayerData.get(taraf, 'pName')])
-    await sendchat(player, await Language.GetValue(player.getSyncedMeta('Language'), "YOU_TAKE_RESPECT_TO_PLAYER2", [args[1], await PlayerData.get(taraf, 'pName')]))
-    await sendchat(taraf, await Language.GetValue(taraf.getSyncedMeta('Language'), "ADMIN_TAKEN_RESPECT_TO_YOU", [await PlayerData.get(player, 'pName'), args[1]]))
+  if (!(await StaffSystem.IsStaff(player))) return await StaffSystem.Send_NotAdmin(player);
+  if (!(await StaffSystem.CMD.Level.check(player, "TakeRespect"))) return await StaffSystem.Send_Auth(player);
+  if (args[0] == undefined || args[1] == undefined) return sendchat(player, "TakeRespect [PlayerName/PlayerID] [Ammount]");
+  let taraf = await FindPlayerForCMD(player, args[0]);
+  if (taraf == undefined) return;
+  //--------------------------------------------------
+  await Money.take(player, args[1]);
+  await StaffSystem.Warn.Admins("ADMIN_TAKED_RESPECT_TO_PLAYER2", [await PlayerData.get(player, "pName"), args[1], await PlayerData.get(taraf, "pName")]);
+  await sendchat(player, await Language.GetValue(player.getSyncedMeta("Language"), "YOU_TAKE_RESPECT_TO_PLAYER2", [args[1], await PlayerData.get(taraf, "pName")]));
+  await sendchat(taraf, await Language.GetValue(taraf.getSyncedMeta("Language"), "ADMIN_TAKEN_RESPECT_TO_YOU", [await PlayerData.get(player, "pName"), args[1]]));
 }
 //no LOG
 async function GotoPlayer(player, args) {
-    if (!await StaffSystem.IsStaff(player)) return await StaffSystem.Send_NotAdmin(player)
-    if (!(await StaffSystem.CMD.Level.check(player, 'GotoPlayer')))
-        return await StaffSystem.Send_Auth(player)
-    if (args[0] == undefined || args[1] == undefined)
-        return sendchat(player, 'Goto [PlayerName/PlayerID]');
-    let taraf = await FindPlayerForCMD(player, args[0])
-    if (taraf == undefined) return
-    //--------------------------------------------------
-    player.setMeta("GoBack_Status", true);
-    player.setMeta("GoBack_Pos", player.pos);
-    if (player.vehicle) {
-        player.vehicle.pos = { x: taraf.pos.x + 2, y: taraf.pos.y + 1, z: taraf.pos.z + 1 };
-    } else {
-        player.pos = { x: taraf.pos.x + 1, y: taraf.pos.y + 1, z: taraf.pos.z + 1 };
-    }
+  if (!(await StaffSystem.IsStaff(player))) return await StaffSystem.Send_NotAdmin(player);
+  if (!(await StaffSystem.CMD.Level.check(player, "GotoPlayer"))) return await StaffSystem.Send_Auth(player);
+  if (args[0] == undefined || args[1] == undefined) return sendchat(player, "Goto [PlayerName/PlayerID]");
+  let taraf = await FindPlayerForCMD(player, args[0]);
+  if (taraf == undefined) return;
+  //--------------------------------------------------
+  player.setMeta("GoBack_Status", true);
+  player.setMeta("GoBack_Pos", player.pos);
+  if (player.vehicle) {
+    player.vehicle.pos = { x: taraf.pos.x + 2, y: taraf.pos.y + 1, z: taraf.pos.z + 1 };
+  } else {
+    player.pos = { x: taraf.pos.x + 1, y: taraf.pos.y + 1, z: taraf.pos.z + 1 };
+  }
 }
 async function TeleportPlayer(player, args) {
-    if (!await StaffSystem.IsStaff(player)) return await StaffSystem.Send_NotAdmin(player)
-    if (!(await StaffSystem.CMD.Level.check(player, 'TeleportPlayer')))
-        return await StaffSystem.Send_Auth(player)
-    if (args[0] == undefined || args[1] == undefined)
-        return sendchat(player, 'TeleportPlayer(tp) [PlayerName/PlayerID]');
-    let taraf = await FindPlayerForCMD(player, args[0])
-    if (taraf == undefined) return
-    //--------------------------------------------------
-    taraf.setMeta("GoBack_Status", true);
-    taraf.setMeta("GoBack_Pos", taraf.pos);
-    if (taraf.vehicle) {
-        taraf.vehicle.pos = { x: player.pos.x + 1, y: player.pos.y + 1, z: player.pos.z + 1 };
-    } else {
-        taraf.pos = { x: player.pos.x + 1, y: player.pos.y + 1, z: player.pos.z + 1 };
-    }
+  if (!(await StaffSystem.IsStaff(player))) return await StaffSystem.Send_NotAdmin(player);
+  if (!(await StaffSystem.CMD.Level.check(player, "TeleportPlayer"))) return await StaffSystem.Send_Auth(player);
+  if (args[0] == undefined || args[1] == undefined) return sendchat(player, "TeleportPlayer(tp) [PlayerName/PlayerID]");
+  let taraf = await FindPlayerForCMD(player, args[0]);
+  if (taraf == undefined) return;
+  //--------------------------------------------------
+  taraf.setMeta("GoBack_Status", true);
+  taraf.setMeta("GoBack_Pos", taraf.pos);
+  if (taraf.vehicle) {
+    taraf.vehicle.pos = { x: player.pos.x + 1, y: player.pos.y + 1, z: player.pos.z + 1 };
+  } else {
+    taraf.pos = { x: player.pos.x + 1, y: player.pos.y + 1, z: player.pos.z + 1 };
+  }
 }
 async function GoBack(player, args) {
-    if (!await StaffSystem.IsStaff(player)) return await StaffSystem.Send_NotAdmin(player)
-    if (!(await StaffSystem.CMD.Level.check(player, 'GoBack')))
-        return await StaffSystem.Send_Auth(player)
-    //--------------------------------------------------
-    if (player.getMeta("GoBack_Status") == true) {
-        if (player.vehicle) {
-            player.vehicle.pos = player.getMeta("GoBack_Pos");
-        } else {
-            player.pos = player.getMeta("GoBack_Pos");
-        }
-        player.setMeta("GoBack_Status", false);
+  if (!(await StaffSystem.IsStaff(player))) return await StaffSystem.Send_NotAdmin(player);
+  if (!(await StaffSystem.CMD.Level.check(player, "GoBack"))) return await StaffSystem.Send_Auth(player);
+  //--------------------------------------------------
+  if (player.getMeta("GoBack_Status") == true) {
+    if (player.vehicle) {
+      player.vehicle.pos = player.getMeta("GoBack_Pos");
     } else {
-        sendchat(player, "nemishe")
+      player.pos = player.getMeta("GoBack_Pos");
     }
+    player.setMeta("GoBack_Status", false);
+  } else {
+    sendchat(player, "nemishe");
+  }
 }
 async function SendBack(player, args) {
-    if (!await StaffSystem.IsStaff(player)) return await StaffSystem.Send_NotAdmin(player)
-    if (!(await StaffSystem.CMD.Level.check(player, 'SendBack')))
-        return await StaffSystem.Send_Auth(player)
-    if (args[0] == undefined)
-        return sendchat(player, 'SendBack [PlayerName/PlayerID]');
-    let taraf = await FindPlayerForCMD(player, args[0])
-    if (taraf == undefined) return
-    //--------------------------------------------------
-    if (taraf.getMeta("GoBack_Status") == true) {
-        if (taraf.vehicle) {
-            taraf.vehicle.pos = taraf.getMeta("GoBack_Pos");
-        } else {
-            taraf.pos = taraf.getMeta("GoBack_Pos");
-        }
-        taraf.setMeta("GoBack_Status", false);
+  if (!(await StaffSystem.IsStaff(player))) return await StaffSystem.Send_NotAdmin(player);
+  if (!(await StaffSystem.CMD.Level.check(player, "SendBack"))) return await StaffSystem.Send_Auth(player);
+  if (args[0] == undefined) return sendchat(player, "SendBack [PlayerName/PlayerID]");
+  let taraf = await FindPlayerForCMD(player, args[0]);
+  if (taraf == undefined) return;
+  //--------------------------------------------------
+  if (taraf.getMeta("GoBack_Status") == true) {
+    if (taraf.vehicle) {
+      taraf.vehicle.pos = taraf.getMeta("GoBack_Pos");
     } else {
-        sendchat(player, "nemishe")
+      taraf.pos = taraf.getMeta("GoBack_Pos");
     }
+    taraf.setMeta("GoBack_Status", false);
+  } else {
+    sendchat(player, "nemishe");
+  }
 }
 async function GiveLicense(player, args) {
-    if (!await StaffSystem.IsStaff(player)) return await StaffSystem.Send_NotAdmin(player)
-    if (!(await StaffSystem.CMD.Level.check(player, 'GiveLicense')))
-        return await StaffSystem.Send_Auth(player)
-    if (args[0] == undefined && args[1] == undefined)
-        return sendchat(player, 'GiveLicense [PlayerName/PlayerID] [License]');
-    let taraf = await FindPlayerForCMD(player, args[0])
-    if (taraf == undefined) return
-    //--------------------------------------------------
-    switch (args[1].toLowerCase()) {
-        case "driving":
-            await license.give(taraf, 'driving')
-            break;
-        case "flying":
-            await license.give(taraf, 'flying')
-            break;
-        case "weapon":
-            await license.give(taraf, 'weapon')
-            break;
-        case "sailing":
-            await license.give(taraf, 'sailing')
-            break;
-        default:
-            break;
-    }
+  if (!(await StaffSystem.IsStaff(player))) return await StaffSystem.Send_NotAdmin(player);
+  if (!(await StaffSystem.CMD.Level.check(player, "GiveLicense"))) return await StaffSystem.Send_Auth(player);
+  if (args[0] == undefined && args[1] == undefined) return sendchat(player, "GiveLicense [PlayerName/PlayerID] [License]");
+  let taraf = await FindPlayerForCMD(player, args[0]);
+  if (taraf == undefined) return;
+  //--------------------------------------------------
+  switch (args[1].toLowerCase()) {
+    case "driving":
+      await license.give(taraf, "driving");
+      break;
+    case "flying":
+      await license.give(taraf, "flying");
+      break;
+    case "weapon":
+      await license.give(taraf, "weapon");
+      break;
+    case "sailing":
+      await license.give(taraf, "sailing");
+      break;
+    default:
+      break;
+  }
 }
 async function TakeLicense(player, args) {
-    if (!await StaffSystem.IsStaff(player)) return await StaffSystem.Send_NotAdmin(player)
-    if (!(await StaffSystem.CMD.Level.check(player, 'TakeLicense')))
-        return await StaffSystem.Send_Auth(player)
-    if (args[0] == undefined && args[1] == undefined)
-        return sendchat(player, 'TakeLicense [PlayerName/PlayerID] [License]');
-    let taraf = await FindPlayerForCMD(player, args[0])
-    if (taraf == undefined) return
-    //--------------------------------------------------
-    switch (args[1].toLowerCase()) {
-        case "driving":
-            await license.take(taraf, 'driving')
-            break;
-        case "flying":
-            await license.take(taraf, 'flying')
-            break;
-        case "weapon":
-            await license.take(taraf, 'weapon')
-            break;
-        case "sailing":
-            await license.take(taraf, 'sailing')
-            break;
-        default:
-            break;
-    }
+  if (!(await StaffSystem.IsStaff(player))) return await StaffSystem.Send_NotAdmin(player);
+  if (!(await StaffSystem.CMD.Level.check(player, "TakeLicense"))) return await StaffSystem.Send_Auth(player);
+  if (args[0] == undefined && args[1] == undefined) return sendchat(player, "TakeLicense [PlayerName/PlayerID] [License]");
+  let taraf = await FindPlayerForCMD(player, args[0]);
+  if (taraf == undefined) return;
+  //--------------------------------------------------
+  switch (args[1].toLowerCase()) {
+    case "driving":
+      await license.take(taraf, "driving");
+      break;
+    case "flying":
+      await license.take(taraf, "flying");
+      break;
+    case "weapon":
+      await license.take(taraf, "weapon");
+      break;
+    case "sailing":
+      await license.take(taraf, "sailing");
+      break;
+    default:
+      break;
+  }
 }
 async function SuspendLicense(player, args) {
-    if (!await StaffSystem.IsStaff(player)) return await StaffSystem.Send_NotAdmin(player)
-    if (!(await StaffSystem.CMD.Level.check(player, 'SuspendLicense')))
-        return await StaffSystem.Send_Auth(player)
-    if (args[0] == undefined && args[1] == undefined)
-        return sendchat(player, 'SuspendLicense [PlayerName/PlayerID] [License] [Time(min)]');
-    let taraf = await FindPlayerForCMD(player, args[0])
-    if (taraf == undefined) return
-    //--------------------------------------------------
-    switch (args[1].toLowerCase()) {
-        case "driving":
-            await license.suspend(taraf, 'driving', args[2])
-            break;
-        case "flying":
-            await license.take(taraf, 'flying', args[2])
-            break;
-        case "weapon":
-            await license.take(taraf, 'weapon', args[2])
-            break;
-        case "sailing":
-            await license.take(taraf, 'sailing', args[2])
-            break;
-        default:
-            break;
-    }
+  if (!(await StaffSystem.IsStaff(player))) return await StaffSystem.Send_NotAdmin(player);
+  if (!(await StaffSystem.CMD.Level.check(player, "SuspendLicense"))) return await StaffSystem.Send_Auth(player);
+  if (args[0] == undefined && args[1] == undefined) return sendchat(player, "SuspendLicense [PlayerName/PlayerID] [License] [Time(min)]");
+  let taraf = await FindPlayerForCMD(player, args[0]);
+  if (taraf == undefined) return;
+  //--------------------------------------------------
+  switch (args[1].toLowerCase()) {
+    case "driving":
+      await license.suspend(taraf, "driving", args[2]);
+      break;
+    case "flying":
+      await license.take(taraf, "flying", args[2]);
+      break;
+    case "weapon":
+      await license.take(taraf, "weapon", args[2]);
+      break;
+    case "sailing":
+      await license.take(taraf, "sailing", args[2]);
+      break;
+    default:
+      break;
+  }
 }
 async function GiveAllLicense(player, args) {
-    if (!await StaffSystem.IsStaff(player)) return await StaffSystem.Send_NotAdmin(player)
-    if (!(await StaffSystem.CMD.Level.check(player, 'GiveAllLicense')))
-        return await StaffSystem.Send_Auth(player)
-    if (args[0] == undefined && args[1] == undefined)
-        return sendchat(player, 'GiveAllLicense [PlayerName/PlayerID] ');
-    let taraf = await FindPlayerForCMD(player, args[0])
-    if (taraf == undefined) return
-    //--------------------------------------------------
-    await license.giveall(taraf)
+  if (!(await StaffSystem.IsStaff(player))) return await StaffSystem.Send_NotAdmin(player);
+  if (!(await StaffSystem.CMD.Level.check(player, "GiveAllLicense"))) return await StaffSystem.Send_Auth(player);
+  if (args[0] == undefined && args[1] == undefined) return sendchat(player, "GiveAllLicense [PlayerName/PlayerID] ");
+  let taraf = await FindPlayerForCMD(player, args[0]);
+  if (taraf == undefined) return;
+  //--------------------------------------------------
+  await license.giveall(taraf);
 }
 async function SetPlayerPos(player, args) {
-    if (!await StaffSystem.IsStaff(player)) return await StaffSystem.Send_NotAdmin(player)
-    if (!(await StaffSystem.CMD.Level.check(player, 'SetPlayerPos')))
-        return await StaffSystem.Send_Auth(player)
-    if (args[0] == undefined && args[1] == undefined && args[2] == undefined && args[3] == undefined)
-        return sendchat(player, 'SetPlayerPos [PlayerName/PlayerID] (Pos: x, Pos: y, Pos: z)');
-    let taraf = await FindPlayerForCMD(player, args[0])
-    if (taraf == undefined) return
-    //--------------------------------------------------
-    let pos_x = parseFloat(args[1]);
-    let pos_y = parseFloat(args[2]);
-    let pos_z = parseFloat(args[3]);
-    if (isNaN(pos_x) || isNaN(pos_y) || isNaN(pos_z)) {
-        return await sendchat(player, 'SetPlayerPos [PlayerName/PlayerID] (Pos: x, Pos: y, Pos: z)');
-    }
-    if (taraf.vehicle) {
-        taraf.vehicle.pos = new alt.Vector3(pos_x, pos_y, pos_z);
-    } else {
-        player.pos = new alt.Vector3(pos_x, pos_y, pos_z);
-    }
+  if (!(await StaffSystem.IsStaff(player))) return await StaffSystem.Send_NotAdmin(player);
+  if (!(await StaffSystem.CMD.Level.check(player, "SetPlayerPos"))) return await StaffSystem.Send_Auth(player);
+  if (args[0] == undefined && args[1] == undefined && args[2] == undefined && args[3] == undefined) return sendchat(player, "SetPlayerPos [PlayerName/PlayerID] (Pos: x, Pos: y, Pos: z)");
+  let taraf = await FindPlayerForCMD(player, args[0]);
+  if (taraf == undefined) return;
+  //--------------------------------------------------
+  let pos_x = parseFloat(args[1]);
+  let pos_y = parseFloat(args[2]);
+  let pos_z = parseFloat(args[3]);
+  if (isNaN(pos_x) || isNaN(pos_y) || isNaN(pos_z)) {
+    return await sendchat(player, "SetPlayerPos [PlayerName/PlayerID] (Pos: x, Pos: y, Pos: z)");
+  }
+  if (taraf.vehicle) {
+    taraf.vehicle.pos = new alt.Vector3(pos_x, pos_y, pos_z);
+  } else {
+    player.pos = new alt.Vector3(pos_x, pos_y, pos_z);
+  }
 }
 async function SetMyPos(player, args) {
-    if (!await StaffSystem.IsStaff(player)) return await StaffSystem.Send_NotAdmin(player)
-    if (!(await StaffSystem.CMD.Level.check(player, 'SetMyPos')))
-        return await StaffSystem.Send_Auth(player)
-    if (args[0] == undefined && args[1] == undefined && args[2] == undefined)
-        return sendchat(player, 'SetMyPos (Pos: x, Pos: y, Pos: z)');
-    //--------------------------------------------------
-    let pos_x = parseFloat(args[0]);
-    let pos_y = parseFloat(args[1]);
-    let pos_z = parseFloat(args[2]);
-    if (isNaN(pos_x) || isNaN(pos_y) || isNaN(pos_z)) {
-        return await sendchat(player, 'SetMyPos (Pos: x, Pos: y, Pos: z)');
-    }
-    if (player.vehicle) {
-        player.vehicle.pos = new alt.Vector3(pos_x, pos_y, pos_z);
-    } else {
-        player.pos = new alt.Vector3(pos_x, pos_y, pos_z);
-    }
+  if (!(await StaffSystem.IsStaff(player))) return await StaffSystem.Send_NotAdmin(player);
+  if (!(await StaffSystem.CMD.Level.check(player, "SetMyPos"))) return await StaffSystem.Send_Auth(player);
+  if (args[0] == undefined && args[1] == undefined && args[2] == undefined) return sendchat(player, "SetMyPos (Pos: x, Pos: y, Pos: z)");
+  //--------------------------------------------------
+  let pos_x = parseFloat(args[0]);
+  let pos_y = parseFloat(args[1]);
+  let pos_z = parseFloat(args[2]);
+  if (isNaN(pos_x) || isNaN(pos_y) || isNaN(pos_z)) {
+    return await sendchat(player, "SetMyPos (Pos: x, Pos: y, Pos: z)");
+  }
+  if (player.vehicle) {
+    player.vehicle.pos = new alt.Vector3(pos_x, pos_y, pos_z);
+  } else {
+    player.pos = new alt.Vector3(pos_x, pos_y, pos_z);
+  }
 }
 async function ShowMyPos(player, args) {
-    if (!await StaffSystem.IsStaff(player)) return await StaffSystem.Send_NotAdmin(player)
-    if (!(await StaffSystem.CMD.Level.check(player, 'ShowMyPos')))
-        return await StaffSystem.Send_Auth(player)
-    //--------------------------------------------------
-    return sendchat(player, `X: ${player.pos.x}, Y: ${player.pos.y}, Z: ${player.pos.z}`);
+  if (!(await StaffSystem.IsStaff(player))) return await StaffSystem.Send_NotAdmin(player);
+  if (!(await StaffSystem.CMD.Level.check(player, "ShowMyPos"))) return await StaffSystem.Send_Auth(player);
+  //--------------------------------------------------
+  return sendchat(player, `X: ${player.pos.x}, Y: ${player.pos.y}, Z: ${player.pos.z}`);
 }
 async function ShowPlayerPos(player, args) {
-    if (!await StaffSystem.IsStaff(player)) return await StaffSystem.Send_NotAdmin(player)
-    if (!(await StaffSystem.CMD.Level.check(player, 'ShowPlayerPos')))
-        return await StaffSystem.Send_Auth(player)
-    if (args[0] == undefined && args[1] == undefined && args[2] == undefined)
-        return sendchat(player, 'ShowPlayerPos (Pos: x, Pos: y, Pos: z)');
-    let taraf = await FindPlayerForCMD(player, args[0])
-    if (taraf == undefined) return
-    //--------------------------------------------------
-    return sendchat(player, `X: ${taraf.pos.x}, Y: ${taraf.pos.y}, Z: ${taraf.pos.z}`);
+  if (!(await StaffSystem.IsStaff(player))) return await StaffSystem.Send_NotAdmin(player);
+  if (!(await StaffSystem.CMD.Level.check(player, "ShowPlayerPos"))) return await StaffSystem.Send_Auth(player);
+  if (args[0] == undefined && args[1] == undefined && args[2] == undefined) return sendchat(player, "ShowPlayerPos (Pos: x, Pos: y, Pos: z)");
+  let taraf = await FindPlayerForCMD(player, args[0]);
+  if (taraf == undefined) return;
+  //--------------------------------------------------
+  return sendchat(player, `X: ${taraf.pos.x}, Y: ${taraf.pos.y}, Z: ${taraf.pos.z}`);
 }
 async function RespawnAllStaticVehicles(player, args) {
-    if (!await StaffSystem.IsStaff(player)) return await StaffSystem.Send_NotAdmin(player)
-    if (!(await StaffSystem.CMD.Level.check(player, 'RespawnAllStaticVehicles')))
-        return await StaffSystem.Send_Auth(player)
-    if (args[0] == undefined && args[1] == undefined && args[2] == undefined)
-        return sendchat(player, 'RespawnAllStaticVehicles(rasv) [Force=(0/1)] [Repair=(0/1)]');
-    //--------------------------------------------------
-    await VehicleClass.respawn.allserver("static", args[0], args[1])
+  if (!(await StaffSystem.IsStaff(player))) return await StaffSystem.Send_NotAdmin(player);
+  if (!(await StaffSystem.CMD.Level.check(player, "RespawnAllStaticVehicles"))) return await StaffSystem.Send_Auth(player);
+  if (args[0] == undefined && args[1] == undefined && args[2] == undefined) return sendchat(player, "RespawnAllStaticVehicles(rasv) [Force=(0/1)] [Repair=(0/1)]");
+  //--------------------------------------------------
+  await VehicleClass.respawn.allserver("static", args[0], args[1]);
 }
 async function RespawnAllFactionVehicles(player, args) {
-    if (!await StaffSystem.IsStaff(player)) return await StaffSystem.Send_NotAdmin(player)
-    if (!(await StaffSystem.CMD.Level.check(player, 'RespawnAllFactionVehicles')))
-        return await StaffSystem.Send_Auth(player)
-    if (args[0] == undefined && args[1] == undefined && args[2] == undefined)
-        return sendchat(player, 'RespawnAllFactionVehicles(rafv) [Force=(0/1)] [Repair=(0/1)]');
-    //--------------------------------------------------
-    await VehicleClass.respawn.allserver("faction", args[0], args[1])
+  if (!(await StaffSystem.IsStaff(player))) return await StaffSystem.Send_NotAdmin(player);
+  if (!(await StaffSystem.CMD.Level.check(player, "RespawnAllFactionVehicles"))) return await StaffSystem.Send_Auth(player);
+  if (args[0] == undefined && args[1] == undefined && args[2] == undefined) return sendchat(player, "RespawnAllFactionVehicles(rafv) [Force=(0/1)] [Repair=(0/1)]");
+  //--------------------------------------------------
+  await VehicleClass.respawn.allserver("faction", args[0], args[1]);
 }
 async function RespawnAllPersonalVehicles(player, args) {
-    if (!await StaffSystem.IsStaff(player)) return await StaffSystem.Send_NotAdmin(player)
-    if (!(await StaffSystem.CMD.Level.check(player, 'RespawnAllPersonalVehicles')))
-        return await StaffSystem.Send_Auth(player)
-    if (args[0] == undefined && args[1] == undefined && args[2] == undefined)
-        return sendchat(player, 'RespawnAllPersonalVehicles(rapv) [Force=(0/1)] [Repair=(0/1)]');
-    //--------------------------------------------------
-    await VehicleClass.respawn.allserver("personal", args[0], args[1])
+  if (!(await StaffSystem.IsStaff(player))) return await StaffSystem.Send_NotAdmin(player);
+  if (!(await StaffSystem.CMD.Level.check(player, "RespawnAllPersonalVehicles"))) return await StaffSystem.Send_Auth(player);
+  if (args[0] == undefined && args[1] == undefined && args[2] == undefined) return sendchat(player, "RespawnAllPersonalVehicles(rapv) [Force=(0/1)] [Repair=(0/1)]");
+  //--------------------------------------------------
+  await VehicleClass.respawn.allserver("personal", args[0], args[1]);
 }
 async function RespawnVehicle(player, args) {
-    if (!await StaffSystem.IsStaff(player)) return await StaffSystem.Send_NotAdmin(player)
-    if (!(await StaffSystem.CMD.Level.check(player, 'RespawnVehicle')))
-        return await StaffSystem.Send_Auth(player)
-    if (args[0] == undefined && args[1] == undefined && args[2] == undefined)
-        return sendchat(player, 'RespawnVehicle [VehicleID] [Force=(0/1)] [Repair=(0/1)]');
-    //--------------------------------------------------
-    if (isNaN(parseInt(args[0]))) {
-        return await sendchat(player, 'RespawnVehicle [VehicleID] [Force=(0/1)] [Repair=(0/1)]');
-    }
-    await VehicleClass.respawn.avehicle(await VehicleClass.gameid.GetVehicleFromID(parseInt(args[0])), args[1], args[2])
+  if (!(await StaffSystem.IsStaff(player))) return await StaffSystem.Send_NotAdmin(player);
+  if (!(await StaffSystem.CMD.Level.check(player, "RespawnVehicle"))) return await StaffSystem.Send_Auth(player);
+  if (args[0] == undefined && args[1] == undefined && args[2] == undefined) return sendchat(player, "RespawnVehicle [VehicleID] [Force=(0/1)] [Repair=(0/1)]");
+  //--------------------------------------------------
+  if (isNaN(parseInt(args[0]))) {
+    return await sendchat(player, "RespawnVehicle [VehicleID] [Force=(0/1)] [Repair=(0/1)]");
+  }
+  await VehicleClass.respawn.avehicle(await VehicleClass.gameid.GetVehicleFromID(parseInt(args[0])), args[1], args[2]);
 }
 async function GoFront(player, args) {
-    if (!await StaffSystem.IsStaff(player)) return await StaffSystem.Send_NotAdmin(player)
-    if (!(await StaffSystem.CMD.Level.check(player, 'GoFront')))
-        return await StaffSystem.Send_Auth(player)
-    if (args[0] == undefined && args[1] == undefined && args[2] == undefined)
-        return sendchat(player, 'Fornt [ammount]');
-    //--------------------------------------------------
-    const num = Math.abs(Math.cos(player.rot.x));
-    const posFront = {
-        x: player.pos.x + (-Math.sin(player.rot.z) * num * args[0]),
-        y: player.pos.y + (Math.cos(player.rot.z) * num * args[0]),
-        z: player.pos.z
-    };
-    return new alt.Vector3(posFront.x, posFront.y, posFront.z);
+  if (!(await StaffSystem.IsStaff(player))) return await StaffSystem.Send_NotAdmin(player);
+  if (!(await StaffSystem.CMD.Level.check(player, "GoFront"))) return await StaffSystem.Send_Auth(player);
+  if (args[0] == undefined && args[1] == undefined && args[2] == undefined) return sendchat(player, "Fornt [ammount]");
+  //--------------------------------------------------
+  const num = Math.abs(Math.cos(player.rot.x));
+  const posFront = {
+    x: player.pos.x + -Math.sin(player.rot.z) * num * args[0],
+    y: player.pos.y + Math.cos(player.rot.z) * num * args[0],
+    z: player.pos.z,
+  };
+  return new alt.Vector3(posFront.x, posFront.y, posFront.z);
 }
 async function GoRight(player, args) {
-    if (!await StaffSystem.IsStaff(player)) return await StaffSystem.Send_NotAdmin(player)
-    if (!(await StaffSystem.CMD.Level.check(player, 'GoRight')))
-        return await StaffSystem.Send_Auth(player)
-    if (args[0] == undefined && args[1] == undefined && args[2] == undefined)
-        return sendchat(player, 'Right [ammount]');
-    //--------------------------------------------------
-    const num = Math.abs(Math.cos(player.rot.x));
-    const posFront = {
-        x: player.pos.x + (-Math.sin(player.rot.z - 90) * num * args[0]),
-        y: player.pos.y + (Math.cos(player.rot.z - 90) * num * args[0]),
-        z: player.pos.z
-    };
-    return new alt.Vector3(posFront.x, posFront.y, posFront.z);
+  if (!(await StaffSystem.IsStaff(player))) return await StaffSystem.Send_NotAdmin(player);
+  if (!(await StaffSystem.CMD.Level.check(player, "GoRight"))) return await StaffSystem.Send_Auth(player);
+  if (args[0] == undefined && args[1] == undefined && args[2] == undefined) return sendchat(player, "Right [ammount]");
+  //--------------------------------------------------
+  const num = Math.abs(Math.cos(player.rot.x));
+  const posFront = {
+    x: player.pos.x + -Math.sin(player.rot.z - 90) * num * args[0],
+    y: player.pos.y + Math.cos(player.rot.z - 90) * num * args[0],
+    z: player.pos.z,
+  };
+  return new alt.Vector3(posFront.x, posFront.y, posFront.z);
 }
 async function GoLeft(player, args) {
-    if (!await StaffSystem.IsStaff(player)) return await StaffSystem.Send_NotAdmin(player)
-    if (!(await StaffSystem.CMD.Level.check(player, 'GoLeft')))
-        return await StaffSystem.Send_Auth(player)
-    if (args[0] == undefined && args[1] == undefined && args[2] == undefined)
-        return sendchat(player, 'Left [ammount]');
-    //--------------------------------------------------
-    const num = Math.abs(Math.cos(player.rot.x));
-    const posFront = {
-        x: player.pos.x + (-Math.sin(player.rot.z + 90) * num * args[0]),
-        y: player.pos.y + (Math.cos(player.rot.z + 90) * num * args[0]),
-        z: player.pos.z
-    };
-    return new alt.Vector3(posFront.x, posFront.y, posFront.z);
+  if (!(await StaffSystem.IsStaff(player))) return await StaffSystem.Send_NotAdmin(player);
+  if (!(await StaffSystem.CMD.Level.check(player, "GoLeft"))) return await StaffSystem.Send_Auth(player);
+  if (args[0] == undefined && args[1] == undefined && args[2] == undefined) return sendchat(player, "Left [ammount]");
+  //--------------------------------------------------
+  const num = Math.abs(Math.cos(player.rot.x));
+  const posFront = {
+    x: player.pos.x + -Math.sin(player.rot.z + 90) * num * args[0],
+    y: player.pos.y + Math.cos(player.rot.z + 90) * num * args[0],
+    z: player.pos.z,
+  };
+  return new alt.Vector3(posFront.x, posFront.y, posFront.z);
 }
 async function HwBan(player, args) {
-    if (!await StaffSystem.IsStaff(player)) return await StaffSystem.Send_NotAdmin(player)
-    if (!(await StaffSystem.CMD.Level.check(player, 'HwBan')))
-        return await StaffSystem.Send_Auth(player)
-    if (args[0] == undefined || args[1] == undefined || args[2] == undefined || args[3] == undefined || args[4] == undefined)
-        return sendchat(player, 'HwBan [PlayerName/PlayerID] [Time(Day)] [Permanet] [AllAccounts] [Reason]');
-    let taraf = await FindPlayerForCMD(player, args[0])
-    if (taraf == undefined) return
-    //--------------------------------------------------
-    let Time = (args[1] * 86400000) + Date.now()
-    let reason = args.slice(4).join(" ");
-    Ban.hwban.new(taraf, player, reason, Time, args[2], args[3])
-    taraf.kick(`You are benned From this Server\n${reason}`)
+  if (!(await StaffSystem.IsStaff(player))) return await StaffSystem.Send_NotAdmin(player);
+  if (!(await StaffSystem.CMD.Level.check(player, "HwBan"))) return await StaffSystem.Send_Auth(player);
+  if (args[0] == undefined || args[1] == undefined || args[2] == undefined || args[3] == undefined || args[4] == undefined) return sendchat(player, "HwBan [PlayerName/PlayerID] [Time(Day)] [Permanet] [AllAccounts] [Reason]");
+  let taraf = await FindPlayerForCMD(player, args[0]);
+  if (taraf == undefined) return;
+  //--------------------------------------------------
+  let Time = args[1] * 86400000 + Date.now();
+  let reason = args.slice(4).join(" ");
+  Ban.hwban.new(taraf, player, reason, Time, args[2], args[3]);
+  taraf.kick(`You are benned From this Server\n${reason}`);
 }
 async function unHwBan(player, args) {
-    if (!await StaffSystem.IsStaff(player)) return await StaffSystem.Send_NotAdmin(player)
-    if (!(await StaffSystem.CMD.Level.check(player, 'HwBan')))
-        return await StaffSystem.Send_Auth(player)
-    if (args[0] == undefined)
-        return sendchat(player, 'unHwBan [hwid]');
-    //--------------------------------------------------
-   let status=await Ban.hwban.remove(args[0])
+  if (!(await StaffSystem.IsStaff(player))) return await StaffSystem.Send_NotAdmin(player);
+  if (!(await StaffSystem.CMD.Level.check(player, "HwBan"))) return await StaffSystem.Send_Auth(player);
+  if (args[0] == undefined) return sendchat(player, "unHwBan [hwid]");
+  //--------------------------------------------------
+  let status = await Ban.hwban.remove(args[0]);
 }
-registerCmd('makeadmin', MakeAdmin)
-registerCmd('MA', MakeAdmin)
-registerCmd('GiveStaffPoint', GiveStaffPoint)
-registerCmd('GiveSP', GiveStaffPoint)
-registerCmd('TakeStaffPoint', TakeStaffPoint)
-registerCmd('TakeSP', TakeStaffPoint)
-registerCmd('SetStaffPoint', SetStaffPoint)
-registerCmd('SetSP', SetStaffPoint)
-registerCmd('AdminVehicle', CreateAdminVehicle)
-registerCmd('veh', CreateAdminVehicle)
-registerCmd('DV', DeleteAdminVehicle)
-registerCmd('DeleteAdminVehicle', DeleteAdminVehicle)
-registerCmd('DSV', DeleteStaticVehicle)
-registerCmd('DeleteStaticVehicle', DeleteStaticVehicle)
-registerCmd('DFV', DeleteFactionVehicle)
-registerCmd('DeleteFactionVehicle', DeleteFactionVehicle)
-registerCmd('CSV', CreateStaticVehicle)
-registerCmd('createStaticVehicle', CreateStaticVehicle)
-registerCmd('Cfv', CreateFactionVehicle)
-registerCmd('CreateFactionVehicle', CreateFactionVehicle)
-registerCmd('GotoPlace', GotoPlace)
-registerCmd('GiveMoney', GiveMoney)
-registerCmd('TakeMoney', TakeMoney)
-registerCmd('SetMoney', SetMoney)
-registerCmd('SetGold', SetGold)
-registerCmd('TakeGold', TakeGold)
-registerCmd('GiveGold', GiveGold)
-registerCmd('SetRespect', SetRespect)
-registerCmd('GiveRespect', GiveRespect)
-registerCmd('TakeRespect', TakeRespect)
-registerCmd('GotoPlayer', GotoPlayer)
-registerCmd('TeleportPlayer', TeleportPlayer)
-registerCmd('GoBack', GoBack)
-registerCmd('SendBack', SendBack)
-registerCmd('GiveLicense', GiveLicense)
-registerCmd('TakeLicense', TakeLicense)
-registerCmd('SuspendLicense', SuspendLicense)
-registerCmd('GiveAllLicense', GiveAllLicense)
-registerCmd('SetPlayerPos', SetPlayerPos)
-registerCmd('SetMyPos', SetMyPos)
-registerCmd('ShowMyPos', ShowMyPos)
-registerCmd('ShowPlayerPos', ShowPlayerPos)
-registerCmd('RespawnAllStaticVehicles', RespawnAllStaticVehicles)
-registerCmd('rasv', RespawnAllStaticVehicles)
-registerCmd('RespawnAllFactionVehicles', RespawnAllFactionVehicles)
-registerCmd('rafv', RespawnAllFactionVehicles)
-registerCmd('RespawnAllPersonalVehicles', RespawnAllPersonalVehicles)
-registerCmd('rapv', RespawnAllPersonalVehicles)
-registerCmd('RespawnVehicle', RespawnVehicle)
-registerCmd('GoFront', GoFront)
-registerCmd('GoRight', GoRight)
-registerCmd('GoLeft', GoLeft)
-registerCmd('HwBan', HwBan)
-registerCmd('unHwBan', unHwBan)
+registerCmd("makeadmin", MakeAdmin);
+registerCmd("MA", MakeAdmin);
+registerCmd("GiveStaffPoint", GiveStaffPoint);
+registerCmd("GiveSP", GiveStaffPoint);
+registerCmd("TakeStaffPoint", TakeStaffPoint);
+registerCmd("TakeSP", TakeStaffPoint);
+registerCmd("SetStaffPoint", SetStaffPoint);
+registerCmd("SetSP", SetStaffPoint);
+registerCmd("AdminVehicle", CreateAdminVehicle);
+registerCmd("veh", CreateAdminVehicle);
+registerCmd("DV", DeleteAdminVehicle);
+registerCmd("DeleteAdminVehicle", DeleteAdminVehicle);
+registerCmd("DSV", DeleteStaticVehicle);
+registerCmd("DeleteStaticVehicle", DeleteStaticVehicle);
+registerCmd("DFV", DeleteFactionVehicle);
+registerCmd("DeleteFactionVehicle", DeleteFactionVehicle);
+registerCmd("CSV", CreateStaticVehicle);
+registerCmd("createStaticVehicle", CreateStaticVehicle);
+registerCmd("Cfv", CreateFactionVehicle);
+registerCmd("CreateFactionVehicle", CreateFactionVehicle);
+registerCmd("GotoPlace", GotoPlace);
+registerCmd("GiveMoney", GiveMoney);
+registerCmd("TakeMoney", TakeMoney);
+registerCmd("SetMoney", SetMoney);
+registerCmd("SetGold", SetGold);
+registerCmd("TakeGold", TakeGold);
+registerCmd("GiveGold", GiveGold);
+registerCmd("SetRespect", SetRespect);
+registerCmd("GiveRespect", GiveRespect);
+registerCmd("TakeRespect", TakeRespect);
+registerCmd("GotoPlayer", GotoPlayer);
+registerCmd("TeleportPlayer", TeleportPlayer);
+registerCmd("GoBack", GoBack);
+registerCmd("SendBack", SendBack);
+registerCmd("GiveLicense", GiveLicense);
+registerCmd("TakeLicense", TakeLicense);
+registerCmd("SuspendLicense", SuspendLicense);
+registerCmd("GiveAllLicense", GiveAllLicense);
+registerCmd("SetPlayerPos", SetPlayerPos);
+registerCmd("SetMyPos", SetMyPos);
+registerCmd("ShowMyPos", ShowMyPos);
+registerCmd("ShowPlayerPos", ShowPlayerPos);
+registerCmd("RespawnAllStaticVehicles", RespawnAllStaticVehicles);
+registerCmd("rasv", RespawnAllStaticVehicles);
+registerCmd("RespawnAllFactionVehicles", RespawnAllFactionVehicles);
+registerCmd("rafv", RespawnAllFactionVehicles);
+registerCmd("RespawnAllPersonalVehicles", RespawnAllPersonalVehicles);
+registerCmd("rapv", RespawnAllPersonalVehicles);
+registerCmd("RespawnVehicle", RespawnVehicle);
+registerCmd("GoFront", GoFront);
+registerCmd("GoRight", GoRight);
+registerCmd("GoLeft", GoLeft);
+registerCmd("HwBan", HwBan);
+registerCmd("unHwBan", unHwBan);
 
-
-registerCmd('cb', async (player, args) => {
-    let a = await sql(`insert into business (Owner,Pos) values ('-1','${JSON.stringify({ x: player.pos.x, y: player.pos.y, z: player.pos.z })}')`)
-    console.log(a)
-})
-
-
-registerCmd("test", async (player, args) => {
-    // let a = { "driving": { "suspend": 0, "value": 0 }, "flying": { "suspend": 0, "value": 0 }, "sailing": { "suspend": 0, "value": 0 }, "weapon": { "suspend": 0, "value": 0 } }
-    // await sql(`update Account set pLicense='${JSON.stringify(a)}'`)
-    player.giveWeapon(alt.hash("weapon_minigun"), 100000, true)
-    // await PlayerData.set(player, 'pAdmin', args[0], true)
+registerCmd("cb", async (player, args) => {
+  let a = await sql(`insert into business (Owner,Pos) values ('-1','${JSON.stringify({ x: player.pos.x, y: player.pos.y, z: player.pos.z })}')`);
+  console.log(a);
 });
 
-
+registerCmd("test", async (player, args) => {
+  // let a = { "driving": { "suspend": 0, "value": 0 }, "flying": { "suspend": 0, "value": 0 }, "sailing": { "suspend": 0, "value": 0 }, "weapon": { "suspend": 0, "value": 0 } }
+  // await sql(`update Account set pLicense='${JSON.stringify(a)}'`)
+  player.giveWeapon(alt.hash("weapon_minigun"), 100000, true);
+  // await PlayerData.set(player, 'pAdmin', args[0], true)
+});
 
 // registerCmd('veh', AdminVehicle)
-
-
 
 // registerCmd("clothes", (player) => {
 //     // Set clothes

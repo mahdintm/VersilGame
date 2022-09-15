@@ -78,17 +78,13 @@ alt.everyTick(() => {
   if (VehicleSpeedOmeterInterval) VehicleSpeedOmeter();
   if (eyeTragerInterval) VGEyeTracker.eyeTracker();
 
-  if (eyeTragerInternalInterval != undefined)
-    VGEyeTracker.InternalEyeTrackerChecker(eyeTragerInternalInterval);
+  if (eyeTragerInternalInterval != undefined) VGEyeTracker.InternalEyeTrackerChecker(eyeTragerInternalInterval);
 
   if (disableLeftClickControlAction) {
     VGEyeTracker.DisableLeftClickControlAction();
   }
   if (SetHeadingPedWithKeyUpStatus) {
-    VGPeds.SetHeadingPedWithKeyUp(
-      ClothesDetails.ClothesPreviewNPCs.name,
-      KeyAOrDStatus
-    );
+    VGPeds.SetHeadingPedWithKeyUp(ClothesDetails.ClothesPreviewNPCs.name, KeyAOrDStatus);
   }
   if (SetZRotCameraWithKeyWStatus && !SetZoomCameraWithKeysStatus) {
     VGCameraClothes.GoUP(KeyWOrSStatus);

@@ -7,41 +7,22 @@ registerCmd("g", (player) => {
   alt.emitClient(player, "teleportToWaypoint");
 });
 registerCmd("gp", (player) => {
-  console.log(
-    `{x: ${player.pos.x.toFixed(3)}, y: ${player.pos.y.toFixed(
-      3
-    )}, z: ${player.pos.z.toFixed(3)},`
-  );
+  console.log(`{x: ${player.pos.x.toFixed(3)}, y: ${player.pos.y.toFixed(3)}, z: ${player.pos.z.toFixed(3)},`);
   console.log(`rx: ${player.rot.x}, ry: ${player.rot.y}, rz: ${player.rot.z}}`);
 });
 registerCmd("gpc", (player) => {
-  console.log(
-    `{x: ${player.pos.x.toFixed(3)}, y:${player.pos.y.toFixed(
-      3
-    )}, z:${player.pos.z.toFixed(3)},`
-  );
+  console.log(`{x: ${player.pos.x.toFixed(3)}, y:${player.pos.y.toFixed(3)}, z:${player.pos.z.toFixed(3)},`);
 
-  console.log(
-    `rx: ${player.rot.x}, ry: ${player.rot.y}, rz: ${
-      player.rot.z * (180 / Math.PI)
-    }}`
-  );
+  console.log(`rx: ${player.rot.x}, ry: ${player.rot.y}, rz: ${player.rot.z * (180 / Math.PI)}}`);
 });
 registerCmd("gpp", (player) => {
-  console.log(
-    `{x: ${player.pos.x.toFixed(3)}, y:${player.pos.y.toFixed(3)}, z:${
-      player.pos.z.toFixed(3) - 1
-    }, heading:${player.rot.z * (180 / Math.PI)}}`
-  );
+  console.log(`{x: ${player.pos.x.toFixed(3)}, y:${player.pos.y.toFixed(3)}, z:${player.pos.z.toFixed(3) - 1}, heading:${player.rot.z * (180 / Math.PI)}}`);
 });
 registerCmd("vs", (player, args) => {
   if (!args) return;
-  if (!player.vehicle)
-    return sendchat(player, `{ff0000}You are not enter a vehicle`);
+  if (!player.vehicle) return sendchat(player, `{ff0000}You are not enter a vehicle`);
   if (args[0] == "d") {
-    player.vehicle.driftModeEnabled
-      ? (player.vehicle.driftModeEnabled = false)
-      : (player.vehicle.driftModeEnabled = true);
+    player.vehicle.driftModeEnabled ? (player.vehicle.driftModeEnabled = false) : (player.vehicle.driftModeEnabled = true);
 
     sendchat(player, `Vehicle drift ${player.vehicle.driftModeEnabled}`);
   }
@@ -83,9 +64,5 @@ registerCmd("setpos", (player, args) => {
   if (!args[1]) return;
   if (!args[2]) return;
 
-  player.pos = new alt.Vector3(
-    parseFloat(args[0]),
-    parseFloat(args[1]),
-    parseFloat(args[2])
-  );
+  player.pos = new alt.Vector3(parseFloat(args[0]), parseFloat(args[1]), parseFloat(args[2]));
 });

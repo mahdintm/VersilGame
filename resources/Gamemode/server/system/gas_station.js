@@ -246,25 +246,14 @@ export class GasStation {
     let Price = (MaxFule - NowFule) * (await ServerSetting.get("Fuel_Price"));
     if (MaxFule == NowFule) return console.log("pore");
     if ((await Money.get(player)) < Price) return console.log("pul nadarii");
-    alt.emitClient(
-      player,
-      EventNames.player.server.isFreezeGameControlPlayer,
-      true
-    );
+    alt.emitClient(player, EventNames.player.server.isFreezeGameControlPlayer, true);
     await VehicleClass.engine.on(player.vehicle, false);
     await Money.take(player, Price);
     await Business.Money.Give(Station.business_ID, Price);
     let inter = setInterval(async () => {
-      await VehicleClass.fuel.give(
-        player.vehicle,
-        Math.random(Math.random() * (10 - 1) + 1)
-      );
+      await VehicleClass.fuel.give(player.vehicle, Math.random(Math.random() * (10 - 1) + 1));
       if (MaxFule <= (await VehicleClass.fuel.get(player.vehicle))) {
-        alt.emitClient(
-          player,
-          EventNames.player.server.isFreezeGameControlPlayer,
-          false
-        );
+        alt.emitClient(player, EventNames.player.server.isFreezeGameControlPlayer, false);
         await VehicleClass.engine.on(player.vehicle, true);
         clearInterval(inter);
       }

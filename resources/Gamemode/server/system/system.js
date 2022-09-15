@@ -10,10 +10,10 @@ import "./vehicles";
 import "./commandsTest";
 import "./staff";
 import "./socre_board";
-import './business'
-import './CMD_Chat'
-import './ClothesShop'
-import './gas_station'
-import './ban'
-import './clientEvents'
-import './vehicleManagment'
+import "./business";
+import "./CMD_Chat";
+import "./ClothesShop";
+import "./gas_station";
+import "./ban";
+import "./clientEvents";
+import "./vehicleManagment";

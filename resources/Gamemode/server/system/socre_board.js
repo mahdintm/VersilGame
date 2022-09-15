@@ -21,9 +21,9 @@ class VGScoreBoardServer {
     let PlayersCOUNT = 0;
     for await (const player of alt.Player.all) {
       if (player.getSyncedMeta("hasLogin") == false) continue;
-      PlayersCOUNT++
+      PlayersCOUNT++;
     }
-    return PlayersCOUNT
+    return PlayersCOUNT;
   }
   static async GetScoreBoardDetails() {
     const ScoreBoardDetails = {
@@ -37,13 +37,6 @@ class VGScoreBoardServer {
   }
 }
 
-alt.onClient(
-  EventNames.scoreBoard.client.GetScoreBoardDetails,
-  async (player) => {
-    alt.emitClient(
-      player,
-      EventNames.scoreBoard.server.SetScoreBoardDetails,
-      await VGScoreBoardServer.GetScoreBoardDetails()
-    );
-  }
-);
+alt.onClient(EventNames.scoreBoard.client.GetScoreBoardDetails, async (player) => {
+  alt.emitClient(player, EventNames.scoreBoard.server.SetScoreBoardDetails, await VGScoreBoardServer.GetScoreBoardDetails());
+});

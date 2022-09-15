@@ -7,17 +7,12 @@ export const eyeTrackerObjects = [
   },
   {
     name: "Clothes_NPCs",
-    titles: [
-      { title: "Clothes", action: "OpenClothesUiBox" },
-    ],
+    titles: [{ title: "Clothes", action: "OpenClothesUiBox" }],
     HashIDs: [920595805],
   },
   {
     name: "Gas_Pump",
     titles: [{ title: "Gas_Pump", action: "Fill_Gas" }],
-    HashIDs: [
-      1933174915, 2287735495, 1339433404, 1694452750, 3825272565, 3832150195,
-      4130089803,
-    ],
+    HashIDs: [1933174915, 2287735495, 1339433404, 1694452750, 3825272565, 3832150195, 4130089803],
   },
 ];
