@@ -117,6 +117,12 @@ export class PlayerData {
             })
         }
     };
+    static Offline = {
+        GetPlayerName: async(accountID) => {
+            let AccountName = await sql(`select pName From Account Where pId="${accountID}"`)
+            return await AccountName.charAt(0).toUpperCase() + await AccountName.slice(1);
+        }
+    }
 }
 
 export class playerIdGame {
