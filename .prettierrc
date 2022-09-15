@@ -1,3 +1,11 @@
 {
-    "printWidth": 1000
+    "printWidth": 1000,
+    "overrides": [
+        {
+          "files": ["resources/Gamemode/server/utils/badword_detect.js"],
+          "options": {
+            "printWidth": 80
+          }
+        }
+      ]
 }
