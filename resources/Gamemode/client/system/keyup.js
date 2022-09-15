@@ -98,12 +98,20 @@ alt.on("keyup", async (key) => {
 
       alt.emit(EventNames.eyeTracker.localClient.Manager, false);
       break;
-    case 0x14:
-      // CapsLock pressed
+    case 0x79:
+      // F10 pressed
       if (alt.isConsoleOpen()) return;
       if (native.isPauseMenuActive()) return;
 
       alt.emit(EventNames.scoreBoard.localClient.ActiveScoreBoard, false);
+      break;
+    case 0x20:
+      // Space pressed
+      if (alt.isConsoleOpen()) return;
+      if (native.isPauseMenuActive()) return;
+      if (VGView.isGameControls()) return;
+
+      alt.emit(EventNames.HUD.localClient.HandBrake, false);
       break;
   }
 });

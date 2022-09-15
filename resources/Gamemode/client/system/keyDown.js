@@ -1,10 +1,11 @@
-import * as alt from "alt";
+import * as alt from "alt-client";
 import * as native from "natives";
 
 import { EventNames } from "../utils/eventNames";
 import { WebViewStatus } from "../utils/WebViewStatus";
 import { VGView } from "../views/webViewController";
 import { ChangeValueFromVariable } from "./everyTick";
+import { VG } from "./functions";
 
 alt.on("keydown", async (key) => {
   switch (key) {
@@ -133,12 +134,44 @@ alt.on("keydown", async (key) => {
 
       alt.emit(EventNames.eyeTracker.localClient.Manager, true);
       break;
-    case 0x14:
-      // CapsLock pressed
+    case 0x79:
+      // F10 pressed
       if (alt.isConsoleOpen()) return;
       if (native.isPauseMenuActive()) return;
 
       alt.emit(EventNames.scoreBoard.localClient.ActiveScoreBoard, true);
+      break;
+    case 0x20:
+      // Space pressed
+      if (alt.isConsoleOpen()) return;
+      if (native.isPauseMenuActive()) return;
+      if (VGView.isGameControls()) return;
+
+      alt.emit(EventNames.HUD.localClient.HandBrake, true);
+      break;
+    case 0xbc:
+      // , Pressed
+      if (alt.isConsoleOpen()) return;
+      if (native.isPauseMenuActive()) return;
+      if (VGView.isGameControls()) return;
+
+      alt.emit(EventNames.HUD.localClient.IndicatorLeft);
+      break;
+    case 0xbe:
+      // . Pressed
+      if (alt.isConsoleOpen()) return;
+      if (native.isPauseMenuActive()) return;
+      if (VGView.isGameControls()) return;
+
+      alt.emit(EventNames.HUD.localClient.IndicatorRight);
+      break;
+    case 0x4c:
+      // L Peressed
+      alt.emit(EventNames.HUD.localClient.SeatBelt);
+      break;
+    case 0x42:
+      // B Peressed
+      alt.emit(EventNames.HUD.localClient.Cruse);
       break;
   }
 });

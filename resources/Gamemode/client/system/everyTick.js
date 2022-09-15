@@ -10,6 +10,7 @@ import { VGCameraClothes } from "../views/cameraClothes";
 import { VGScoreBoard } from "../views/scoreBoard";
 import { distance2d, drawText3d } from "./functions";
 import { VG3DText } from "./load3DText";
+import { EveryTickForHUD } from "../views/HUD";
 
 let eyeTragerInterval = false,
   VehicleSpeedOmeterInterval = false,
@@ -22,7 +23,8 @@ let eyeTragerInterval = false,
   SetZoomCameraWithKeysStatus = false,
   KeyZoomStatus = false,
   ScoreBoardStatus = false,
-  disableLeftClickControlFromScoreBoard = false;
+  disableLeftClickControlFromScoreBoard = false,
+  isHUDActived = false;
 
 export function ChangeValueFromVariable(Variable, Value) {
   switch (Variable) {
@@ -62,12 +64,17 @@ export function ChangeValueFromVariable(Variable, Value) {
     case "disableLeftClickControlFromScoreBoard":
       disableLeftClickControlFromScoreBoard = Value;
       break;
+    case "isHUDActived":
+      isHUDActived = Value;
+      break;
   }
 }
 alt.everyTick(() => {
   EveryTickEvents();
   VG3DText.Load();
-  // VGEyeTracker.GetObject();
+  VGEyeTracker.GetObject();
+
+  if (isHUDActived) EveryTickForHUD();
   if (VehicleSpeedOmeterInterval) VehicleSpeedOmeter();
   if (eyeTragerInterval) VGEyeTracker.eyeTracker();
 
@@ -119,3 +126,6 @@ alt.setInterval(() => {
   // console.log("Ping:", alt.getPing());
   // console.log("FPS:", alt.getFps());
 }, 1000);
+
+// 868499217
+// 3146141106

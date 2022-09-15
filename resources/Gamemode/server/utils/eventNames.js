@@ -1,13 +1,15 @@
-// event clint be clinet "Local:"
-// event server be server "Local:"
-// event server be client "Server:"
-// event client be server "Client:"
-// event client be web "ClientWEB:"
-// event web to client "WEBClient:"
+// event clint be clinet "Local:
+// event server be server "Local:
+// event server be client "Server:
+// event client be server "Client:
+// event client be web "ClientWEB:
+// event web to client "WEBClient:
 export const EventNames = {
   player: {
     localClient: {
+      startScriptConnection: "Local:WebView:startScriptConnection",
       webViewCompleteLoaded: "Local:WebView:WebViewCompleteLoaded",
+      KeyManagment: "Local:Keys:KeyManagment",
     },
     localServer: {},
     server: {
@@ -18,9 +20,15 @@ export const EventNames = {
       Add3DText: "Server:ManagePlayer:Add3DText",
       Remove3DText: "Server:ManagePlayer:Remove3DText",
       Modify3DText: "Server:ManagePlayer:Modify3DText",
+      RequestIPL: "Server:ManagePlayer:RequestIPL",
+      RemoveIPL: "Server:ManagePlayer:RemoveIPL",
+      SeatBelt: "Client:VehicleDetails:SeatBelt",
+      Cruse: "Client:VehicleDetails:Cruse",
     },
     client: {
       ServerLog: "Client:DebugMode:ConsoleLogInServer",
+      SeatBelt: "Client:VehicleDetails:SeatBelt",
+      Cruse: "Client:VehicleDetails:Cruse",
     },
     clientWEB: {},
     WEBclient: {},
@@ -35,15 +43,6 @@ export const EventNames = {
     clientWEB: {},
     WEBclient: {
       mountedAndReady: "WEBclient:allVue:mountedAndReady",
-    },
-  },
-  clothes: {
-    localServer: {},
-    server: {
-      SendGender: "Server:Clothes:SendGender",
-    },
-    client: {
-      GetGender: "Client:Clothes:GetGender",
     },
   },
   login: {
@@ -82,16 +81,68 @@ export const EventNames = {
       AddMessage: "ClientWEB:Chat:AddMessage",
       InsertSlash: "ClientWEB:Chat:InsertSlash",
       OpenChat: "ClientWEB:Chat:OpenChat",
+      CloseChat: "ClientWEB:Chat:CloseChat",
       Scroll: "ClientWEB:Chat:Scroll",
+      KeyRowUpPressed: "ClientWEB:Chat:KeyRowUpPressed",
     },
     WEBclient: {
       CloseChat: "WEBClient:Chat:CloseChat",
       AddMessage: "WEBClient:Chat:AddMessage",
     },
   },
+  clothes: {
+    localClient: {
+      ActiveClothes: "local:Clothes:ActiveClothes",
+    },
+    localServer: {},
+    server: {
+      SendGender: "Server:Clothes:SendGender",
+    },
+    client: {
+      GetGender: "Client:Clothes:GetGender",
+    },
+    clientWEB: {
+      OpenClothes: "ClientWEB:Clothes:OpenClothes",
+      SexChanged: "ClientWEB:Clothes:SexChanged",
+      KeyRowUpPressed: "ClientWEB:clothes:KeyRowUpPressed",
+      KeyRowLeftPressed: "ClientWEB:clothes:KeyRowLeftPressed",
+      SetSuggestion: "ClientWEB:clothes:SetSuggestion",
+      SetDrawableIndex: "ClientWEB:clothes:SetDrawableIndex",
+    },
+    WEBclient: {
+      ChangeClothes: "WEBclient:Clothes:ChangeClothes",
+      ChangeSex: "WEBclient:Clothes:ChangeSex",
+      CloseClothes: "WEBclient:Clothes:CloseClothes",
+      Suggestion: "WEBclient:Clothes:Suggestion",
+      OrderList: "WEBclient:Clothes:OrderList",
+    },
+  },
+  eyeTracker: {
+    localClient: {
+      LeftClickMousePressed: "Local:eyeTracker:LeftClickMousePressed",
+      Manager: "Local:eyeTracker:Manager",
+    },
+    localServer: {},
+    server: {},
+    client: {},
+    clientWEB: {
+      Status: "ClientWEB:eyeTracker:Status",
+      MenuStatus: "ClientWEB:eyeTracker:MenuStatus",
+    },
+    WEBclient: {
+      ButtonCloseMenuPressed: "WEBclient:eyeTracker:ButtonCloseMenuPressed",
+      ObjectSelectedFromPlayer: "WEBclient:eyeTracker:ObjectSelectedFromPlayer",
+    },
+  },
+  introMusic: {
+    clientWEB: {
+      changeVolume: "ClientWEB:introMusic:changeVolume",
+    },
+  },
   scoreBoard: {
     localClient: {
-      ActiveScoreBoard: "local:Clothes:ActiveScoreBoard",
+      ActiveScoreBoard: "local:ScoreBoard:ActiveScoreBoard",
+      LeftClickMousePressed: "Local:ScoreBoard:LeftClickMousePressed",
     },
     server: {
       SetScoreBoardDetails: "Server:ScoreBoard:SetScoreBoardDetails",
@@ -102,5 +153,23 @@ export const EventNames = {
     clientWEB: {
       SetScoreBoardDetails: "ClientWEB:ScoreBoard:SetScoreBoardDetails",
     },
+    WEBclient: {
+      CloseScoreBoard: "WEBclient:ScoreBoard:CloseScoreBoard",
+    },
+  },
+  HUD: {
+    localClient: {
+      IndicatorLeft: "localClient:HUD:IndicatorLeft",
+      IndicatorRight: "localClient:HUD:IndicatorRight",
+      HandBrake: "localClient:HUD:HandBrake",
+      SeatBelt: "localClient:HUD:SeatBelt",
+      Cruse: "localClient:HUD:Cruse",
+    },
+    clientWEB: {
+      SetPlayerCashDetails: "ClientWEB:HUD:SetPlayerCashDetails",
+      SetCarHUDDetails: "ClientWEB:HUD:SetCarHUDDetails",
+      SetVeniceHUDDetails: "ClientWEB:HUD:SetVeniceHUDDetails",
+    },
+    WEBclient: {},
   },
 };

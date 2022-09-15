@@ -35,6 +35,12 @@ export async function LoadLoginPage() {
   }
   setTimeout(LoginCamera, 10); // Agar in nabashad camera e'mal nemishavad
 
+  function ValidateEmail(email) {
+    const ValidRegex =
+      /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return email.match(ValidRegex);
+  }
+
   await VGView.emit(
     WebViewStatus.login.name,
     EventNames.login.clientWEB.SetDataWeb,
@@ -64,22 +70,75 @@ export async function LoadLoginPage() {
       password: obj.Password,
     });
   });
+  VGView.on(EventNames.login.WEBclient.RegisterAccount, (Details) => {
+    // {
+    //     Username: RegisterUsername.value,
+    //     Email: RegisterEmail.value,
+    //     Password: RegisterPassword.value,
+    //     RePassword: RegisterRePassword.value,
+    //     CheckBox: RegisterCheckBox.checked
+    // }
+    let DataVerification = {
+      Username: false,
+      isUsernameExist: true,
+      Email: false,
+      Password: false,
+      CheckBox: false,
+    };
+    if (Details.Username.length > 3 && Details.Username.length < 15)
+      DataVerification.Username = true;
 
-  alt.onServer("CallBack_Login_Account_To_Server", async (state) => {
-    if (state == true) {
-      await VGView.emit(
-        WebViewStatus.login.name,
-        EventNames.login.clientWEB.LoginSuccessfully
-      );
+    if (ValidateEmail(Details.Email)) DataVerification.Email = true;
 
-      if (await VGView.unload(WebViewStatus.login.name)) {
-        native.displayRadar(true);
-        native.destroyAllCams(true);
-        native.renderScriptCams(false, false, 0, false, false, 0);
-        alt.emit(EventNames.allVue.localClient.loadWebviews);
+    if (Details.Password == Details.RePassword)
+      DataVerification.Password = true;
+    if (Details.CheckBox) DataVerification.CheckBox = true;
+
+    return VGView.emit(
+      WebViewStatus.login.name,
+      EventNames.login.clientWEB.RegisterResult,
+      DataVerification
+    );
+  });
+  alt.onServer(
+    "CallBack_Login_Account_To_Server",
+    async (state, Error = "") => {
+      if (state == true) {
+        await VGView.emit(
+          WebViewStatus.login.name,
+          EventNames.login.clientWEB.LoginSuccessfully
+        );
+
+        if (await VGView.unload(WebViewStatus.login.name)) {
+          native.displayRadar(true);
+          native.destroyAllCams(true);
+          native.renderScriptCams(false, false, 0, false, false, 0);
+          alt.emit(EventNames.allVue.localClient.loadWebviews);
+        }
+      } else if (Error == "UsernameError") {
+        console.log(state, Error);
+        await VGView.emit(
+          WebViewStatus.login.name,
+          EventNames.login.clientWEB.UsernameError
+        );
+      } else if (Error == "PasswordError") {
+        await VGView.emit(
+          WebViewStatus.login.name,
+          EventNames.login.clientWEB.PasswordError
+        );
+      } else if (Error == "AccountOnline") {
+        await VGView.emit(
+          WebViewStatus.login.name,
+          EventNames.login.clientWEB.AccountOnline
+        );
+      } else {
+        await VGView.emit(
+          WebViewStatus.login.name,
+          EventNames.login.clientWEB.AnotherError
+        );
       }
     }
-  });
+  );
 }
 
 // In OldLoadLoginPage() ghadimi ast va faghat be dalile dashtane asamiye event ha negah dashte shode ast
