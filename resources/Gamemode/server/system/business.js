@@ -1,5 +1,6 @@
 import { sql } from "../database/mysql";
 import { ThreeD_Text } from "./3dText";
+import { PlayerData } from "./account";
 
 let businessData = {};
 
@@ -19,15 +20,13 @@ export class Business {
   };
   static async Load_To_Players(player) {
     Object.entries(businessData).filter(async (v, index, ar) => {
-      if (v[1].Owner != -1 && v[1].For_Sell == false) {
-        let Owner = await sql(`select pName from Account where pId ="${v[1].Owner}"`);
-        await ThreeD_Text.Add(player, "Business", v[1].id, `Business: ${v[1].id}\n~b~Owner:~w~ ${Owner.pName}\nLevel: ${v[1].Level}}`, JSON.parse(v[1].Pos));
-      } else if (v[1].Owner != -1 && v[1].For_Sell == true) {
-        let Owner = await sql(`select pName from Account where pId ="${v[1].Owner}"`);
-        await ThreeD_Text.Add(player, "Business", v[1].id, `Business: ${v[1].id}\n~b~Owner:~w~ ${Owner.pName}\nLevel: ${v[1].Level}\nPrice: ${v[1].Price}\nFor buy enter /buy`, JSON.parse(v[1].Pos));
-      } else {
-        await ThreeD_Text.Add(player, "Business", v[1].id, `Business: ${v[1].id}\n~b~Owner:~w~ ${v[1].Description}\nLevel: ${v[1].Level}\nPrice: ${v[1].Stand_Price}\nFor buy enter /buy`, JSON.parse(v[1].Pos));
-      }
+      let data = v[1];
+      let text = "";
+      text += `Business: ${data.id}`;
+      data.Owner != -1 ? (text += `\n~b~Owner:~w~ ${await PlayerData.Offline.GetPlayerName(data.Owner)}`) : (text += `\n~b~Owner:~w~ The State`);
+      text += `\nLevel: ${data.Level}`;
+      data.Owner != -1 && data.For_Sell == true ? (text += `\nPrice: ${data.Price}\nFor buy enter /buy`) : data.Owner != -1 && data.For_Sell == false ? "" : (text += `\nPrice: ${data.Stand_Price}\nFor buy enter /buy`);
+      await ThreeD_Text.Add(player, "Business", data.id, text, JSON.parse(data.Pos));
     });
   }
   static Money = {

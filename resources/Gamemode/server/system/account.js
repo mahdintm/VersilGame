@@ -7,6 +7,7 @@ import { sendchat } from "./chat";
 import { VirtualWorld } from "./virtual_world";
 import { Business } from "./business";
 import { Language } from "../utils/dialogs";
+import { House } from "./house";
 var playersdata = {};
 var Idx = {};
 export class PlayerData {
@@ -59,6 +60,7 @@ export class PlayerData {
       await player.spawn(-66.84395599365234, -802.20615234375, 44.2255859375);
       await VirtualWorld.set(player, 0);
       await Business.Load_To_Players(player);
+      await House.Load_To_Players(player);
       player.setSyncedMeta("hasLogin", true);
       //log system
       await sql_log(`INSERT INTO login_log(pId, loginas, ip, timestamp, hwid, discordid, license) VALUES ("${DaTa.pId}","Server","${player.ip.substr(7, 24)}","${time}","${player.hwidHash}","${player.getSyncedMeta("Discordid")}","${player.socialID}")`);
@@ -129,7 +131,7 @@ export class PlayerData {
   static Offline = {
     GetPlayerName: async (accountID) => {
       let AccountName = await sql(`select pName From Account Where pId="${accountID}"`);
-      return (await AccountName.charAt(0).toUpperCase()) + (await AccountName.slice(1));
+      return (await AccountName.pName.charAt(0).toUpperCase()) + (await AccountName.pName.slice(1));
     },
   };
 }
