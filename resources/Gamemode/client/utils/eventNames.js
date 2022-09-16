@@ -28,6 +28,13 @@ export const EventNames = {
       ServerLog: "Client:DebugMode:ConsoleLogInServer",
       SeatBelt: "Client:VehicleDetails:SeatBelt",
       Cruse: "Client:VehicleDetails:Cruse",
+      StreamMeta: {
+        Vehicle: {
+          Indicator: "Client:Vehicle:IndicatorChange",
+          Cruise: "Client:Vehicle:Cruise",
+          HandBrake: "Client:Vehicle:HandBrake",
+        },
+      },
     },
     clientWEB: {},
     WEBclient: {},
