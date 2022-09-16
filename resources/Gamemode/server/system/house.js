@@ -6,7 +6,8 @@ import { registerCmd } from "./chat";
 import { ipl_location } from "../utils/ipllocations";
 
 var houses = {},
-  interior = {};
+  interior = {},
+  int = 1;
 
 export class House {
   static Data = {
@@ -66,18 +67,21 @@ export class House {
 registerCmd("test1", (player, args) => {
   House.Create(player, args[0]);
 });
+
 setTimeout(async () => {
   for (let i = 18; i <= 40; i++) {
     if (ipl_location[i] != undefined) {
       interior[int] = ipl_location[i];
       int++;
     }
-  }
-  let Data_ = await sql("select * from House");
-  for await (const Data of Data_) {
-    houses[Data.Id] = Data;
-    houses[Data.Id].Out_Pos = JSON.parse(houses[Data.Id].Out_Pos);
-    houses[Data.Id].Renters = JSON.parse(houses[Data.Id].Renters);
-    houses[Data.Id].Inventori = JSON.parse(houses[Data.Id].Inventori);
+    if (i == 40) {
+      let Data_ = await sql("select * from House");
+      for await (const Data of Data_) {
+        houses[Data.Id] = Data;
+        houses[Data.Id].Out_Pos = JSON.parse(houses[Data.Id].Out_Pos);
+        houses[Data.Id].Renters = JSON.parse(houses[Data.Id].Renters);
+        houses[Data.Id].Inventori = JSON.parse(houses[Data.Id].Inventori);
+      }
+    }
   }
 }, 1000);
