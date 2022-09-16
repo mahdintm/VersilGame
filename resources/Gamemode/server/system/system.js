@@ -17,3 +17,4 @@ import "./gas_station";
 import "./ban";
 import "./clientEvents";
 import "./vehicleManagment";
+import "./house";
