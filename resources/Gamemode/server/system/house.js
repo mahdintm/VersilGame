@@ -3,6 +3,7 @@ import alt from "alt";
 import { ThreeD_Text } from "./3dText";
 import { PlayerData } from "./account";
 import { registerCmd } from "./chat";
+import { ipl_location } from "../utils/ipllocations";
 
 var houses = {},
   interior = {};
@@ -66,6 +67,12 @@ registerCmd("test1", (player, args) => {
   House.Create(player, args[0]);
 });
 setTimeout(async () => {
+  for (let i = 18; i <= 40; i++) {
+    if (ipl_location[i] != undefined) {
+      interior[int] = ipl_location[i];
+      int++;
+    }
+  }
   let Data_ = await sql("select * from House");
   for await (const Data of Data_) {
     houses[Data.Id] = Data;
