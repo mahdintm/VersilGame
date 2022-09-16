@@ -40,6 +40,7 @@ export class House {
     houses[db.insertId] = {
       Id: db.insertId,
       Out_Pos: player.pos,
+      In_Pos: { x: ipl_location[interior_].x, y: ipl_location[interior_].y, z: ipl_location[interior_].z },
       Interior_ID: interior_,
       Stand_Price: 100000,
       Price: 0,
@@ -79,6 +80,7 @@ setTimeout(async () => {
       for await (const Data of Data_) {
         houses[Data.Id] = Data;
         houses[Data.Id].Out_Pos = JSON.parse(houses[Data.Id].Out_Pos);
+        houses[Data.Id].In_Pos = { x: ipl_location[Data.Interior_ID].x, y: ipl_location[Data.Interior_ID].y, z: ipl_location[Data.Interior_ID].z };
         houses[Data.Id].Renters = JSON.parse(houses[Data.Id].Renters);
         houses[Data.Id].Inventori = JSON.parse(houses[Data.Id].Inventori);
       }
