@@ -92,6 +92,22 @@ export async function VehicleSpeedOmeter() {
     });
   }
 }
+export function ChangeVehicleHUDVariable(key, value) {
+  switch (key) {
+    case "isLeftGuide":
+      isLeftGuide = value;
+      break;
+    case "isRightGuide":
+      isRightGuide = value;
+      break;
+    case "isHandBrake":
+      isHandBrake = value;
+      break;
+    case "isCruse":
+      isCruse = value;
+      break;
+  }
+}
 function GetVehicleFuel() {
   try {
     return alt.Player.local.vehicle.getSyncedMeta("fuel");
@@ -147,17 +163,17 @@ function IndicatorManager(isLeftIndicator) {
     isRightGuide = false;
     isLeftGuide = !isLeftGuide;
     if (!isLeftGuide) {
-      alt.emitServer("Vehicle:IndicatorChange", alt.Player.local.vehicle, 0);
+      alt.emitServer(EventNames.player.client.StreamMeta.Vehicle.Indicator, alt.Player.local.vehicle, 0);
     } else {
-      alt.emitServer("Vehicle:IndicatorChange", alt.Player.local.vehicle, 1);
+      alt.emitServer(EventNames.player.client.StreamMeta.Vehicle.Indicator, alt.Player.local.vehicle, 1);
     }
   } else {
     isLeftGuide = false;
     isRightGuide = !isRightGuide;
     if (!isRightGuide) {
-      alt.emitServer("Vehicle:IndicatorChange", alt.Player.local.vehicle, 0);
+      alt.emitServer(EventNames.player.client.StreamMeta.Vehicle.Indicator, alt.Player.local.vehicle, 0);
     } else {
-      alt.emitServer("Vehicle:IndicatorChange", alt.Player.local.vehicle, 2);
+      alt.emitServer(EventNames.player.client.StreamMeta.Vehicle.Indicator, alt.Player.local.vehicle, 2);
     }
   }
 }
@@ -261,13 +277,14 @@ function CruseRequest() {
   isCruse ? (VehicleCruiseSpeed = Math.floor(native.getEntitySpeed(alt.Player.local.vehicle))) : (VehicleCruiseSpeed = undefined);
   isRequestVehicleTurnLeft = false;
   isRequestVehicleTurnRight = false;
-  alt.emitServer(EventNames.player.client.Cruse, isCruse);
+  alt.emitServer(EventNames.player.client.StreamMeta.Vehicle.Cruise, alt.Player.local.vehicle, isCruse);
 }
 
 alt.on(EventNames.HUD.localClient.HandBrake, (Status) => {
   if (alt.Player.local.vehicle == null) return;
   if (alt.Player.local.seat != 1) return;
   isHandBrake = Status;
+  alt.emitServer(EventNames.player.client.StreamMeta.Vehicle.HandBrake, alt.Player.local.vehicle, Status);
 });
 alt.on(EventNames.HUD.localClient.IndicatorLeft, () => {
   IndicatorManager(true);
