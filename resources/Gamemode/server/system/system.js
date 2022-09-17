@@ -18,3 +18,4 @@ import "./ban";
 import "./clientEvents";
 import "./vehicleManagment";
 import "./house";
+import "./enterLocation";

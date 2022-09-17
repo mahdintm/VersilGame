@@ -14,3 +14,4 @@ import "./ServerTime";
 import "./load3DText";
 import "./functions";
 import "./streamSyncedMeta";
+import "./iplManager";
