@@ -23,10 +23,10 @@ export class Ban {
   };
   static hwban = {
     new: async (player, admin, reason, expire, Is_permanet = false, Is_Accounts = false) => {
-      let data = await sql(`insert into Hw_Ban (Admin_id, Hwid, inTime, Expire, Is_permanet, Is_Accounts,Reason) values ("${await PlayerData.get(admin, "pId")}","${player.hwidHash}","${Date.now()}","${expire}","${Is_permanet}","${Is_Accounts}","${reason}")`);
+      let data = await sql(`insert into Hw_Ban (Admin_id, Hwid, inTime, Expire, Is_permanet, Is_Accounts,Reason) values ("${await PlayerData.Get(admin, "pId")}","${player.hwidHash}","${Date.now()}","${expire}","${Is_permanet}","${Is_Accounts}","${reason}")`);
       return bans.hwban.push({
         id: data.insertId,
-        Admin_id: await PlayerData.get(admin, "pId"),
+        Admin_id: await PlayerData.Get(admin, "pId"),
         Hwid: player.hwidHash,
         inTime: Date.now(),
         Expire: expire,

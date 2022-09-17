@@ -7,10 +7,10 @@ import { ServerSetting } from "./server_settings";
 let cmdHandlers = {};
 
 export async function CheckMute_Chat(player) {
-  if (await PlayerData.get(player, "pMute_Chat")) {
-    if ((await PlayerData.get(player, "pMute_Time_Chat")) <= Date.now) {
-      await PlayerData.set(player, "pMute_Chat", 0, true);
-      await PlayerData.set(player, "pMute_Time_Chat", 0, true);
+  if (await PlayerData.Get(player, "pMute_Chat")) {
+    if ((await PlayerData.Get(player, "pMute_Time_Chat")) <= Date.now) {
+      await PlayerData.Set(player, "pMute_Chat", 0, true);
+      await PlayerData.Set(player, "pMute_Time_Chat", 0, true);
       return true;
     } else {
       return false;
@@ -20,10 +20,10 @@ export async function CheckMute_Chat(player) {
   }
 }
 export async function CheckMute_CMD(player) {
-  if (await PlayerData.get(player, "pMute_CMD")) {
-    if ((await PlayerData.get(player, "pMute_Time_CMD")) <= Date.now) {
-      await PlayerData.set(player, "pMute_CMD", 0, true);
-      await PlayerData.set(player, "pMute_Time_CMD", 0, true);
+  if (await PlayerData.Get(player, "pMute_CMD")) {
+    if ((await PlayerData.Get(player, "pMute_Time_CMD")) <= Date.now) {
+      await PlayerData.Set(player, "pMute_CMD", 0, true);
+      await PlayerData.Set(player, "pMute_Time_CMD", 0, true);
       return true;
     } else {
       return false;
@@ -71,7 +71,7 @@ alt.onClient(EventNames.chat.client.Message, async (player, msg) => {
     if (await CheckMute_Chat(player)) {
       msg = msg.trim();
       if (!msg.length) return;
-      let PlayerName = await PlayerData.get(player, "pName");
+      let PlayerName = await PlayerData.Get(player, "pName");
       let msgfilltered = findbadword(msg).replace(/</g, "&lt;").replace(/'/g, "&#39").replace(/"/g, "&#34");
       const playerPos = player.pos;
       const players = alt.Player.all;

@@ -12,10 +12,9 @@ class OtherChat {
     if (await CheckMute_Chat(player)) {
       msg = msg.toString().replaceAll(",", " ");
       if (!msg.length) return;
-      let PlayerName = `[${await StaffSystem.GetRankName(player)}] ${await PlayerData.get(player, "pName")}`;
+      let PlayerName = `[${await StaffSystem.GetRankName(player)}] ${await PlayerData.Get(player, "pName")}`;
       let msgfilltered = findbadword(msg).replace(/</g, "&lt;").replace(/'/g, "&#39").replace(/"/g, "&#34");
-      const players = alt.Player.all;
-      for await (let player_ of players) {
+      for await (let player_ of await alt.Player.all) {
         if (!player_.getSyncedMeta("HasLogin")) continue;
         if (await StaffSystem.IsAdmin(player_)) continue;
         alt.emitClient(player_, EventNames.chat.server.Message, Date.now(), PlayerName, msgfilltered);
@@ -30,7 +29,7 @@ class OtherChat {
     if (await CheckMute_Chat(player)) {
       msg = msg.toString().replaceAll(",", " ");
       if (!msg.length) return;
-      let PlayerName = `[${await StaffSystem.GetRankName(player)}] ${await PlayerData.get(player, "pName")}`;
+      let PlayerName = `[${await StaffSystem.GetRankName(player)}] ${await PlayerData.Get(player, "pName")}`;
       let msgfilltered = findbadword(msg).replace(/</g, "&lt;").replace(/'/g, "&#39").replace(/"/g, "&#34");
       const players = alt.Player.all;
       for await (let player_ of players) {
@@ -51,8 +50,8 @@ class OtherChat {
       if (player == taraf) return sendchat(player, "You cannot whisper to yourself");
       if (player.pos.distanceTo(taraf.pos) > (await ServerSetting.get("Chat_Distance_Wissper"))) return sendchat(player, `Player ${args[0]} not near you.`);
       let msgfilltered = findbadword(args.slice(1).join(" ")).replace(/</g, "&lt;").replace(/'/g, "&#39").replace(/"/g, "&#34");
-      sendchat(taraf, `[Wissper] ${await PlayerData.get(player, "pName")}: ${msgfilltered}`);
-      sendchat(player, `[Wissper] ${await PlayerData.get(player, "pName")}: ${msgfilltered}`);
+      sendchat(taraf, `[Wissper] ${await PlayerData.Get(player, "pName")}: ${msgfilltered}`);
+      sendchat(player, `[Wissper] ${await PlayerData.Get(player, "pName")}: ${msgfilltered}`);
     } else {
       sendchat(player, "You are muted.");
     }
@@ -61,7 +60,7 @@ class OtherChat {
     if (await CheckMute_Chat(player)) {
       if (args[0] == undefined) return sendchat(player, "(S)hout [PlayerName/PlayerID] [Your Message]");
       let msgfilltered = findbadword(args.join(" ")).replace(/</g, "&lt;").replace(/'/g, "&#39").replace(/"/g, "&#34");
-      let PlayerName = `[Shout] ${await PlayerData.get(player, "pName")}`;
+      let PlayerName = `[Shout] ${await PlayerData.Get(player, "pName")}`;
       const players = alt.Player.all;
       for await (let player_ of players) {
         if (!player_.getSyncedMeta("HasLogin")) continue;

@@ -85,7 +85,7 @@ export class PlayerData {
    * @param {Object} player altv player object
    * @param {String} DataName data name
    */
-  static async get(player, DataName) {
+  static async Get(player, DataName) {
     try {
       return await playersdata[player.id][DataName];
     } catch (error) {
@@ -103,10 +103,10 @@ export class PlayerData {
    * @param {boolean} sync_sql
    * @returns data
    */
-  static async set(player, DataName, value, sync_sql = false) {
+  static async Set(player, DataName, value, sync_sql = false) {
     try {
       playersdata[player.id][DataName] = value;
-      if (sync_sql) await sql(`UPDATE Account SET ${DataName} = '${value}' WHERE pId = "${await PlayerData.get(player, "pId")}"`);
+      if (sync_sql) await sql(`UPDATE Account SET ${DataName} = '${value}' WHERE pId = "${await PlayerData.Get(player, "pId")}"`);
     } catch (error) {
       await logger.addlog.server({
         locatin: "Server->System->Account->Class Playerdata->set()",

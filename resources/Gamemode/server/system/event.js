@@ -127,10 +127,10 @@ alt.onClient("RequestCodeValidationEntered", (player, data) => {
 await alt.on("playerDisconnect", async (player, reason) => {
   if (!player.getSyncedMeta("hasLogin")) return;
   DiscordHook.newhook.disconnect({
-    sqlid: await PlayerData.get(player, "pId"),
-    username: await PlayerData.get(player, "pName"),
+    sqlid: await PlayerData.Get(player, "pId"),
+    username: await PlayerData.Get(player, "pName"),
   });
-  PlayerData.set(player, "pOnline", 0, true);
+  PlayerData.Set(player, "pOnline", 0, true);
   StaffSystem.sarOFF(player);
   PlayerData.delete(player);
   playerIdGame.delete(player);

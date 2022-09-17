@@ -282,7 +282,7 @@ export class VehicleClass {
       const NewVehicle = await new alt.Vehicle(VehicleModel, player.pos.x, player.pos.y, player.pos.z, player.rot.x, player.rot.y, player.rot.z);
       let vehdet = await VehicleClass.GetVehicleDetail(VehicleModel);
       NewVehicle.manualEngineControl = true;
-      let Plate = (await PlayerData.get(player, "pAdmin")) == 10 ? (NewVehicle.numberPlateText = "Owner") : (NewVehicle.numberPlateText = "Admin Veh");
+      let Plate = (await PlayerData.Get(player, "pAdmin")) == 10 ? (NewVehicle.numberPlateText = "Owner") : (NewVehicle.numberPlateText = "Admin Veh");
       vehicles[NewVehicle.id] = {
         model: VehicleModel,
         type: "admin",

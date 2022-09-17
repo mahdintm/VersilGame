@@ -68,27 +68,27 @@ export class StaffSystem {
   };
   //admin
   static async IsAdmin(player) {
-    return (await PlayerData.get(player, "pAdmin")) >= 1 ? true : false;
+    return (await PlayerData.Get(player, "pAdmin")) >= 1 ? true : false;
   }
   static async CheckAdmin(player, level) {
-    return (await PlayerData.get(player, "pAdmin")) >= level ? true : false;
+    return (await PlayerData.Get(player, "pAdmin")) >= level ? true : false;
   }
   static CheckObject = {
     MakeAdmin: async (player) => {
-      return (await PlayerData.get(player, "pMakeAdmin")) == true ? true : false;
+      return (await PlayerData.Get(player, "pMakeAdmin")) == true ? true : false;
     },
   };
   static async IsHelper(player) {
-    return (await PlayerData.get(player, "pHelper")) >= 1 ? true : false;
+    return (await PlayerData.Get(player, "pHelper")) >= 1 ? true : false;
   }
   static async CheckHelper(player, level) {
-    return (await PlayerData.get(player, "pHelper")) >= level ? true : false;
+    return (await PlayerData.Get(player, "pHelper")) >= level ? true : false;
   }
   static async IsLeader(player) {
-    return (await PlayerData.get(player, "pLeader")) >= 1 ? true : false;
+    return (await PlayerData.Get(player, "pLeader")) >= 1 ? true : false;
   }
   static async CheckLeader(player, level) {
-    return (await PlayerData.get(player, "pLeader")) >= level ? true : false;
+    return (await PlayerData.Get(player, "pLeader")) >= level ? true : false;
   }
   static async Send_NotAdmin(player) {
     sendchat(player, await Language.GetValue(player.getSyncedMeta("Language"), "YOU_ARE_NOT_ADMIN"));
@@ -105,9 +105,9 @@ export class StaffSystem {
   }
   static async GetRankName(player) {
     if (await StaffSystem.IsAdmin(player)) {
-      return await ServerSetting.get(`Rank_Admin_${await PlayerData.get(player, "pAdmin")}`);
+      return await ServerSetting.get(`Rank_Admin_${await PlayerData.Get(player, "pAdmin")}`);
     } else if (await StaffSystem.IsHelper(player)) {
-      return await ServerSetting.get(`Rank_Helper_${await PlayerData.get(player, "pAdmin")}`);
+      return await ServerSetting.get(`Rank_Helper_${await PlayerData.Get(player, "pAdmin")}`);
     } else if (await StaffSystem.IsLeader(player)) {
       return "Leader";
     } else {
@@ -166,10 +166,10 @@ export class StaffSystem {
   static async CreateInterval(NowNameDay) {
     interval = setInterval(async () => {
       SarONs.filter(async (player, i) => {
-        let playerstaff = await JSON.parse(await PlayerData.get(player, "pStaff_Point"));
+        let playerstaff = await JSON.parse(await PlayerData.Get(player, "pStaff_Point"));
         playerstaff.week[NowNameDay] += 1000;
         playerstaff.alltime += 1000;
-        await PlayerData.set(player, "pStaff_Point", JSON.stringify(playerstaff), false);
+        await PlayerData.Set(player, "pStaff_Point", JSON.stringify(playerstaff), false);
       });
     }, 1000);
   }
@@ -178,7 +178,7 @@ export class StaffSystem {
     for (let i = 0; i < allPlayers.length; i++) {
       if ((await allPlayers[i].getSyncedMeta("hasLogin")) == false) continue;
       if (!(await StaffSystem.IsStaff(allPlayers[i]))) continue;
-      await PlayerData.set(allPlayers[i], "pStaff_Point", await PlayerData.get(allPlayers[i], "pStaff_Point"), true);
+      await PlayerData.Set(allPlayers[i], "pStaff_Point", await PlayerData.Get(allPlayers[i], "pStaff_Point"), true);
     }
   }
   static async CalculatorSPAll() {
@@ -202,7 +202,7 @@ export class StaffSystem {
     }
   }
   static async CalculatorSP(player) {
-    let staffpoint = await PlayerData.get(player, "pStaff_Point");
+    let staffpoint = await PlayerData.Get(player, "pStaff_Point");
     let NowNameDay = await Time.GetNameDay();
     if (staffpoint.week[NowNameDay] >= 36000000) await StaffPoint.give(player, 4);
     else if (staffpoint.week[NowNameDay] >= 25200000) await StaffPoint.give(player, 3);
@@ -307,40 +307,40 @@ export class StaffSystem {
     }
   }
   static async CalculatorRole(player) {
-    let Sp = JSON.parse(await PlayerData.get(player, "pStaff_Point")).staff_point;
+    let Sp = JSON.parse(await PlayerData.Get(player, "pStaff_Point")).staff_point;
     if ((await StaffSystem.CheckAdmin(player, 8)) || (await StaffSystem.CheckAdmin(player, 9)) || (await StaffSystem.CheckAdmin(player, 10))) {
       return;
     }
     if (Sp < (await ServerSetting.get("lowestSpHelper_1"))) {
       //demote
-      await PlayerData.set(player, "pHelper", 0, true);
-      await PlayerData.set(player, "pLeader", 0, true);
-      await PlayerData.set(player, "pCanAdmin", 0, true);
-      return await PlayerData.set(player, "pAdmin", 0, true);
+      await PlayerData.Set(player, "pHelper", 0, true);
+      await PlayerData.Set(player, "pLeader", 0, true);
+      await PlayerData.Set(player, "pCanAdmin", 0, true);
+      return await PlayerData.Set(player, "pAdmin", 0, true);
     } else if (Sp >= (await ServerSetting.get("lowestSpHelper_1")) && Sp < (await ServerSetting.get("lowestSpHelper_2")) && !(await StaffSystem.IsLeader(player))) {
       //helper 1
-      await PlayerData.set(player, "pHelper", 1, true);
-      await PlayerData.set(player, "pCanAdmin", 0, true);
-      return await PlayerData.set(player, "pAdmin", 0, true);
+      await PlayerData.Set(player, "pHelper", 1, true);
+      await PlayerData.Set(player, "pCanAdmin", 0, true);
+      return await PlayerData.Set(player, "pAdmin", 0, true);
     } else if (Sp >= (await ServerSetting.get("lowestSpHelper_2")) && Sp < (await ServerSetting.get("lowestSpHelper_3")) && !(await StaffSystem.IsLeader(player))) {
       //helper 2
-      await PlayerData.set(player, "pCanAdmin", 0, true);
-      await PlayerData.set(player, "pAdmin", 0, true);
-      return await PlayerData.set(player, "pHelper", 2, true);
+      await PlayerData.Set(player, "pCanAdmin", 0, true);
+      await PlayerData.Set(player, "pAdmin", 0, true);
+      return await PlayerData.Set(player, "pHelper", 2, true);
     } else if (Sp >= (await ServerSetting.get("lowestSpHelper_3")) && Sp < (await ServerSetting.get("lowestSpAdmin_1")) && !(await StaffSystem.IsLeader(player))) {
       //helper 3
       if (await StaffSystem.IsAdmin(player)) {
         if (Sp < (await ServerSetting.get("lowestSpAdmin_1")) - 10) {
-          await PlayerData.set(player, "pHelper", 3, true);
-          await PlayerData.set(player, "pAdmin", 0, true);
-          return await PlayerData.set(player, "pCanAdmin", 0, true);
+          await PlayerData.Set(player, "pHelper", 3, true);
+          await PlayerData.Set(player, "pAdmin", 0, true);
+          return await PlayerData.Set(player, "pCanAdmin", 0, true);
         } else {
-          await PlayerData.set(player, "pAdmin", 1, true);
+          await PlayerData.Set(player, "pAdmin", 1, true);
         }
       } else {
-        await PlayerData.set(player, "pAdmin", 0, true);
-        await PlayerData.set(player, "pCanAdmin", 0, true);
-        return await PlayerData.set(player, "pHelper", 3, true);
+        await PlayerData.Set(player, "pAdmin", 0, true);
+        await PlayerData.Set(player, "pCanAdmin", 0, true);
+        return await PlayerData.Set(player, "pHelper", 3, true);
       }
     } else if (Sp >= (await ServerSetting.get("lowestSpAdmin_1")) && Sp < (await ServerSetting.get("lowestSpAdmin_2"))) {
       //admin 1
@@ -351,7 +351,7 @@ export class StaffSystem {
         if (Sp < (await ServerSetting.get("lowestSpAdmin_2")) - 10) {
           console.log(3);
 
-          return await PlayerData.set(player, "pAdmin", 1, true);
+          return await PlayerData.Set(player, "pAdmin", 1, true);
         }
       } else {
         console.log(4);
@@ -362,7 +362,7 @@ export class StaffSystem {
       //admin 2
       if (await StaffSystem.IsAdmin(player)) {
         if (Sp < (await ServerSetting.get("lowestSpAdmin_3")) - 10) {
-          return await PlayerData.set(player, "pAdmin", 2, true);
+          return await PlayerData.Set(player, "pAdmin", 2, true);
         }
       } else {
         this.#SetPlayerRoleWithCanAdmin(player, 2);
@@ -371,7 +371,7 @@ export class StaffSystem {
       //admin 3
       if (await StaffSystem.IsAdmin(player)) {
         if (Sp < (await ServerSetting.get("lowestSpAdmin_4")) - 10) {
-          return await PlayerData.set(player, "pAdmin", 3, true);
+          return await PlayerData.Set(player, "pAdmin", 3, true);
         }
       } else {
         this.#SetPlayerRoleWithCanAdmin(player, 3);
@@ -380,7 +380,7 @@ export class StaffSystem {
       //admin 4
       if (await StaffSystem.IsAdmin(player)) {
         if (Sp < (await ServerSetting.get("lowestSpAdmin_5")) - 10 && ((await StaffSystem.CheckAdmin(player, 5)) || (await StaffSystem.CheckAdmin(player, 6)) || (await StaffSystem.CheckAdmin(player, 7)))) {
-          return await PlayerData.set(player, "pAdmin", 4, true);
+          return await PlayerData.Set(player, "pAdmin", 4, true);
         }
       }
     }
@@ -392,35 +392,35 @@ export class StaffSystem {
     // }
   }
   static async #SetPlayerRoleWithCanAdmin(player, AdminLevel) {
-    if ((await PlayerData.get(player, "pCanAdmin")) == true) {
-      await PlayerData.set(player, "pHelper", 3, true);
-      await PlayerData.set(player, "pLeader", 0, true);
-      return await PlayerData.set(player, "pAdmin", AdminLevel, true);
+    if ((await PlayerData.Get(player, "pCanAdmin")) == true) {
+      await PlayerData.Set(player, "pHelper", 3, true);
+      await PlayerData.Set(player, "pLeader", 0, true);
+      return await PlayerData.Set(player, "pAdmin", AdminLevel, true);
     } else {
-      await PlayerData.set(player, "pHelper", 3, true);
-      await PlayerData.set(player, "pLeader", 0, true);
-      return await PlayerData.set(player, "pAdmin", 0, true);
+      await PlayerData.Set(player, "pHelper", 3, true);
+      await PlayerData.Set(player, "pLeader", 0, true);
+      return await PlayerData.Set(player, "pAdmin", 0, true);
     }
   }
 }
 export class StaffPoint {
   static async set(player, amount) {
-    let playerstaff = await JSON.parse(await PlayerData.get(player, "pStaff_Point"));
+    let playerstaff = await JSON.parse(await PlayerData.Get(player, "pStaff_Point"));
     playerstaff.staff_point = parseInt(amount);
-    await PlayerData.set(player, "pStaff_Point", JSON.stringify(playerstaff), true);
+    await PlayerData.Set(player, "pStaff_Point", JSON.stringify(playerstaff), true);
   }
   static async give(player, amount) {
-    let playerstaff = await JSON.parse(await PlayerData.get(player, "pStaff_Point"));
+    let playerstaff = await JSON.parse(await PlayerData.Get(player, "pStaff_Point"));
     playerstaff.staff_point += parseInt(amount);
-    await PlayerData.set(player, "pStaff_Point", JSON.stringify(playerstaff), true);
+    await PlayerData.Set(player, "pStaff_Point", JSON.stringify(playerstaff), true);
   }
   static async get(player) {
-    return JSON.parse(await PlayerData.get(player, "pStaff_Point")).staff_point;
+    return JSON.parse(await PlayerData.Get(player, "pStaff_Point")).staff_point;
   }
   static async take(player, amount) {
-    let playerstaff = await JSON.parse(await PlayerData.get(player, "pStaff_Point"));
+    let playerstaff = await JSON.parse(await PlayerData.Get(player, "pStaff_Point"));
     playerstaff.staff_point -= parseInt(amount);
-    await PlayerData.set(player, "pStaff_Point", JSON.stringify(playerstaff), true);
+    await PlayerData.Set(player, "pStaff_Point", JSON.stringify(playerstaff), true);
   }
 }
 

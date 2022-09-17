@@ -9,10 +9,10 @@ class VGScoreBoardServer {
     for await (const player of alt.Player.all) {
       if (player.getSyncedMeta("hasLogin") == false) continue;
       PlayersDetails.push({
-        ID: await PlayerData.get(player, "gameID"),
-        Name: await PlayerData.get(player, "pName"),
+        ID: await PlayerData.Get(player, "gameID"),
+        Name: await PlayerData.Get(player, "pName"),
         Ping: player.ping,
-        Level: await PlayerData.get(player, "pLevel"),
+        Level: await PlayerData.Get(player, "pLevel"),
       });
     }
     return PlayersDetails;

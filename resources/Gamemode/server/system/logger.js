@@ -40,8 +40,8 @@ export class logger {
       LogDetail["date"] = date.toLocaleDateString("fa-IR");
       LogDetail["time"] = `${d.getHours()}:${d.getMinutes()}:${d.getSeconds()}`;
       LogDetail["player"] = {
-        id: PlayerData.get(player.getSyncedMeta("inServer"), player, "pId"),
-        name: PlayerData.get(player.getSyncedMeta("inServer"), player, "pName"),
+        id: PlayerData.Get(player.getSyncedMeta("inServer"), player, "pId"),
+        name: PlayerData.Get(player.getSyncedMeta("inServer"), player, "pName"),
       };
       let year_month = logger.get_year_month(date);
       await logger.createfolders(year_month);
