@@ -138,10 +138,6 @@ await alt.on("playerDisconnect", async (player, reason) => {
 await alt.onClient("Login_Account_To_Server", PlayerData.login);
 await alt.onClient("Register_Account_To_Server", PlayerData.register);
 
-alt.onClient("Vehicle:IndicatorChange", (player, vehicle, key) => {
-  vehicle.setStreamSyncedMeta("Vehicle:Indicator", key);
-});
-
 setTimeout(() => {
   console.log(` 
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@

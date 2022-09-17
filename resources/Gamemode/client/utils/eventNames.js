@@ -176,6 +176,9 @@ export const EventNames = {
       HandBrake: "localClient:HUD:HandBrake",
       SeatBelt: "localClient:HUD:SeatBelt",
       Cruse: "localClient:HUD:Cruse",
+      APressed: "localClient:HUD:APressed",
+      DPressed: "localClient:HUD:DPressed",
+      SPressed: "localClient:HUD:SPressed",
     },
     clientWEB: {
       SetPlayerCashDetails: "ClientWEB:HUD:SetPlayerCashDetails",

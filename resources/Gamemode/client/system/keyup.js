@@ -35,21 +35,33 @@ alt.on("keyup", async (key) => {
       // A Pressed
       if (alt.isConsoleOpen()) return;
       if (native.isPauseMenuActive()) return;
-      if ((await VGView.getTopView()) != WebViewStatus.clothes.name) return;
-      if (!VGView.isOpen(WebViewStatus.clothes.name)) return;
+      if ((await VGView.getTopView()) == WebViewStatus.clothes.name) {
+        if (VGView.isOpen(WebViewStatus.clothes.name)) {
+          ChangeValueFromVariable("KeyAOrDStatus", false);
+          ChangeValueFromVariable("SetHeadingPedWithKeyUpStatus", false);
+        }
+        return;
+      }
 
-      ChangeValueFromVariable("KeyAOrDStatus", false);
-      ChangeValueFromVariable("SetHeadingPedWithKeyUpStatus", false);
+      if (!VGView.isGameControls()) {
+        return alt.emit(EventNames.HUD.localClient.APressed, false);
+      }
       break;
     case 0x44:
       // D Pressed
       if (alt.isConsoleOpen()) return;
       if (native.isPauseMenuActive()) return;
-      if ((await VGView.getTopView()) != WebViewStatus.clothes.name) return;
-      if (!VGView.isOpen(WebViewStatus.clothes.name)) return;
+      if ((await VGView.getTopView()) == WebViewStatus.clothes.name) {
+        if (VGView.isOpen(WebViewStatus.clothes.name)) {
+          ChangeValueFromVariable("KeyAOrDStatus", false);
+          ChangeValueFromVariable("SetHeadingPedWithKeyUpStatus", false);
+        }
+        return;
+      }
 
-      ChangeValueFromVariable("KeyAOrDStatus", false);
-      ChangeValueFromVariable("SetHeadingPedWithKeyUpStatus", false);
+      if (!VGView.isGameControls()) {
+        return alt.emit(EventNames.HUD.localClient.DPressed, false);
+      }
       break;
     case 0x57:
       // W Pressed

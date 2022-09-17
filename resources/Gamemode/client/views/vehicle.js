@@ -14,11 +14,25 @@ let isSeatBelt = false,
   isLeftGuide = false,
   isRightGuide = false,
   VehicleCruiseSpeed = 0,
+  isRequestVehicleTurnLeft = false,
+  isRequestVehicleTurnRight = false,
+  accelerateCoolDown = 0,
   lastGear = "P";
 
 alt.on("enteredVehicle", () => {
   let playerVehicle = alt.Player.local.vehicle;
   SpeedOmeter(native.getIsVehicleEngineRunning(playerVehicle));
+  isSeatBelt = false;
+  isHighRPM = false;
+  isCruse = false;
+  isHandBrake = false;
+  isLeftGuide = false;
+  isRightGuide = false;
+  VehicleCruiseSpeed = 0;
+  isRequestVehicleTurnLeft = false;
+  isRequestVehicleTurnRight = false;
+  accelerateCoolDown = 0;
+  lastGear = "P";
 });
 alt.on("leftVehicle", () => {
   SpeedOmeter(false, true);
@@ -37,6 +51,7 @@ alt.on("Local:Vehicle:EngineStatus", (Status) => {
 function SpeedOmeter(Status, isHide = false) {
   if (alt.Player.local.vehicle == null) isHide = true;
   if (!Status) {
+    isCruse = false;
     ChangeValueFromVariable("VehicleSpeedOmeterInterval", false);
     isHide
       ? VGHUD.VehicleSpeedOmeter({ isActiveCarHud: false })
@@ -58,8 +73,6 @@ export async function VehicleSpeedOmeter() {
     return ChangeValueFromVariable("VehicleSpeedOmeterInterval", false);
   }
   if (native.getIsVehicleEngineRunning(playerVehicle)) {
-    // VG.serverLog(playerVehicle.gear);
-    // console.log(playerVehicle.maxGear);
     VGHUD.VehicleSpeedOmeter({
       isActiveCarHud: true,
       RPM: GetVehicleRPM(),
@@ -77,6 +90,22 @@ export async function VehicleSpeedOmeter() {
       GearValue: GetGear(),
       isGearUP: isGearUP(),
     });
+  }
+}
+export function ChangeVehicleHUDVariable(key, value) {
+  switch (key) {
+    case "isLeftGuide":
+      isLeftGuide = value;
+      break;
+    case "isRightGuide":
+      isRightGuide = value;
+      break;
+    case "isHandBrake":
+      isHandBrake = value;
+      break;
+    case "isCruse":
+      isCruse = value;
+      break;
   }
 }
 function GetVehicleFuel() {
@@ -134,17 +163,17 @@ function IndicatorManager(isLeftIndicator) {
     isRightGuide = false;
     isLeftGuide = !isLeftGuide;
     if (!isLeftGuide) {
-      alt.emitServer("Vehicle:IndicatorChange", alt.Player.local.vehicle, 0);
+      alt.emitServer(EventNames.player.client.StreamMeta.Vehicle.Indicator, alt.Player.local.vehicle, 0);
     } else {
-      alt.emitServer("Vehicle:IndicatorChange", alt.Player.local.vehicle, 1);
+      alt.emitServer(EventNames.player.client.StreamMeta.Vehicle.Indicator, alt.Player.local.vehicle, 1);
     }
   } else {
     isLeftGuide = false;
     isRightGuide = !isRightGuide;
     if (!isRightGuide) {
-      alt.emitServer("Vehicle:IndicatorChange", alt.Player.local.vehicle, 0);
+      alt.emitServer(EventNames.player.client.StreamMeta.Vehicle.Indicator, alt.Player.local.vehicle, 0);
     } else {
-      alt.emitServer("Vehicle:IndicatorChange", alt.Player.local.vehicle, 2);
+      alt.emitServer(EventNames.player.client.StreamMeta.Vehicle.Indicator, alt.Player.local.vehicle, 2);
     }
   }
 }
@@ -217,29 +246,45 @@ function SeatBeltRequest() {
 
 function GetCruiseStatus() {
   if (alt.Player.local.vehicle == null) return;
-  if (isCruse) {
-    if (Math.floor(native.getEntitySpeed(alt.Player.local.vehicle) * 3.6) >= Math.floor(VehicleCruiseSpeed * 3.6) - 2 && Math.floor(native.getEntitySpeed(alt.Player.local.vehicle) * 3.6) <= Math.floor(VehicleCruiseSpeed * 3.6) + 2 && !isHandBrake) {
-      native.setVehicleForwardSpeed(alt.Player.local.vehicle, VehicleCruiseSpeed);
-    } else {
-      isCruse = false;
-    }
+  if (!isCruse) return isCruse;
+  if (VehicleCruiseSpeed == undefined) return isCruse;
+  if (isHandBrake) {
+    isCruse = false;
+    return isCruse;
   }
-
+  if (native.getEntitySpeed(alt.Player.local.vehicle) <= VehicleCruiseSpeed) {
+    if (isRequestVehicleTurnLeft) {
+      native.taskVehicleTempAction(alt.Player.local.scriptID, alt.Player.local.vehicle, 7, 1);
+      accelerateCoolDown = 10;
+    } else if (isRequestVehicleTurnRight) {
+      native.taskVehicleTempAction(alt.Player.local.scriptID, alt.Player.local.vehicle, 8, 1);
+      accelerateCoolDown = 10;
+    } else if (accelerateCoolDown <= 0) {
+      accelerateCoolDown = 0;
+      native.taskVehicleTempAction(alt.Player.local.scriptID, alt.Player.local.vehicle, 23, 1);
+    } else {
+      accelerateCoolDown--;
+    }
+  } else if (Math.floor(native.getEntitySpeed(alt.Player.local.vehicle) * 3.6) >= Math.floor(VehicleCruiseSpeed * 3.6) + 5) {
+    VehicleCruiseSpeed = native.getEntitySpeed(alt.Player.local.vehicle);
+  }
   return isCruse;
 }
 function CruseRequest() {
-  // alt.emitServer(EventNames.player.client.Cruse);
   if (alt.Player.local.vehicle == null) return;
   if (alt.Player.local.seat != 1) return;
-
-  VehicleCruiseSpeed = Math.floor(native.getEntitySpeed(alt.Player.local.vehicle));
   isCruse = !isCruse;
+  isCruse ? (VehicleCruiseSpeed = Math.floor(native.getEntitySpeed(alt.Player.local.vehicle))) : (VehicleCruiseSpeed = undefined);
+  isRequestVehicleTurnLeft = false;
+  isRequestVehicleTurnRight = false;
+  alt.emitServer(EventNames.player.client.StreamMeta.Vehicle.Cruise, alt.Player.local.vehicle, isCruse);
 }
 
 alt.on(EventNames.HUD.localClient.HandBrake, (Status) => {
   if (alt.Player.local.vehicle == null) return;
   if (alt.Player.local.seat != 1) return;
   isHandBrake = Status;
+  alt.emitServer(EventNames.player.client.StreamMeta.Vehicle.HandBrake, alt.Player.local.vehicle, Status);
 });
 alt.on(EventNames.HUD.localClient.IndicatorLeft, () => {
   IndicatorManager(true);
@@ -249,10 +294,31 @@ alt.on(EventNames.HUD.localClient.IndicatorRight, () => {
 });
 alt.on(EventNames.HUD.localClient.SeatBelt, SeatBeltRequest);
 alt.on(EventNames.HUD.localClient.Cruse, CruseRequest);
+alt.on(EventNames.HUD.localClient.SPressed, () => {
+  if (alt.Player.local.vehicle == null) return;
+  if (alt.Player.local.seat != 1) return;
+  isCruse = false;
+});
+alt.on(EventNames.HUD.localClient.APressed, (Status) => {
+  if (alt.Player.local.vehicle == null) return;
+  if (alt.Player.local.seat != 1) return;
+  if (!isCruse) return;
+
+  isRequestVehicleTurnLeft = Status;
+});
+alt.on(EventNames.HUD.localClient.DPressed, (Status) => {
+  if (alt.Player.local.vehicle == null) return;
+  if (alt.Player.local.seat != 1) return;
+  if (!isCruse) return;
+
+  isRequestVehicleTurnRight = Status;
+});
 
 alt.onServer(EventNames.player.server.SeatBelt, (Status) => {
   if (alt.Player.local.vehicle == null) return;
 
   isSeatBelt = Status;
 });
-alt.onServer(EventNames.player.server.Cruse, (Status) => {});
+alt.onServer(EventNames.player.server.Cruse, (Status) => {
+  isCruse = Status;
+});
